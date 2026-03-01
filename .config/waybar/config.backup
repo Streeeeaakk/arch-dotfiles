@@ -1,0 +1,128 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "margin-top": 8,
+  "margin-left": 20,
+  "margin-right": 20,
+  "spacing": 4,
+
+  "modules-left": [
+    "custom/launcher",
+    "clock"
+  ],
+  
+"modules-center": [
+  "hyprland/workspaces#left",
+  "custom/middle-text",
+  "hyprland/workspaces#right"
+],
+
+
+  "modules-right": [
+    "temperature",
+    "custom/gpu-temp",
+    "tray",
+    "network",
+    "bluetooth",    
+    "custom/volume_bar",
+    "custom/battery_bar",
+  ],
+
+  "custom/launcher": {
+    "format": "◇",
+    "tooltip": false,
+    "on-click": "rofi -show drun"
+  },
+
+"hyprland/workspaces#left": {
+  "format": "{name}",
+  "all-outputs": true,
+  "persistent-workspaces": {
+    "*": [1, 2, 3, 4, 5]
+  }
+},
+
+"custom/middle-text": {
+  "format": "RAZGON",
+  "tooltip": false,
+  "on-click": "notify-send 'RAZGON clicked'"
+},
+
+"hyprland/workspaces#right": {
+  "format": "{name}",
+  "all-outputs": true,
+  "persistent-workspaces": {
+    "*": [6, 7, 8, 9, 10]
+  }
+},
+
+
+"clock": {
+  "interval": 1,
+  "format": "{:%a %b %d  %I:%M %p}",
+  "tooltip": true,
+  "tooltip-format": "<big>{:%I:%M %p}</big>\n<tt>{calendar}</tt>",
+  "calendar": {
+    "mode": "month",
+    "mode-mon-col": 3,
+    "weeks-pos": "right",
+    "on-scroll": 1
+  }
+},
+
+  "cpu": {
+    "format": "  {usage}%",
+    "interval": 2,
+    "tooltip": false
+  },
+
+  "custom/volume_bar": {
+    "exec": "~/.config/waybar/scripts/volume_bar.sh",
+    "interval": 1,
+    "return-type": "json",
+    "on-click": "pavucontrol",
+    "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.0",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+  },
+
+  "network": {
+    "format-wifi": "  {signalStrength}%",
+    "format-ethernet": "󰈀  wired",
+    "format-disconnected": "󰖪  off",
+    "tooltip": false,
+    "on-click": "nm-connection-editor"
+  },
+
+  "bluetooth": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "blueman-manager"
+  },
+
+  "custom/battery_bar": {
+    "exec": "~/.config/waybar/scripts/battery_bar.sh",
+    "interval": 10,
+    "return-type": "json"
+  },
+
+  "temperature": {
+    "hwmon-path": "/sys/class/hwmon/hwmon4/temp1_input",
+    "interval": 2,
+    "format": "CPU: {temperatureC}°",
+    "critical-threshold": 85
+  },
+  
+  "custom/gpu-temp": {
+    "interval": 2,
+    "return-type": "json",
+    "exec": "~/.config/waybar/scripts/gpu-temp.sh",
+    "tooltip": false
+  },
+
+
+
+  "tray": {
+    "spacing": 6
+  }
+}

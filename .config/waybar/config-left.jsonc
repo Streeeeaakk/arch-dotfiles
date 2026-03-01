@@ -1,0 +1,34 @@
+{
+  "output": "HDMI-A-1",
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "margin-top": 15,
+  "margin-left": 8,
+  "margin-right": 8,
+  "spacing": 4,
+
+  "modules-left": [
+    "custom/center-text",
+    "hyprland/workspaces",
+  ],
+
+  "modules-center": [
+    "clock",
+  ],
+
+  "modules-right": [
+    "temperature",
+    "custom/gpu-temp",
+  ],
+
+  "include": [
+    "/home/streak/.config/waybar/conf.d/left.jsonc",
+    "/home/streak/.config/waybar/conf.d/center.jsonc",
+    "/home/streak/.config/waybar/conf.d/right.jsonc"
+  ],
+
+
+
+}
+

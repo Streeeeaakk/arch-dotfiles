@@ -1,0 +1,123 @@
+/* ============================= */
+/* Hyprland Settings Rofi Theme */
+/* ============================= */
+
+* {
+    font: "Figtree 13";
+
+    bg: rgba(0,0,0,0);
+    panel: rgba(12, 14, 18, 0.94);
+
+    text: #e7e7e7;
+    muted: #9aa0a6;
+    accent: #20D2D7;
+
+    radius: 16px;
+}
+
+/* ---------- Window ---------- */
+
+window {
+    location: center;
+    anchor: center;
+    width: 760px;
+
+    background-color: @panel;
+
+    border: 2px;
+    border-radius: @radius;
+    border-color: rgba(32,210,215,0.85);
+}
+
+/* ---------- Layout ---------- */
+
+mainbox {
+    padding: 18px;
+    spacing: 14px;
+    background-color: transparent;
+}
+
+/* ================================= */
+/* SEARCH BAR (THIS FIXES WHITE BG) */
+/* ================================= */
+
+inputbar {
+    padding: 10px 14px;
+    spacing: 10px;
+
+    border-radius: 12px;
+    background-color: rgba(255,255,255,0.06);
+
+    children: [ prompt, entry ];
+}
+
+prompt {
+    background-color: transparent;
+    text-color: @muted;
+}
+
+entry {
+    background-color: transparent;
+    text-color: @text;
+
+    placeholder: "Search settings…";
+    placeholder-color: rgba(154,160,166,0.65);
+}
+
+/* Rofi sometimes paints entry as textbox */
+textbox {
+    background-color: transparent;
+    text-color: @text;
+}
+
+textbox-entry {
+    background-color: transparent;
+    text-color: @text;
+}
+
+textbox-prompt-colon {
+    background-color: transparent;
+    text-color: @muted;
+}
+
+textbox-prompt-sep {
+    background-color: transparent;
+}
+
+textbox-icon {
+    background-color: transparent;
+}
+
+/* ---------- List ---------- */
+
+listview {
+    lines: 9;
+    fixed-height: true;
+    spacing: 10px;
+    background-color: transparent;
+}
+
+element {
+    padding: 12px 14px;
+    spacing: 12px;
+
+    border-radius: 14px;
+    background-color: rgba(255,255,255,0.03);
+}
+
+element selected {
+    background-color: rgba(32,210,215,0.16);
+    border: 1px;
+    border-color: rgba(32,210,215,0.55);
+}
+
+element-icon {
+    size: 28px;
+    background-color: transparent;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: @text;
+}
+

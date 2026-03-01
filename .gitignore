@@ -1,0 +1,15 @@
+# caches / state
+**/.cache/
+**/cache/
+**/*.log
+**/*.db
+**/state/
+**/sessions/
+**/session/
+**/tmp/
+
+# secrets / env
+**/.env
+**/*secret*
+**/*token*
+**/*key*

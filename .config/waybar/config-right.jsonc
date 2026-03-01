@@ -1,0 +1,43 @@
+{
+  "output": "eDP-1",
+  "layer": "top",
+  "position": "top",
+  "height": 26,
+  "margin-top": 8,
+  "margin-left": 8,
+  "margin-right": 8,
+  "margin-bottom": 0,
+  "spacing": 4,
+
+  "modules-left": [
+    "custom/center-text",
+    "hyprland/workspaces",
+
+    "custom/nowplaying",
+    "custom/cava"
+  ],
+
+  "modules-center": [
+    "clock",
+  ],
+
+  "modules-right": [
+    "temperature",
+    "custom/gpu-temp",
+    "tray",
+    "network",
+    "bluetooth",
+    "custom/volume_bar",
+    "custom/battery_bar"
+  ],
+
+  "include": [
+    "/home/streak/.config/waybar/conf.d/left.jsonc",
+    "/home/streak/.config/waybar/conf.d/center.jsonc",
+    "/home/streak/.config/waybar/conf.d/right.jsonc"
+  ],
+
+
+
+}
+

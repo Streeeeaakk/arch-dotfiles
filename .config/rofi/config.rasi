@@ -1,0 +1,118 @@
+configuration {
+    /* 1. FORCE DRUN (App Launcher) ONLY */
+    modi: "drun";
+    
+    /* 2. REMOVE ALL "run", "window", "drun" TEXT LABELS */
+    display-drun: "";
+    display-run: "";
+    display-window: "";
+    display-combi: "";
+    
+    /* 3. FORMATTING: Show only the Name */
+    drun-display-format: "{name}";
+    window-format: "{c}";
+    show-icons: true;
+    sort: true;
+    sorting-method: "fzf";
+    icon-theme: "Papirus-Dark";
+
+      /* Single-click runs the selected entry */
+  me-accept-entry: "MousePrimary";
+
+  me-select-entry: "";
+}
+
+* {
+    /* COLORS */
+    bg: #11121DF2;
+    fg: #C0CAF5;
+    accent: #00FFFF;
+    selected-bg: #1a1b26;
+
+    /* GLOBAL RESET */
+    background-color: transparent;
+    text-color: @fg;
+    font: "Figtree 13";
+    margin: 0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    width: 800px;
+    height: 500px;
+    background-color: @bg;
+    border: 1px;
+    border-color: @accent;
+    border-radius: 8px;
+}
+
+mainbox {
+    orientation: horizontal;
+    children: [ imagebox, listbox ];
+}
+
+imagebox {
+    orientation: vertical;
+    /* UPDATE PATH HERE */
+    background-image: url("/home/streak/.config/rofi/pic.jpg", height);
+    expand: false;
+    width: 400px;
+}
+
+listbox {
+    orientation: vertical;
+    children: [ inputbar, listview ];
+    width: 400px;
+}
+
+inputbar {
+    padding: 30px 20px 10px 20px;
+    children: [ entry ];
+}
+
+entry {
+    placeholder: "Search Apps...";
+    placeholder-color: #565f89;
+    text-color: @fg;
+}
+
+listview {
+    padding: 10px 20px;
+    lines: 8;
+    columns: 1;
+}
+
+element {
+    padding: 10px;
+    spacing: 12px;
+    text-color: @fg;
+    cursor: pointer;
+}
+
+/* --- FIX TRANSPARENCY & SELECTION --- */
+element normal.normal, element alternate.normal {
+    background-color: transparent;
+    text-color: @fg;
+}
+
+element normal.active, element alternate.active {
+    background-color: transparent;
+    text-color: @fg;
+}
+
+/* This forces the Dark Blue background on ANY selected item */
+element selected.normal, element selected.active {
+    background-color: @selected-bg;
+    text-color: @accent;
+    border-radius: 4px;
+}
+
+element-text {
+    vertical-align: 0.5;
+    text-color: inherit;
+}
+
+element-icon {
+    size: 24px;
+}

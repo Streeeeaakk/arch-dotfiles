@@ -1,0 +1,261 @@
+* {
+  font-family: "Ubuntu Nerd Font";
+  font-size: 12px;
+  color: #ffffff;
+}
+
+window#waybar,
+.modules-left,
+.modules-center,
+.modules-right,
+#workspaces,
+#clock,
+#cpu,
+#custom-volume_bar,
+#network,
+#bluetooth,
+#custom-battery_bar,
+#tray {
+  min-height: 0;
+}
+
+window#waybar {
+  background: rgba(0, 0, 0, 0);  /* or 0.00 if you want totally transparent */
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+    padding: 0;
+  margin: 0;
+}
+/* ===== Group boxes (Left / Center / Right) ===== */
+
+.modules-left,
+.modules-center,
+.modules-right {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(32, 210, 215, 0.55);
+  border-radius: 14px;
+  margin: 0px 6px;            /* space between the 3 boxes */
+  padding: 0px 10px;           /* padding inside each box */
+}
+
+/* Left box: align nicely and keep your left margin */
+.modules-left {
+  margin-left: 15px;           /* keep your existing left offset */
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* Center box: slightly more prominent */
+.modules-center {
+}
+
+/* Right box: compact */
+.modules-right {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Optional: hover glow per box */
+.modules-left:hover,
+.modules-center:hover,
+.modules-right:hover {
+  background: rgba(0, 0, 0, 0.45);
+  border-color: rgba(32, 210, 215, 0.85);
+}
+
+/* Transparent modules */
+#custom-launcher,
+#clock,
+#cpu,
+#custom-volume_bar,
+#network,
+#bluetooth,
+#custom-battery_bar,
+#tray {
+  background: transparent;
+  padding: 0 ;
+  margin: 0;
+}
+
+/* Tight right block spacing */
+.modules-right #cpu,
+.modules-right #custom-volume_bar,
+.modules-right #network,
+.modules-right #bluetooth,
+.modules-right #custom-battery_bar,
+.modules-right #tray {
+  padding-left: 4px;
+  padding-right: 4px;
+  margin: 0;
+}
+
+#custom-volume_bar,
+#custom-battery_bar {
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 14px;
+}
+
+/* Volume colors */
+#custom-volume_bar.warning { color: #f1c40f; }
+#custom-volume_bar.critical { color: #e74c3c; }
+#custom-volume_bar.muted { color: #888888; }
+
+/* Battery colors */
+#custom-battery_bar.warning { color: #f1c40f; }
+#custom-battery_bar.critical { color: #e74c3c; }
+
+#temperature {
+  padding: 0 10px;
+  margin: 0 4px;
+  font-weight: 600;
+}
+
+#temperature:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(32, 210, 215, 0.8);
+}
+
+#temperature.critical {
+  border-color: rgba(255, 80, 80, 0.8);
+}
+
+#custom-gpu-temp {
+  padding: 0 10px;
+  margin: 0 4px;
+  font-weight: 600;
+}
+
+#custom-gpu-temp:hover {
+  background: rgba(0, 0, 0, 0.50);
+  border-color: rgba(32, 210, 215, 0.8);
+}
+
+#custom-gpu-temp.high {
+  border-color: rgba(255, 180, 80, 0.8);
+}
+
+#custom-gpu-temp.critical {
+  border-color: rgba(255, 80, 80, 0.85);
+}
+
+.modules-left {
+  margin-left: 15px;
+}
+
+/* WORKSPACES: dots only */
+
+#workspaces button {
+  box-shadow: none;
+  border: 0;
+  outline: none;
+
+  padding: 0;
+  margin: 0 4px;
+  min-width: 12px;
+  min-height: 12px;
+
+  background-color: transparent; /* IMPORTANT: not 'background:' */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 8px 8px;
+}
+
+/* Hollow dot (inactive) */
+#workspaces button {
+  background-image: radial-gradient(circle at center,
+    transparent 0px,
+    transparent 2px,
+    rgba(32, 210, 215, 0.75) 2px,
+    rgba(32, 210, 215, 0.75) 3px,
+    transparent 3px
+  );
+}
+
+/* Filled dot (active + visible on other monitor) */
+#workspaces button.active,
+#workspaces button.visible {
+  background-image: radial-gradient(circle at center,
+    rgba(255, 255, 255, 0.95) 0px,
+    rgba(255, 255, 255, 0.95) 3px,
+    transparent 3px
+  );
+}
+
+/* Hide labels */
+#workspaces button label,
+#workspaces .workspace-label {
+  opacity: 0;
+  font-size: 0;
+}
+
+#custom-center-text.normal {
+  padding: 0 14px;
+  /**border-radius: 14px;
+  background: rgba(0, 255, 255, 0.08);**/
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  /**box-shadow: 0 0 6px rgba(32,210,215,0.6);**/
+}
+
+#custom-center-text.gaming {
+  padding: 0 14px;
+  border-radius: 14px;
+  background: rgba(53, 132, 228, 0.2);
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  box-shadow: 0 0 10px rgba(53,132,228,0.9);
+  font-size: 15px;
+}
+@keyframes gaming-glow {
+  0% { box-shadow: 0 0 6px rgba(53,132,228,0.6); }
+  50% { box-shadow: 0 0 14px rgba(53,132,228,1); }
+  100% { box-shadow: 0 0 6px rgba(53,132,228,0.6); }
+}
+
+#custom-center-text.gaming {
+  animation: gaming-glow 2s infinite ease-in-out;
+}
+
+
+#custom-center-text {
+  transition: all 200ms ease;
+}
+
+
+
+#custom-cava {
+  font-family: "JetBrainsMono Nerd Font Mono", monospace;
+  font-size: 14px;
+}
+
+#custom-submap {
+  font-weight: 700;
+  padding: 0 10px;
+}
+
+#custom-launcher,
+#clock,
+#cpu,
+#custom-volume_bar,
+#network,
+#bluetooth,
+#custom-battery_bar,
+#tray,
+#workspaces {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+
+#custom-battery_bar.warning {
+  border-color: rgba(255, 200, 0, 0.6);
+}
+
+#custom-battery_bar.critical {
+  border-color: rgba(255, 80, 80, 0.7);
+}

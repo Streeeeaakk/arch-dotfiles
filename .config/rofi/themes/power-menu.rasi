@@ -1,0 +1,115 @@
+/* ============================= */
+/* Power Menu (Compact Centered) */
+/* ============================= */
+
+* {
+  font: "Figtree 13";
+
+  panel: rgba(12, 14, 18, 0.94);
+  text: #e7e7e7;
+  muted: #9aa0a6;
+  accent: #20D2D7;
+
+  radius: 16px;
+}
+
+window {
+  location: center;
+  anchor: center;
+
+  width: 420px;
+
+  background-color: @panel;
+
+  border: 2px;
+  border-radius: @radius;
+  border-color: rgba(32,210,215,0.85);
+}
+
+mainbox {
+  padding: 14px;
+  spacing: 10px;
+  background-color: transparent;
+}
+
+/* search bar */
+inputbar {
+  padding: 10px 12px;
+  spacing: 10px;
+  border-radius: 12px;
+  background-color: rgba(255,255,255,0.06);
+  children: [ prompt, entry ];
+}
+
+prompt { text-color: @muted; }
+entry  { text-color: @text; placeholder: "Search…"; }
+
+/* list */
+listview {
+  lines: 5;            /* exactly your 5 options */
+  fixed-height: true;  /* keeps it tight */
+  spacing: 6px;
+  background-color: transparent;
+  scrollbar: false;
+}
+
+element {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background-color: rgba(255,255,255,0.03);
+}
+
+element selected {
+  background-color: rgba(32,210,215,0.16);
+  border: 1px;
+  border-color: rgba(32,210,215,0.55);
+}
+
+/* Center the text inside each row */
+element-text {
+  background-color: transparent;
+  text-color: @text;
+  horizontal-align: 0.5;
+}
+
+/* remove icon space */
+element-icon {
+  enabled: false;
+  size: 0px;
+  margin: 0px;
+  padding: 0px;
+}
+/* ===== Search bar: force dark, no white ===== */
+inputbar {
+  padding: 10px 12px;
+  spacing: 10px;
+  border-radius: 12px;
+  background-color: rgba(255,255,255,0.06);
+  children: [ prompt, entry ];
+}
+
+prompt {
+  background-color: transparent;
+  text-color: #9aa0a6;
+}
+
+entry {
+  background-color: rgba(0,0,0,0);
+  text-color: #e7e7e7;
+  placeholder: "Search…";
+  placeholder-color: rgba(154,160,166,0.65);
+}
+
+/* rofi sometimes uses these for the entry */
+textbox {
+  background-color: rgba(0,0,0,0);
+  text-color: #e7e7e7;
+}
+textbox-entry {
+  background-color: rgba(0,0,0,0);
+  text-color: #e7e7e7;
+}
+textbox-prompt-colon {
+  background-color: rgba(0,0,0,0);
+  text-color: #9aa0a6;
+}

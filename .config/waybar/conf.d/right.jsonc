@@ -1,0 +1,49 @@
+{
+  "custom/volume_bar": {
+    "exec": "~/.config/waybar/scripts/volume_bar.sh",
+    "interval": 1,
+    "return-type": "json",
+    "on-click": "pavucontrol",
+    "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.0",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+  },
+
+  "network": {
+    "format-wifi": "  {signalStrength}%",
+    "format-ethernet": "󰈀  wired",
+    "format-disconnected": "󰖪  off",
+    "tooltip": false,
+    "on-click": "nm-connection-editor"
+  },
+
+  "bluetooth": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "blueman-manager"
+  },
+
+  "custom/battery_bar": {
+    "exec": "~/.config/waybar/scripts/battery_bar.sh",
+    "interval": 10,
+    "return-type": "json"
+  },
+
+"temperature": {
+    "critical-threshold": 85,
+    "format": "CPU: {temperatureC}°C"
+},
+
+  "custom/gpu-temp": {
+    "interval": 2,
+    "return-type": "json",
+    "exec": "~/.config/waybar/scripts/gpu-temp.sh",
+    "tooltip": false
+  },
+
+  "tray": {
+    "spacing": 6
+  },
+
+
+
+}
