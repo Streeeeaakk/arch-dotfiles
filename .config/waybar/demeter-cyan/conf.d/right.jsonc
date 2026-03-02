@@ -1,6 +1,6 @@
 {
   "custom/volume_bar": {
-    "exec": "~/.config/waybar/scripts/volume_bar.sh",
+    "exec": "~/.config/waybar/demeter-cyan/scripts/volume_bar.sh",
     "interval": 1,
     "return-type": "json",
     "on-click": "pavucontrol",
@@ -23,7 +23,7 @@
   },
 
   "custom/battery_bar": {
-    "exec": "~/.config/waybar/scripts/battery_bar.sh",
+    "exec": "~/.config/waybar/demeter-cyan/scripts/battery_bar.sh",
     "interval": 10,
     "return-type": "json"
   },
@@ -36,7 +36,7 @@
   "custom/gpu-temp": {
     "interval": 2,
     "return-type": "json",
-    "exec": "~/.config/waybar/scripts/gpu-temp.sh",
+    "exec": "~/.config/waybar/demeter-cyan/scripts/gpu-temp.sh",
     "tooltip": false
   },
 

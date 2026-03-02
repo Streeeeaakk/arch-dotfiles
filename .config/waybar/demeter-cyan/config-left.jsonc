@@ -3,13 +3,14 @@
   "layer": "top",
   "position": "top",
   "height": 30,
+  "stylesheet": "/home/streak/.config/waybar/demeter-cyan/style.css",
   "margin-top": 15,
   "margin-left": 8,
   "margin-right": 8,
   "spacing": 4,
 
   "modules-left": [
-    "custom/center-text",
+    "custom/system-text",
     "hyprland/workspaces",
   ],
 
@@ -19,13 +20,13 @@
 
   "modules-right": [
     "temperature",
-    "custom/gpu-temp",
+    "custom/volume_bar",
   ],
 
   "include": [
-    "/home/streak/.config/waybar/conf.d/left.jsonc",
-    "/home/streak/.config/waybar/conf.d/center.jsonc",
-    "/home/streak/.config/waybar/conf.d/right.jsonc"
+    "/home/streak/.config/waybar/demeter-cyan/conf.d/left.jsonc",
+    "/home/streak/.config/waybar/demeter-cyan/conf.d/center.jsonc",
+    "/home/streak/.config/waybar/demeter-cyan/conf.d/right.jsonc"
   ],
 
 

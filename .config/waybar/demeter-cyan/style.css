@@ -1,3 +1,5 @@
+@import "colors.css";
+
 * {
   font-family: "Ubuntu Nerd Font";
   font-size: 12px;
@@ -33,7 +35,7 @@ window#waybar {
 .modules-center,
 .modules-right {
   background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(32, 210, 215, 0.55);
+  border: 1px solid @accent;
   border-radius: 14px;
   margin: 0px 6px;            /* space between the 3 boxes */
   padding: 0px 10px;           /* padding inside each box */
@@ -61,7 +63,7 @@ window#waybar {
 .modules-center:hover,
 .modules-right:hover {
   background: rgba(0, 0, 0, 0.45);
-  border-color: rgba(32, 210, 215, 0.85);
+  border-color: @accent_hover;
 }
 
 /* Transparent modules */
@@ -113,7 +115,7 @@ window#waybar {
 
 #temperature:hover {
   background: rgba(0, 0, 0, 0.5);
-  border-color: rgba(32, 210, 215, 0.8);
+  border-color: @accent_hover;
 }
 
 #temperature.critical {
@@ -128,7 +130,7 @@ window#waybar {
 
 #custom-gpu-temp:hover {
   background: rgba(0, 0, 0, 0.50);
-  border-color: rgba(32, 210, 215, 0.8);
+  border-color: @accent_hover;
 }
 
 #custom-gpu-temp.high {
@@ -166,8 +168,8 @@ window#waybar {
   background-image: radial-gradient(circle at center,
     transparent 0px,
     transparent 2px,
-    rgba(32, 210, 215, 0.75) 2px,
-    rgba(32, 210, 215, 0.75) 3px,
+    @ws_dot 2px,
+    @ws_dot 3px,
     transparent 3px
   );
 }

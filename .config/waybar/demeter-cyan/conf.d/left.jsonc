@@ -2,11 +2,13 @@
   "custom/launcher": {
     "format": "◇",
     "tooltip": false,
-    "on-click": "~/.config/waybar/scripts/powermenu.sh"
+    "on-click": "~/.config/waybar/demeter-cyan/scripts/powermenu.sh"
   },
 
-"custom/middle-text": {
-  "format": "Demeter",
+"custom/system-text": {
+  "exec": "~/.config/waybar/demeter-cyan/scripts/system-text.sh",
+  "interval": 1,
+  "return-type": "json",
   "tooltip": false
 },
 
@@ -47,20 +49,20 @@
 /*--}, -*/
 
 "custom/center-text": {
-  "exec": "~/.config/waybar/scripts/hypr-center-text.sh",
+  "exec": "~/.config/waybar/demeter-cyan/scripts/hypr-center-text.sh",
   "return-type": "json"
 },
 
 
 "custom/cava": {
-  "exec": "~/.config/waybar/scripts/cava-waybar.sh",
+  "exec": "~/.config/waybar/demeter-cyan/scripts/cava-waybar.sh",
   "exec-if": "playerctl -p spotify status 2>/dev/null | grep -q Playing",
   "return-type": "text",
   "format": "{}"
 },
 
 "custom/nowplaying": {
-  "exec": "~/.config/waybar/scripts/spotify-nowplaying.sh",
+  "exec": "~/.config/waybar/demeter-cyan/scripts/spotify-nowplaying.sh",
   "exec-if": "playerctl -p spotify status >/dev/null 2>&1",
   "interval": 2,
 }
