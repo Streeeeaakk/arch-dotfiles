@@ -9,11 +9,13 @@ ShellRoot {
     property bool mediaPopupOpen: false
     property bool networkPopupOpen: false
     property bool audioPopupOpen: false
+    property bool systemPopupOpen: false
 
     function closeOtherPopups(active) {
         if (active !== "media") shell.mediaPopupOpen = false
         if (active !== "network") shell.networkPopupOpen = false
         if (active !== "audio") shell.audioPopupOpen = false
+        if (active !== "system") shell.systemPopupOpen = false
     }
 
     Variants {
@@ -70,6 +72,11 @@ ShellRoot {
 
                     Temps {
                         Layout.alignment: Qt.AlignVCenter
+
+                        onClicked: {
+                            shell.systemPopupOpen = !shell.systemPopupOpen
+                            if (shell.systemPopupOpen) shell.closeOtherPopups("system")
+                        }
                     }
 
                     Network {
@@ -167,6 +174,44 @@ ShellRoot {
                     }
 
                     NetworkPopup {
+                        anchors.fill: parent
+                    }
+                }
+            }
+
+            PopupWindow {
+                id: systemPopupWindow
+
+                visible: shell.systemPopupOpen
+                width: 420
+                height: 214
+                color: "transparent"
+
+                anchor.window: panel
+                anchor.rect.x: panel.width / 2 - width / 2
+                anchor.rect.y: island.y + island.height + 8
+
+                Item {
+                    anchors.fill: parent
+                    opacity: shell.systemPopupOpen ? 1 : 0
+                    scale: shell.systemPopupOpen ? 1 : 0.92
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    SystemPopup {
                         anchors.fill: parent
                     }
                 }
