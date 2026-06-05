@@ -17,26 +17,29 @@ ShellRoot {
                 right: true
             }
 
-            implicitHeight: 34
+            implicitHeight: 46
             color: "transparent"
 
             Rectangle {
-                anchors.fill: parent
+                id: island
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 6
+
+                width: centerRow.implicitWidth + 18
+                height: 34
+                radius: 17
+
                 color: "#11111b"
+                border.color: "#313244"
+                border.width: 1
 
                 RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 12
-                    anchors.rightMargin: 12
-                    spacing: 12
+                    id: centerRow
 
-                    Workspaces {
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-
-                    Item {
-                        Layout.fillWidth: true
-                    }
+                    anchors.centerIn: parent
+                    spacing: 8
 
                     MediaCava {
                         Layout.alignment: Qt.AlignVCenter
