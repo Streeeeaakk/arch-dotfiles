@@ -5,6 +5,8 @@ import Quickshell.Io
 Rectangle {
     id: root
 
+    signal clicked()
+
     property string volume: "?"
     property bool muted: false
     property bool hovered: mouseArea.containsMouse
@@ -36,9 +38,7 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
 
-        onClicked: {
-            muteProc.running = true
-        }
+        onClicked: root.clicked()
 
         onWheel: function(wheel) {
             if (wheel.angleDelta.y > 0) {
@@ -72,12 +72,6 @@ Rectangle {
     Process {
         id: downProc
         command: ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%-"]
-        onExited: refreshProc.running = true
-    }
-
-    Process {
-        id: muteProc
-        command: ["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]
         onExited: refreshProc.running = true
     }
 

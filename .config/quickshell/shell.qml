@@ -8,6 +8,13 @@ ShellRoot {
 
     property bool mediaPopupOpen: false
     property bool networkPopupOpen: false
+    property bool audioPopupOpen: false
+
+    function closeOtherPopups(active) {
+        if (active !== "media") shell.mediaPopupOpen = false
+        if (active !== "network") shell.networkPopupOpen = false
+        if (active !== "audio") shell.audioPopupOpen = false
+    }
 
     Variants {
         model: Quickshell.screens
@@ -24,8 +31,6 @@ ShellRoot {
                 right: true
             }
 
-            // Keep the reserved space small.
-            // Popups will overlay instead of pushing windows down.
             implicitHeight: 42
             color: "transparent"
 
@@ -59,10 +64,7 @@ ShellRoot {
 
                         onClicked: {
                             shell.mediaPopupOpen = !shell.mediaPopupOpen
-
-                            if (shell.mediaPopupOpen) {
-                                shell.networkPopupOpen = false
-                            }
+                            if (shell.mediaPopupOpen) shell.closeOtherPopups("media")
                         }
                     }
 
@@ -75,10 +77,7 @@ ShellRoot {
 
                         onClicked: {
                             shell.networkPopupOpen = !shell.networkPopupOpen
-
-                            if (shell.networkPopupOpen) {
-                                shell.mediaPopupOpen = false
-                            }
+                            if (shell.networkPopupOpen) shell.closeOtherPopups("network")
                         }
                     }
 
@@ -88,6 +87,11 @@ ShellRoot {
 
                     Volume {
                         Layout.alignment: Qt.AlignVCenter
+
+                        onClicked: {
+                            shell.audioPopupOpen = !shell.audioPopupOpen
+                            if (shell.audioPopupOpen) shell.closeOtherPopups("audio")
+                        }
                     }
                 }
             }
@@ -104,8 +108,29 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                MediaPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: shell.mediaPopupOpen ? 1 : 0
+                    scale: shell.mediaPopupOpen ? 1 : 0.92
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    MediaPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
@@ -121,8 +146,67 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                NetworkPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: shell.networkPopupOpen ? 1 : 0
+                    scale: shell.networkPopupOpen ? 1 : 0.92
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    NetworkPopup {
+                        anchors.fill: parent
+                    }
+                }
+            }
+
+            PopupWindow {
+                id: audioPopupWindow
+
+                visible: shell.audioPopupOpen
+                width: 460
+                height: 260
+                color: "transparent"
+
+                anchor.window: panel
+                anchor.rect.x: panel.width / 2 - width / 2
+                anchor.rect.y: island.y + island.height + 8
+
+                Item {
+                    anchors.fill: parent
+                    opacity: shell.audioPopupOpen ? 1 : 0
+                    scale: shell.audioPopupOpen ? 1 : 0.92
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    AudioPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
         }
