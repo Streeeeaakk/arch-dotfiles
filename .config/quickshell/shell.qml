@@ -38,7 +38,7 @@ ShellRoot {
                         Layout.fillWidth: true
                     }
 
-                    Clock {
+                    MediaCava {
                         Layout.alignment: Qt.AlignVCenter
                     }
                 }
