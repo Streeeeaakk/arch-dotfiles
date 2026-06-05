@@ -13,6 +13,8 @@ ShellRoot {
     property bool systemPopupOpen: false
     property bool calendarPopupOpen: false
 
+    property string popupMonitor: ""
+
     property bool workspaceOverlayOpen: false
     property string lastWorkspaceTrigger: ""
     property string workspaceTriggerMonitor: ""
@@ -20,21 +22,49 @@ ShellRoot {
     property string mediaStatus: "Stopped"
     property bool mediaPlaying: mediaStatus === "Playing"
 
-    function closeOtherPopups(active) {
-        if (active !== "media") shell.mediaPopupOpen = false
-        if (active !== "network") shell.networkPopupOpen = false
-        if (active !== "audio") shell.audioPopupOpen = false
-        if (active !== "system") shell.systemPopupOpen = false
-        if (active !== "calendar") shell.calendarPopupOpen = false
+    function closeAllPopups() {
+        shell.mediaPopupOpen = false
+        shell.networkPopupOpen = false
+        shell.audioPopupOpen = false
+        shell.systemPopupOpen = false
+        shell.calendarPopupOpen = false
+        shell.popupMonitor = ""
+    }
+
+    function togglePopup(name, monitor) {
+        let sameMonitor = shell.popupMonitor === monitor
+        let alreadyOpen = false
+
+        if (name === "media") alreadyOpen = shell.mediaPopupOpen
+        if (name === "network") alreadyOpen = shell.networkPopupOpen
+        if (name === "audio") alreadyOpen = shell.audioPopupOpen
+        if (name === "system") alreadyOpen = shell.systemPopupOpen
+        if (name === "calendar") alreadyOpen = shell.calendarPopupOpen
+
+        shell.closeAllPopups()
+
+        if (alreadyOpen && sameMonitor) {
+            return
+        }
+
+        shell.popupMonitor = monitor
+
+        if (name === "media") shell.mediaPopupOpen = true
+        if (name === "network") shell.networkPopupOpen = true
+        if (name === "audio") shell.audioPopupOpen = true
+        if (name === "system") shell.systemPopupOpen = true
+        if (name === "calendar") shell.calendarPopupOpen = true
     }
 
     Process {
         id: mediaStatusProc
+
         command: [
             "sh",
             "-c",
             "playerctl -a status 2>/dev/null | grep -q '^Playing$' && echo Playing || echo Stopped"
         ]
+
         running: true
 
         stdout: SplitParser {
@@ -51,11 +81,13 @@ ShellRoot {
 
     Process {
         id: workspaceTriggerProc
+
         command: [
             "sh",
             "-c",
             "cat /tmp/quickshell-workspace-trigger 2>/dev/null || true"
         ]
+
         running: true
 
         stdout: SplitParser {
@@ -69,7 +101,7 @@ ShellRoot {
                     shell.workspaceOverlayOpen = true
 
                     workspaceOverlayTimer.restart()
-                    shell.closeOtherPopups("")
+                    shell.closeAllPopups()
                     shell.lastWorkspaceTrigger = current
                 }
             }
@@ -156,8 +188,7 @@ ShellRoot {
                     opacity: panel.cavaMode ? 1 : 0
 
                     onClicked: {
-                        shell.mediaPopupOpen = !shell.mediaPopupOpen
-                        if (shell.mediaPopupOpen) shell.closeOtherPopups("media")
+                        shell.togglePopup("media", panel.screenName)
                     }
 
                     Behavior on opacity {
@@ -209,8 +240,7 @@ ShellRoot {
                         Layout.alignment: Qt.AlignVCenter
 
                         onClicked: {
-                            shell.calendarPopupOpen = !shell.calendarPopupOpen
-                            if (shell.calendarPopupOpen) shell.closeOtherPopups("calendar")
+                            shell.togglePopup("calendar", panel.screenName)
                         }
                     }
 
@@ -218,8 +248,7 @@ ShellRoot {
                         Layout.alignment: Qt.AlignVCenter
 
                         onClicked: {
-                            shell.systemPopupOpen = !shell.systemPopupOpen
-                            if (shell.systemPopupOpen) shell.closeOtherPopups("system")
+                            shell.togglePopup("system", panel.screenName)
                         }
                     }
 
@@ -232,8 +261,7 @@ ShellRoot {
                         Layout.alignment: Qt.AlignVCenter
 
                         onClicked: {
-                            shell.networkPopupOpen = !shell.networkPopupOpen
-                            if (shell.networkPopupOpen) shell.closeOtherPopups("network")
+                            shell.togglePopup("network", panel.screenName)
                         }
                     }
 
@@ -245,8 +273,7 @@ ShellRoot {
                         Layout.alignment: Qt.AlignVCenter
 
                         onClicked: {
-                            shell.audioPopupOpen = !shell.audioPopupOpen
-                            if (shell.audioPopupOpen) shell.closeOtherPopups("audio")
+                            shell.togglePopup("audio", panel.screenName)
                         }
                     }
                 }
@@ -254,7 +281,8 @@ ShellRoot {
 
             PopupWindow {
                 id: calendarPopupWindow
-                visible: shell.calendarPopupOpen
+
+                visible: shell.calendarPopupOpen && shell.popupMonitor === panel.screenName
                 width: 300
                 height: 260
                 color: "transparent"
@@ -263,14 +291,36 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                CalendarPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: calendarPopupWindow.visible ? 1 : 0
+                    scale: calendarPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    CalendarPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
             PopupWindow {
                 id: mediaPopupWindow
-                visible: shell.mediaPopupOpen
+
+                visible: shell.mediaPopupOpen && shell.popupMonitor === panel.screenName
                 width: 380
                 height: 112
                 color: "transparent"
@@ -279,30 +329,74 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                MediaPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: mediaPopupWindow.visible ? 1 : 0
+                    scale: mediaPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    MediaPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
             PopupWindow {
                 id: networkPopupWindow
-                visible: shell.networkPopupOpen
-                width: 420
-                height: 162
+
+                visible: shell.networkPopupOpen && shell.popupMonitor === panel.screenName
+                width: 360
+                height: 138
                 color: "transparent"
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                NetworkPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: networkPopupWindow.visible ? 1 : 0
+                    scale: networkPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    NetworkPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
             PopupWindow {
                 id: systemPopupWindow
-                visible: shell.systemPopupOpen
+
+                visible: shell.systemPopupOpen && shell.popupMonitor === panel.screenName
                 width: 420
                 height: 214
                 color: "transparent"
@@ -311,14 +405,36 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                SystemPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: systemPopupWindow.visible ? 1 : 0
+                    scale: systemPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    SystemPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
             PopupWindow {
                 id: audioPopupWindow
-                visible: shell.audioPopupOpen
+
+                visible: shell.audioPopupOpen && shell.popupMonitor === panel.screenName
                 width: 460
                 height: 260
                 color: "transparent"
@@ -327,8 +443,29 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                AudioPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: audioPopupWindow.visible ? 1 : 0
+                    scale: audioPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    AudioPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
         }

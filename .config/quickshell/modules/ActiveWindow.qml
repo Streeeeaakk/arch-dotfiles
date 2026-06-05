@@ -64,14 +64,14 @@ Rectangle {
         return cls.length > 0 ? cls : "Desktop"
     }
 
-    implicitWidth: 112
-    Layout.preferredWidth: 112
-    Layout.minimumWidth: 112
-    Layout.maximumWidth: 112
+    implicitWidth: 138
+    Layout.preferredWidth: 138
+    Layout.minimumWidth: 138
+    Layout.maximumWidth: 138
 
     height: 24
-    radius: 9
-    color: hovered ? "#2a2d40" : "#1b1d2e"
+    radius: 10
+    color: hovered ? "#343850" : "#24283b"
     clip: true
 
     Text {
@@ -81,7 +81,7 @@ Rectangle {
         color: "#cdd6f4"
         font.pixelSize: 14
         font.bold: true
-        width: parent.width - 10
+        width: parent.width - 12
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
     }
@@ -89,7 +89,7 @@ Rectangle {
     RowLayout {
         visible: !root.showCava
         anchors.centerIn: parent
-        spacing: 7
+        spacing: 8
 
         Text {
             text: root.appIcon(root.appClass)

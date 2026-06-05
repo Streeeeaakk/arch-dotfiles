@@ -13,19 +13,19 @@ Rectangle {
     property string signal: "-"
     property string networks: "-"
 
-    width: 420
-    height: 162
+    width: 360
+    height: 138
     radius: 16
 
     color: "#11111b"
-    border.color: "#313244"
+    border.color: "#242638"
     border.width: 1
     clip: true
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 12
-        spacing: 8
+        anchors.margins: 14
+        spacing: 9
 
         Text {
             text: root.connectionType === "wifi"
@@ -44,23 +44,9 @@ Rectangle {
 
         GridLayout {
             columns: 2
-            columnSpacing: 18
+            columnSpacing: 14
             rowSpacing: 4
             Layout.fillWidth: true
-
-            Text {
-                text: "Device"
-                color: "#7f849c"
-                font.pixelSize: 11
-            }
-
-            Text {
-                text: root.device
-                color: "#bac2de"
-                font.pixelSize: 11
-                Layout.fillWidth: true
-                elide: Text.ElideRight
-            }
 
             Text {
                 text: "IP"
@@ -70,20 +56,6 @@ Rectangle {
 
             Text {
                 text: root.ipAddress
-                color: "#bac2de"
-                font.pixelSize: 11
-                Layout.fillWidth: true
-                elide: Text.ElideRight
-            }
-
-            Text {
-                text: "Gateway"
-                color: "#7f849c"
-                font.pixelSize: 11
-            }
-
-            Text {
-                text: root.gateway
                 color: "#bac2de"
                 font.pixelSize: 11
                 Layout.fillWidth: true
@@ -103,31 +75,32 @@ Rectangle {
                 font.pixelSize: 11
                 Layout.fillWidth: true
                 visible: root.connectionType === "wifi"
+            }
+
+            Text {
+                text: "Device"
+                color: "#7f849c"
+                font.pixelSize: 11
+            }
+
+            Text {
+                text: root.device
+                color: "#bac2de"
+                font.pixelSize: 11
+                Layout.fillWidth: true
                 elide: Text.ElideRight
             }
         }
 
-        Text {
-            text: root.connectionType === "wifi"
-                ? "Nearby: " + root.networks
-                : "Nearby Wi-Fi hidden because active connection is not Wi-Fi"
-
-            color: "#bac2de"
-            font.pixelSize: 11
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-            elide: Text.ElideRight
-        }
-
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
-            spacing: 10
+            spacing: 8
 
             Rectangle {
                 width: 78
-                height: 26
+                height: 24
                 radius: 9
-                color: "#313244"
+                color: "#1b1d2e"
 
                 Text {
                     anchors.centerIn: parent
@@ -145,10 +118,31 @@ Rectangle {
             }
 
             Rectangle {
-                width: 78
-                height: 26
+                width: 86
+                height: 24
                 radius: 9
-                color: "#313244"
+                color: "#1b1d2e"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "Settings"
+                    color: "#cdd6f4"
+                    font.pixelSize: 11
+                    font.bold: true
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: settingsProc.running = true
+                }
+            }
+
+            Rectangle {
+                width: 72
+                height: 24
+                radius: 9
+                color: "#1b1d2e"
 
                 Text {
                     anchors.centerIn: parent
@@ -190,6 +184,11 @@ Rectangle {
         id: rescanProc
         command: ["sh", "-c", "nmcli dev wifi rescan >/dev/null 2>&1"]
         onExited: infoProc.running = true
+    }
+
+    Process {
+        id: settingsProc
+        command: ["sh", "-c", "nm-connection-editor >/dev/null 2>&1 &"]
     }
 
     Process {
