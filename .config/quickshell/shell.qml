@@ -2,6 +2,7 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
+import "modules"
 
 ShellRoot {
     id: root
@@ -20,7 +21,7 @@ ShellRoot {
                 right: true
             }
 
-            height: 34
+            implicitHeight: 34
             color: "transparent"
 
             Rectangle {
@@ -33,10 +34,7 @@ ShellRoot {
                     anchors.rightMargin: 12
                     spacing: 12
 
-                    Text {
-                        text: "  Quickshell"
-                        color: "#cdd6f4"
-                        font.pixelSize: 14
+                    Workspaces {
                         Layout.alignment: Qt.AlignVCenter
                     }
 
