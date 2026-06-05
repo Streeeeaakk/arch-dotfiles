@@ -1,71 +1,49 @@
 {
-  "custom/launcher": {
-    "format": "◇",
-    "tooltip": false,
-    "on-click": "~/.config/waybar/demeter-cyan/scripts/powermenu.sh"
+  "custom/system-text": {
+    "exec": "~/.config/waybar/demeter-cyan/scripts/system-text.sh",
+    "interval": 1,
+    "return-type": "json",
+    "tooltip": false
   },
 
-"custom/system-text": {
-  "exec": "~/.config/waybar/demeter-cyan/scripts/system-text.sh",
-  "interval": 1,
-  "return-type": "json",
-  "tooltip": false
-},
-
-"hyprland/workspaces": {
-  "format": "{icon}",
-  "format-icons": {
-    "default": "○",
-    "empty": "○",
-    "persistent": "○",
-    "visible": "●",
-    "active": "●",
-    "special": "◎"
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "default": "○",
+      "empty": "○",
+      "persistent": "○",
+      "visible": "●",
+      "active": "●",
+      "special": "◎"
+    },
+    "all-outputs": false,
+    "persistent-workspaces": {
+      "eDP-1": [1, 2, 3, 4, 5],
+      "HDMI-A-1": [6, 7, 8, 9, 10]
+    },
+    "show-special": false,
+    "sort-by": "number",
+    "disable-scroll": true
   },
 
-  "all-outputs": false,
-  "persistent-workspaces": {
-    "eDP-1": [1, 2, 3, 4],
-    "HDMI-A-1": [5, 6, 7, 8]
+  "custom/nowplaying": {
+    "exec": "~/.config/waybar/demeter-cyan/scripts/spotify-nowplaying.sh",
+    "exec-if": "playerctl -p spotify status >/dev/null 2>&1",
+    "interval": 2
   },
-  "show-special": false,
-  "sort-by": "number",
-  "disable-scroll": true
-},
-/*--"hyprland/workspaces#left": {
-/*--  "format": "{name}",
-/*--  "all-outputs": false,
-/*--  "persistent-workspaces": {
-/*--    "eDP-1": [1, 2, 3, 4]
-/*--  }
-/*--},
-/*--
-/*--"hyprland/workspaces#right": {
-/*--  "format": "{name}",
-/*--  "all-outputs": false,
-/*--  "persistent-workspaces": {
-/*--    "HDMI-A-3": [6, 7, 8, 9]
-/*--  }
-/*--}, -*/
 
-"custom/center-text": {
-  "exec": "~/.config/waybar/demeter-cyan/scripts/hypr-center-text.sh",
-  "return-type": "json"
-},
+  "hyprland/window": {
+    "format": "  {}",
+    "max-length": 45,
+    "separate-outputs": true,
+    "rewrite": {
+      ".*mis@scerpnext.*": "scerp ssh",
 
+      "(.*) - Mozilla Firefox": "Firefox",
+      "(.*) - Chromium": "Chromium",
+      "(.*) - Visual Studio Code": "VS Code",
 
-"custom/cava": {
-  "exec": "~/.config/waybar/demeter-cyan/scripts/cava-waybar.sh",
-  "exec-if": "playerctl -p spotify status 2>/dev/null | grep -q Playing",
-  "return-type": "text",
-  "format": "{}"
-},
-
-"custom/nowplaying": {
-  "exec": "~/.config/waybar/demeter-cyan/scripts/spotify-nowplaying.sh",
-  "exec-if": "playerctl -p spotify status >/dev/null 2>&1",
-  "interval": 2,
-}
-
-
+      "(.*)": "$1"
+    }
+  }
 }

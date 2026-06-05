@@ -1,3 +1,6 @@
+@import "../colors.rasi"
+@import "../colors.rasi"
+
 /* ============================= */
 /* Power Menu (Compact Centered) */
 /* ============================= */
@@ -8,8 +11,6 @@
   panel: rgba(12, 14, 18, 0.94);
   text: #e7e7e7;
   muted: #9aa0a6;
-  accent: #20D2D7;
-
   radius: 16px;
 }
 
@@ -23,7 +24,7 @@ window {
 
   border: 2px;
   border-radius: @radius;
-  border-color: rgba(32,210,215,0.85);
+  border-color: @accent-rgba;
 }
 
 mainbox {
@@ -60,9 +61,9 @@ element {
 }
 
 element selected {
-  background-color: rgba(32,210,215,0.16);
+  background-color: @selected-rgba;
   border: 1px;
-  border-color: rgba(32,210,215,0.55);
+  border-color: @selected-border-rgba;
 }
 
 /* Center the text inside each row */

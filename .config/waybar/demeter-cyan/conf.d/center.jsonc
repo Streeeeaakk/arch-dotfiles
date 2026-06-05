@@ -1,11 +1,8 @@
 {
-
   "clock": {
     "interval": 1,
     "format": "{:%m/%d, %I:%M %p}",
     "tooltip": true,
+    "on-click": "kitty -e calcurse",
   },
-
-
-
 }

@@ -1,0 +1,6 @@
+* {
+    accent: #20D2D7;
+    accent-rgba: rgba(32,210,215,0.85);
+    selected-rgba: rgba(32,210,215,0.16);
+    selected-border-rgba: rgba(32,210,215,0.55);
+}

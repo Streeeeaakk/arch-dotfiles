@@ -4,31 +4,37 @@ set -euo pipefail
 theme="${1:-cyan}"
 
 WAYBAR_DIR="$HOME/.config/waybar/demeter-cyan"
-THEMES_DIR="$WAYBAR_DIR/themes"          # where cyan.css / gaming.css live
+THEMES_DIR="$WAYBAR_DIR/themes"
 ACTIVE_FILE="$WAYBAR_DIR/colors.css"
 STYLE_FILE="$WAYBAR_DIR/style.css"
 STATE_FILE="$WAYBAR_DIR/.mode"
-
-LEFT_CFG="$WAYBAR_DIR/config-left.jsonc"
-RIGHT_CFG="$WAYBAR_DIR/config-right.jsonc"
+CFG="$WAYBAR_DIR/config.jsonc"
 
 SRC_FILE="$THEMES_DIR/$theme.css"
-[[ -f "$SRC_FILE" ]] || { echo "Theme not found: $SRC_FILE" >&2; exit 1; }
 
-# 1) Apply theme (colors only)
+if [[ ! -f "$SRC_FILE" ]]; then
+  echo "Theme not found: $SRC_FILE" >&2
+  exit 1
+fi
+
+if [[ ! -f "$CFG" ]]; then
+  echo "Waybar config not found: $CFG" >&2
+  exit 1
+fi
+
+# 1) Apply Waybar colors
 cp -f "$SRC_FILE" "$ACTIVE_FILE"
 
-# 2) Set mode for your custom text script
+# 2) Set mode for custom text script
 if [[ "$theme" == "gaming" ]]; then
   echo "gaming" > "$STATE_FILE"
 else
   echo "normal" > "$STATE_FILE"
 fi
 
-# 3) Restart both waybar instances + force CSS with -s
+# 3) Restart Waybar using the single shared config
 pkill -x waybar 2>/dev/null || true
 sleep 0.2
 
-waybar -c "$RIGHT_CFG" -s "$STYLE_FILE" >/dev/null 2>&1 &
-waybar -c "$LEFT_CFG"  -s "$STYLE_FILE" >/dev/null 2>&1 &
+waybar -c "$CFG" -s "$STYLE_FILE" >/dev/null 2>&1 &
 disown || true

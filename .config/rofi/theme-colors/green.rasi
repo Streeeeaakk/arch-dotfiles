@@ -1,0 +1,6 @@
+* {
+    accent: #50DC78;
+    accent-rgba: rgba(80,220,120,0.85);
+    selected-rgba: rgba(80,220,120,0.16);
+    selected-border-rgba: rgba(80,220,120,0.55);
+}

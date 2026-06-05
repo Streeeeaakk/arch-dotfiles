@@ -1,3 +1,6 @@
+@import "colors.rasi"
+@import "colors.rasi"
+
 configuration {
     /* 1. FORCE DRUN (App Launcher) ONLY */
     modi: "drun";
@@ -26,7 +29,6 @@ configuration {
     /* COLORS */
     bg: #11121DF2;
     fg: #C0CAF5;
-    accent: #00FFFF;
     selected-bg: #1a1b26;
 
     /* GLOBAL RESET */

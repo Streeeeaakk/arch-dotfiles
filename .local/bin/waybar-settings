@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR="${WAYBAR_CONF_DIR:-$HOME/.config/waybar}"
+
+CONF_D="$DIR/conf.d"
+EDITOR_CMD="${WAYBAR_EDITOR:-subl}"
+THEME="${WAYBAR_ROFI_THEME:-$HOME/.config/rofi/themes/waybar-settings.rasi}"
+
+mkdir -p "$DIR" "$CONF_D"
+
+# label|description|path (relative to DIR unless absolute)
+ITEMS=(
+  "Main Config|bar modules + include conf.d|config"
+  "Style CSS|colors, spacing, rounding, hover|style.css"
+  "Left Modules|launcher, clock, left side layout|conf.d/left.jsonc"
+  "Center Modules|workspaces + middle text|conf.d/center.jsonc"
+  "Right Modules|tray, network, volume, battery|conf.d/right.jsonc"
+)
+
+CHOICE=$(
+  {
+    for it in "${ITEMS[@]}"; do
+      IFS='|' read -r label desc relpath <<< "$it"
+      printf "<b>%s</b>  <span foreground='#9aa0a6' size='small'>— %s</span>\0info\x1f%s\n" \
+        "$label" "$desc" "$relpath"
+    done
+  } | rofi -dmenu -i -p "Waybar Settings" \
+      -no-custom \
+      -markup-rows \
+      -theme "$THEME" \
+      -format 'i'
+)
+
+[ -z "${CHOICE:-}" ] && exit 0
+
+IDX="$CHOICE"
+REL="$(printf "%s\n" "${ITEMS[$IDX]}" | awk -F'|' '{print $3}')"
+TARGET="$DIR/$REL"
+
+mkdir -p "$(dirname "$TARGET")"
+touch "$TARGET"
+
+if command -v "$EDITOR_CMD" >/dev/null 2>&1; then
+  "$EDITOR_CMD" "$TARGET" >/dev/null 2>&1 &
+else
+  kitty -e nano "$TARGET"
+fi

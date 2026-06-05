@@ -164,7 +164,6 @@
   "clock": {
     "format": "  {:%H:%M %a}",
     "format-alt": "  {:%d/%m/%Y  %H:%M:%S}",
-    },
     "interval": 1
   },
 

@@ -1,0 +1,26 @@
+[general]
+bars = 20
+framerate = 45
+autosens = 1
+noise_reduction = 90
+
+[smoothing]
+monstercat = 1
+waves = 1
+
+[input]
+method = pulse
+source = alsa_output.usb-Maono_ProStudio_2x2_Maono_ProStudio_2x2-00.analog-stereo.monitor
+
+[output]
+method = raw
+raw_target = /tmp/cava.fifo
+data_format = ascii
+ascii_max_range = 7
+bar_delimiter = 59
+frame_delimiter = 10
+
+
+[color]
+foreground = '#20D2D7'
+background = default

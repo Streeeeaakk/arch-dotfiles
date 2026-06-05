@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR="${HYPR_CONF_DIR:-$HOME/.config/hypr/user-settings}"
+EDITOR_CMD="${HYPR_EDITOR:-subl}"
+THEME="${HYPR_ROFI_THEME:-$HOME/.config/rofi/themes/hypr-settings.rasi}"
+
+mkdir -p "$DIR"
+
+# label|description|filename
+ITEMS=(
+  "Monitors|resolution, refresh rate, scaling|monitors.conf"
+  "Environment|QT, cursor, electron vars|env.conf"
+  "Autostart|apps/services on login|autostart.conf"
+  "Input|keyboard, mouse, touchpad|input.conf"
+  "Theme|gaps, borders, blur, animations|theme.conf"
+  "Window Rules|floating, opacity, workspace rules|windowrules.conf"
+  "Keybinds|hotkeys and mouse binds|binds.conf"
+  "Keyboard Layout|US/Intl toggle + notifications|kblayout.conf"
+  "Game Mode|submap + blocked shortcuts|gamemode.conf"
+)
+
+CHOICE=$(
+  {
+    for it in "${ITEMS[@]}"; do
+      IFS='|' read -r label desc file <<< "$it"
+      # Pretty display + hidden "info" payload (the real filename)
+      printf "<b>%s</b>  <span foreground='#9aa0a6' size='small'>— %s</span>\0info\x1f%s\n" \
+        "$label" "$desc" "$file"
+    done
+  } | rofi -dmenu -i -p "Hyprland Settings" \
+      -no-custom \
+      -markup-rows \
+      -theme "$THEME" \
+      -format 'i'
+)
+
+# CHOICE is now the selected index
+[ -z "${CHOICE:-}" ] && exit 0
+
+IDX="$CHOICE"
+TARGET_FILE="$(printf "%s\n" "${ITEMS[$IDX]}" | awk -F'|' '{print $3}')"
+TARGET="$DIR/$TARGET_FILE"
+
+touch "$TARGET"
+
+if command -v "$EDITOR_CMD" >/dev/null 2>&1; then
+  "$EDITOR_CMD" "$TARGET" >/dev/null 2>&1 &
+else
+  kitty -e nano "$TARGET"
+fi
