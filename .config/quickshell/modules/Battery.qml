@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell.Io
 
 Rectangle {
@@ -10,10 +11,16 @@ Rectangle {
     property bool hovered: mouseArea.containsMouse
 
     visible: hasBattery
-    width: hasBattery ? (hovered ? 125 : 72) : 0
+
+    implicitWidth: hasBattery ? 82 : 0
+    Layout.preferredWidth: hasBattery ? 82 : 0
+    Layout.minimumWidth: hasBattery ? 82 : 0
+    Layout.maximumWidth: hasBattery ? 82 : 0
+
     height: 24
     radius: 7
     color: hovered ? "#45475a" : "#313244"
+    clip: true
 
     Text {
         anchors.centerIn: parent
@@ -36,7 +43,7 @@ Rectangle {
             }
 
             return root.hovered
-                ? icon + " " + root.percent + "% " + root.status
+                ? icon + " " + root.percent + "%"
                 : icon + " " + root.percent + "%"
         }
 

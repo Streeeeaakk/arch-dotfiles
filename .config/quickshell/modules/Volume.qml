@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell.Io
 
 Rectangle {
@@ -8,17 +9,25 @@ Rectangle {
     property bool muted: false
     property bool hovered: mouseArea.containsMouse
 
-    width: hovered ? 105 : 70
+    implicitWidth: 74
+    Layout.preferredWidth: 74
+    Layout.minimumWidth: 74
+    Layout.maximumWidth: 74
+
     height: 24
     radius: 7
     color: hovered ? "#45475a" : "#313244"
+    clip: true
 
     Text {
         anchors.centerIn: parent
-        text: root.muted ? "󰝟 muted" : "󰕾 " + root.volume + "%"
+        text: root.muted ? "󰝟 mute" : "󰕾 " + root.volume + "%"
         color: "#cdd6f4"
         font.pixelSize: 12
         font.bold: root.hovered
+        width: parent.width - 8
+        horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideRight
     }
 
     MouseArea {

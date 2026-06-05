@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell.Io
 
 Rectangle {
@@ -10,25 +11,28 @@ Rectangle {
     property bool playing: status === "Playing"
     property date now: new Date()
 
-    width: root.playing && !root.hovered ? 120 : (root.hovered ? 220 : 145)
+    implicitWidth: 150
+    Layout.preferredWidth: 150
+    Layout.minimumWidth: 150
+    Layout.maximumWidth: 150
+
     height: 24
     radius: 7
     color: root.hovered ? "#45475a" : "#313244"
+    clip: true
 
     Text {
         anchors.centerIn: parent
-
         text: root.playing && !root.hovered
             ? root.bars
-            : (
-                root.hovered
-                    ? Qt.formatDateTime(root.now, "dddd, MMMM dd yyyy  h:mm:ss AP")
-                    : Qt.formatDateTime(root.now, "MMM dd  h:mm AP")
-              )
+            : Qt.formatDateTime(root.now, root.hovered ? "MMM dd  h:mm:ss AP" : "MMM dd  h:mm AP")
 
         color: "#cdd6f4"
         font.pixelSize: 12
         font.bold: root.hovered
+        width: parent.width - 10
+        horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideRight
     }
 
     MouseArea {
