@@ -46,6 +46,10 @@ ShellRoot {
                         Layout.alignment: Qt.AlignVCenter
                     }
 
+                    Battery {
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
                     Volume {
                         Layout.alignment: Qt.AlignVCenter
                     }
