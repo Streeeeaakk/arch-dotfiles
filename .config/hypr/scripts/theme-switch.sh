@@ -15,6 +15,8 @@ WAYBAR_ACTIVE="$WAYBAR_DIR/colors.css"
 WAYBAR_CFG="$WAYBAR_DIR/config.jsonc"
 WAYBAR_STYLE="$WAYBAR_DIR/style.css"
 
+QS_THEME_SCRIPT="$HOME/.config/quickshell/scripts/apply-theme-colors.sh"
+
 ROFI_DIR="$HOME/.config/rofi"
 ROFI_SRC="$ROFI_DIR/theme-colors/$theme.rasi"
 ROFI_ACTIVE="$ROFI_DIR/colors.rasi"
@@ -64,6 +66,8 @@ cp -f "$KITTY_SRC" "$KITTY_ACTIVE"
 
 echo "$theme" > "$HOME/.config/hypr/current-theme"
 
+[[ -x "$QS_THEME_SCRIPT" ]] && "$QS_THEME_SCRIPT" "$theme"
+
 echo "normal" > "$WAYBAR_DIR/.mode"
 
 hyprctl reload
@@ -71,11 +75,15 @@ hyprctl reload
 pkill -x waybar 2>/dev/null || true
 sleep 0.2
 
-waybar -c "$WAYBAR_CFG" -s "$WAYBAR_STYLE" >/dev/null 2>&1 &
+#waybar -c "$WAYBAR_CFG" -s "$WAYBAR_STYLE" >/dev/null 2>&1 &
+#disown || true
+
+pkill -x quickshell 2>/dev/null || true
+sleep 0.2
+
+quickshell >/tmp/quickshell.log 2>&1 &
 disown || true
 
-
-# Restart workspace wallpaper watcher so wallpaper follows the new theme immediately
 pkill -f workspace-wallpaper.sh 2>/dev/null || true
 sleep 0.2
 nohup "$HOME/.config/hypr/workspace-wallpaper.sh" >/tmp/workspace-wallpaper.log 2>&1 &

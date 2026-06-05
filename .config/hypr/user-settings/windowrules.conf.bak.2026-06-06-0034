@@ -79,7 +79,29 @@ bindm = $mainMod, mouse:273, resizewindow
 
 # --- Waybar click apps: always float (NEW SYNTAX) ---
 
+windowrule = match:class ^(org\.pulseaudio\.pavucontrol)$, float on, center on, size 900 650
+windowrule = match:class ^(nm-connection-editor)$, float on, center on, size 1000 700
+windowrule = match:class ^(blueman-manager)$, float on, center on, size 900 650
+windowrule = opacity 0.95 override 0.85 override, match:class Caprine
 
+windowrule = opacity 0.9 0.7, match:class steam
+
+windowrule = opacity 0.9 0.7, match:class facebook
+
+# Workspace 6 — Caprine
+windowrule = workspace 6, match:class ^(Caprine)$
+
+# Workspace 7 — Gmail (Brave Native App)
+windowrule = workspace 7, match:class ^(brave-mail.google.com__-Default)$
+
+# Workspace 8 — ChatGPT / Spare Browser
+windowrule = workspace 8, match:class ^(brave-chat.openai.com__-Default)$
+
+# Workspace 9 — Discord
+windowrule = workspace 9, match:class ^(vesktop)$
+
+# Workspace 10 — Steam
+windowrule = workspace 10, match:class ^(steam)$, match:title ^(Steam)$
 
 # Spotify scratchpad
 windowrule = workspace special:music, match:class ^(spotify)$

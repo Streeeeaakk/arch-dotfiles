@@ -38,5 +38,3 @@ source = ~/.config/hypr/user-settings/kblayout.conf
 
 
 
-## Workspaces
-source = ~/.config/hypr/user-settings/workspaces-demeter.conf
