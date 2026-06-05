@@ -4,6 +4,10 @@ import QtQuick.Layouts
 import "modules"
 
 ShellRoot {
+    id: shell
+
+    property bool mediaPopupOpen: false
+
     Variants {
         model: Quickshell.screens
 
@@ -17,7 +21,7 @@ ShellRoot {
                 right: true
             }
 
-            implicitHeight: 42
+            implicitHeight: shell.mediaPopupOpen ? 168 : 42
             color: "transparent"
 
             Rectangle {
@@ -47,6 +51,7 @@ ShellRoot {
 
                     MediaCava {
                         Layout.alignment: Qt.AlignVCenter
+                        onClicked: shell.mediaPopupOpen = !shell.mediaPopupOpen
                     }
 
                     Temps {
@@ -65,6 +70,15 @@ ShellRoot {
                         Layout.alignment: Qt.AlignVCenter
                     }
                 }
+            }
+
+            MediaPopup {
+                id: mediaPopup
+
+                visible: shell.mediaPopupOpen
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: island.bottom
+                anchors.topMargin: 8
             }
         }
     }

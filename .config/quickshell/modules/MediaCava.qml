@@ -5,6 +5,8 @@ import Quickshell.Io
 Rectangle {
     id: root
 
+    signal clicked()
+
     property string bars: "▁▁▁▁▁▁▁▁▁▁▁▁▁▁"
     property string status: "Stopped"
     property bool hovered: mouseArea.containsMouse
@@ -23,6 +25,7 @@ Rectangle {
 
     Text {
         anchors.centerIn: parent
+
         text: root.playing && !root.hovered
             ? root.bars
             : Qt.formatDateTime(root.now, root.hovered ? "MMM dd  h:mm:ss AP" : "MMM dd  h:mm AP")
@@ -40,6 +43,8 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
+
+        onClicked: root.clicked()
     }
 
     Process {
