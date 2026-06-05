@@ -12,6 +12,7 @@ ShellRoot {
     property bool audioPopupOpen: false
     property bool systemPopupOpen: false
     property bool calendarPopupOpen: false
+    property bool powerPopupOpen: false
 
     property string popupMonitor: ""
 
@@ -28,6 +29,7 @@ ShellRoot {
         shell.audioPopupOpen = false
         shell.systemPopupOpen = false
         shell.calendarPopupOpen = false
+        shell.powerPopupOpen = false
         shell.popupMonitor = ""
     }
 
@@ -40,6 +42,7 @@ ShellRoot {
         if (name === "audio") alreadyOpen = shell.audioPopupOpen
         if (name === "system") alreadyOpen = shell.systemPopupOpen
         if (name === "calendar") alreadyOpen = shell.calendarPopupOpen
+        if (name === "power") alreadyOpen = shell.powerPopupOpen
 
         shell.closeAllPopups()
 
@@ -54,6 +57,7 @@ ShellRoot {
         if (name === "audio") shell.audioPopupOpen = true
         if (name === "system") shell.systemPopupOpen = true
         if (name === "calendar") shell.calendarPopupOpen = true
+        if (name === "power") shell.powerPopupOpen = true
     }
 
     Process {
@@ -73,7 +77,7 @@ ShellRoot {
     }
 
     Timer {
-        interval: 200
+        interval: 1000
         running: true
         repeat: true
         onTriggered: mediaStatusProc.running = true
@@ -117,7 +121,7 @@ ShellRoot {
 
     Timer {
         id: workspaceOverlayTimer
-        interval: 1200
+        interval: 550
         repeat: false
 
         onTriggered: {
@@ -178,7 +182,7 @@ ShellRoot {
 
                 Behavior on width {
                     NumberAnimation {
-                        duration: 180
+                        duration: 140
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -193,7 +197,7 @@ ShellRoot {
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 120
+                            duration: 90
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -210,7 +214,7 @@ ShellRoot {
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 120
+                            duration: 90
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -231,7 +235,7 @@ ShellRoot {
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 120
+                            duration: 90
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -267,6 +271,10 @@ ShellRoot {
 
                     Battery {
                         Layout.alignment: Qt.AlignVCenter
+
+                        onClicked: {
+                            shell.togglePopup("power", panel.screenName)
+                        }
                     }
 
                     Volume {
@@ -426,6 +434,44 @@ ShellRoot {
                     }
 
                     SystemPopup {
+                        anchors.fill: parent
+                    }
+                }
+            }
+
+            PopupWindow {
+                id: powerPopupWindow
+
+                visible: shell.powerPopupOpen && shell.popupMonitor === panel.screenName
+                width: 360
+                height: 176
+                color: "transparent"
+
+                anchor.window: panel
+                anchor.rect.x: panel.width / 2 - width / 2
+                anchor.rect.y: island.y + island.height + 8
+
+                Item {
+                    anchors.fill: parent
+                    opacity: powerPopupWindow.visible ? 1 : 0
+                    scale: powerPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    PowerPopup {
                         anchors.fill: parent
                     }
                 }

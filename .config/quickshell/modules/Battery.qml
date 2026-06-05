@@ -5,6 +5,8 @@ import Quickshell.Io
 Rectangle {
     id: root
 
+    signal clicked()
+
     property string percent: "none"
     property string status: "Unknown"
     property bool hasBattery: percent !== "none"
@@ -30,7 +32,7 @@ Rectangle {
 
             let icon = "󰁹"
 
-            if (root.status === "Charging") {
+            if (root.status === "charging") {
                 icon = "󰂄"
             } else if (parseInt(root.percent) <= 15) {
                 icon = "󰂎"
@@ -55,15 +57,19 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.clicked()
     }
 
     Process {
         id: batteryProc
+
         command: [
             "sh",
             "-c",
-            "for b in /sys/class/power_supply/BAT*; do [ -d \"$b\" ] || continue; cap=$(cat \"$b/capacity\" 2>/dev/null); stat=$(cat \"$b/status\" 2>/dev/null); echo \"$cap:$stat\"; exit; done; echo \"none:Unknown\""
+            "for b in /sys/class/power_supply/BAT*; do [ -d \"$b\" ] || continue; cap=$(cat \"$b/capacity\" 2>/dev/null); stat=$(cat \"$b/status\" 2>/dev/null | tr 'A-Z' 'a-z'); echo \"$cap:$stat\"; exit; done; echo \"none:Unknown\""
         ]
+
         running: true
 
         stdout: SplitParser {
