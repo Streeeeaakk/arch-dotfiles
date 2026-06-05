@@ -62,3 +62,11 @@ alias cpucheck='cat /sys/devices/system/cpu/intel_pstate/max_perf_pct'
 alias marlow='marlow-voice'
 alias marlow-ai='askai'
 alias aitunnel='ssh -N -R 11434:localhost:11434 scerp'
+
+
+# Quickshell
+alias qson='quickshell >/tmp/quickshell.log 2>&1 &'
+alias qsoff='pkill quickshell'
+alias qsrestart='pkill quickshell; sleep 0.3; quickshell >/tmp/quickshell.log 2>&1 &'
+alias qslog='tail -f /tmp/quickshell.log'
+alias qscfg='nano ~/.config/quickshell/shell.qml'
