@@ -5,6 +5,8 @@ import Quickshell.Io
 Rectangle {
     id: root
 
+    signal clicked()
+
     property string connectionType: "none"
     property string connectionName: "disconnected"
     property bool hovered: mouseArea.containsMouse
@@ -47,6 +49,8 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
+
+        onClicked: root.clicked()
     }
 
     Process {

@@ -7,11 +7,14 @@ ShellRoot {
     id: shell
 
     property bool mediaPopupOpen: false
+    property bool networkPopupOpen: false
 
     Variants {
         model: Quickshell.screens
 
         PanelWindow {
+            id: panel
+
             property var modelData
             screen: modelData
 
@@ -21,7 +24,9 @@ ShellRoot {
                 right: true
             }
 
-            implicitHeight: shell.mediaPopupOpen ? 168 : 42
+            // Keep the reserved space small.
+            // Popups will overlay instead of pushing windows down.
+            implicitHeight: 42
             color: "transparent"
 
             Rectangle {
@@ -51,7 +56,14 @@ ShellRoot {
 
                     MediaCava {
                         Layout.alignment: Qt.AlignVCenter
-                        onClicked: shell.mediaPopupOpen = !shell.mediaPopupOpen
+
+                        onClicked: {
+                            shell.mediaPopupOpen = !shell.mediaPopupOpen
+
+                            if (shell.mediaPopupOpen) {
+                                shell.networkPopupOpen = false
+                            }
+                        }
                     }
 
                     Temps {
@@ -60,6 +72,14 @@ ShellRoot {
 
                     Network {
                         Layout.alignment: Qt.AlignVCenter
+
+                        onClicked: {
+                            shell.networkPopupOpen = !shell.networkPopupOpen
+
+                            if (shell.networkPopupOpen) {
+                                shell.mediaPopupOpen = false
+                            }
+                        }
                     }
 
                     Battery {
@@ -72,13 +92,38 @@ ShellRoot {
                 }
             }
 
-            MediaPopup {
-                id: mediaPopup
+            PopupWindow {
+                id: mediaPopupWindow
 
                 visible: shell.mediaPopupOpen
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: island.bottom
-                anchors.topMargin: 8
+                width: 380
+                height: 112
+                color: "transparent"
+
+                anchor.window: panel
+                anchor.rect.x: panel.width / 2 - width / 2
+                anchor.rect.y: island.y + island.height + 8
+
+                MediaPopup {
+                    anchors.fill: parent
+                }
+            }
+
+            PopupWindow {
+                id: networkPopupWindow
+
+                visible: shell.networkPopupOpen
+                width: 420
+                height: 162
+                color: "transparent"
+
+                anchor.window: panel
+                anchor.rect.x: panel.width / 2 - width / 2
+                anchor.rect.y: island.y + island.height + 8
+
+                NetworkPopup {
+                    anchors.fill: parent
+                }
             }
         }
     }
