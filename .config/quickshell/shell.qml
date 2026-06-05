@@ -17,7 +17,7 @@ ShellRoot {
                 right: true
             }
 
-            implicitHeight: 34
+            implicitHeight: 42
             color: "transparent"
 
             Rectangle {
@@ -46,6 +46,10 @@ ShellRoot {
                     }
 
                     MediaCava {
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
+                    Temps {
                         Layout.alignment: Qt.AlignVCenter
                     }
 
