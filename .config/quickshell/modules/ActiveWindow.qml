@@ -6,7 +6,6 @@ Rectangle {
     id: root
 
     property string appClass: ""
-    property string title: "Desktop"
 
     function appIcon(cls) {
         let c = cls.toLowerCase()
@@ -35,42 +34,61 @@ Rectangle {
         return "󰣆"
     }
 
-    implicitWidth: 330
-    Layout.preferredWidth: 330
-    Layout.minimumWidth: 330
-    Layout.maximumWidth: 330
+    function appName(cls) {
+        let c = cls.toLowerCase()
+
+        if (c.includes("brave")) return "Brave"
+        if (c.includes("chrome")) return "Chrome"
+        if (c.includes("firefox")) return "Firefox"
+        if (c.includes("zen")) return "Zen"
+        if (c.includes("kitty")) return "Kitty"
+        if (c.includes("alacritty")) return "Alacritty"
+        if (c.includes("wezterm")) return "WezTerm"
+        if (c.includes("code")) return "Code"
+        if (c.includes("spotify")) return "Spotify"
+        if (c.includes("dolphin")) return "Dolphin"
+        if (c.includes("thunar")) return "Thunar"
+        if (c.includes("discord")) return "Discord"
+        if (c.includes("vesktop")) return "Vesktop"
+        if (c.includes("caprine")) return "Caprine"
+        if (c.includes("telegram")) return "Telegram"
+        if (c.includes("obsidian")) return "Obsidian"
+        if (c.includes("steam")) return "Steam"
+        if (c.includes("libreoffice")) return "LibreOffice"
+        if (c.includes("vlc")) return "VLC"
+        if (c.includes("gimp")) return "GIMP"
+
+        return cls.length > 0 ? cls : "Desktop"
+    }
+
+    implicitWidth: 130
+    Layout.preferredWidth: 130
+    Layout.minimumWidth: 130
+    Layout.maximumWidth: 130
 
     height: 24
     radius: 7
-    color: "transparent"
+    color: "#313244"
     clip: true
 
     RowLayout {
-        anchors.fill: parent
-        anchors.leftMargin: 8
-        anchors.rightMargin: 8
+        anchors.centerIn: parent
         spacing: 7
 
         Text {
             text: root.appIcon(root.appClass)
             color: "#cdd6f4"
-            font.pixelSize: 14
+            font.pixelSize: 13
             Layout.alignment: Qt.AlignVCenter
-            Layout.preferredWidth: 20
-            horizontalAlignment: Text.AlignHCenter
         }
 
         Text {
-            text: root.title.length > 0 ? root.title : "Desktop"
+            text: root.appName(root.appClass)
             color: "#cdd6f4"
             font.pixelSize: 12
             font.bold: true
-
-            Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-
             elide: Text.ElideRight
-            horizontalAlignment: Text.AlignLeft
         }
     }
 
@@ -80,16 +98,14 @@ Rectangle {
         command: [
             "sh",
             "-c",
-            "hyprctl activewindow -j 2>/dev/null | jq -r '[.class // \"\", .title // \"Desktop\"] | @tsv'"
+            "hyprctl activewindow -j 2>/dev/null | jq -r '.class // \"Desktop\"'"
         ]
 
         running: true
 
         stdout: SplitParser {
             onRead: data => {
-                let parts = data.trim().split("\t")
-                root.appClass = parts[0] || ""
-                root.title = parts[1] || "Desktop"
+                root.appClass = data.trim()
             }
         }
     }

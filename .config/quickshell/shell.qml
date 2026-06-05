@@ -33,7 +33,7 @@ ShellRoot {
                 right: true
             }
 
-            implicitHeight: 42
+            implicitHeight: 46
             color: "transparent"
 
             Rectangle {
@@ -41,7 +41,7 @@ ShellRoot {
 
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 4
+                anchors.topMargin: 8
 
                 width: centerRow.implicitWidth + 18
                 height: 34
@@ -55,11 +55,7 @@ ShellRoot {
                     id: centerRow
 
                     anchors.centerIn: parent
-                    spacing: 8
-
-                    ActiveWindow {
-                        Layout.alignment: Qt.AlignVCenter
-                    }
+                    spacing: 7
 
                     MediaCava {
                         Layout.alignment: Qt.AlignVCenter
@@ -77,6 +73,10 @@ ShellRoot {
                             shell.systemPopupOpen = !shell.systemPopupOpen
                             if (shell.systemPopupOpen) shell.closeOtherPopups("system")
                         }
+                    }
+
+                    ActiveWindow {
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     Network {
