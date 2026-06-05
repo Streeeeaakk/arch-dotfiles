@@ -1,4 +1,5 @@
 import Quickshell
+import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 import "modules"
@@ -10,12 +11,40 @@ ShellRoot {
     property bool networkPopupOpen: false
     property bool audioPopupOpen: false
     property bool systemPopupOpen: false
+    property bool calendarPopupOpen: false
+
+    property string mediaStatus: "Stopped"
+    property bool mediaPlaying: mediaStatus === "Playing"
 
     function closeOtherPopups(active) {
         if (active !== "media") shell.mediaPopupOpen = false
         if (active !== "network") shell.networkPopupOpen = false
         if (active !== "audio") shell.audioPopupOpen = false
         if (active !== "system") shell.systemPopupOpen = false
+        if (active !== "calendar") shell.calendarPopupOpen = false
+    }
+
+    Process {
+        id: mediaStatusProc
+
+        command: [
+            "sh",
+            "-c",
+            "playerctl -a status 2>/dev/null | grep -q '^Playing$' && echo Playing || echo Stopped"
+        ]
+
+        running: true
+
+        stdout: SplitParser {
+            onRead: data => shell.mediaStatus = data.trim()
+        }
+    }
+
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: mediaStatusProc.running = true
     }
 
     Variants {
@@ -25,6 +54,10 @@ ShellRoot {
             id: panel
 
             property var modelData
+            property bool islandHovered: islandHover.hovered
+            property bool normalMode: !shell.mediaPlaying || islandHovered
+            property bool cavaMode: shell.mediaPlaying && !islandHovered
+
             screen: modelData
 
             anchors {
@@ -43,26 +76,68 @@ ShellRoot {
                 anchors.top: parent.top
                 anchors.topMargin: 8
 
-                width: centerRow.implicitWidth + 18
+                width: panel.cavaMode
+                    ? Math.min(panel.width * 0.62, 760)
+                    : centerRow.implicitWidth + 18
+
                 height: 34
                 radius: 17
 
                 color: "#11111b"
                 border.color: "#313244"
                 border.width: 1
+                clip: true
+
+                HoverHandler {
+                    id: islandHover
+                }
+
+                Behavior on width {
+                    NumberAnimation {
+                        duration: 220
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                CavaFull {
+                    visible: panel.cavaMode
+                    opacity: panel.cavaMode ? 1 : 0
+
+                    onClicked: {
+                        shell.mediaPopupOpen = !shell.mediaPopupOpen
+                        if (shell.mediaPopupOpen) shell.closeOtherPopups("media")
+                    }
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 120
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                }
 
                 RowLayout {
                     id: centerRow
 
+                    visible: panel.normalMode
+                    opacity: panel.normalMode ? 1 : 0
+
                     anchors.centerIn: parent
                     spacing: 7
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 120
+                            easing.type: Easing.OutCubic
+                        }
+                    }
 
                     MediaCava {
                         Layout.alignment: Qt.AlignVCenter
 
                         onClicked: {
-                            shell.mediaPopupOpen = !shell.mediaPopupOpen
-                            if (shell.mediaPopupOpen) shell.closeOtherPopups("media")
+                            shell.calendarPopupOpen = !shell.calendarPopupOpen
+                            if (shell.calendarPopupOpen) shell.closeOtherPopups("calendar")
                         }
                     }
 
@@ -77,6 +152,7 @@ ShellRoot {
 
                     ActiveWindow {
                         Layout.alignment: Qt.AlignVCenter
+                        showCava: shell.mediaPlaying
                     }
 
                     Network {
@@ -99,6 +175,44 @@ ShellRoot {
                             shell.audioPopupOpen = !shell.audioPopupOpen
                             if (shell.audioPopupOpen) shell.closeOtherPopups("audio")
                         }
+                    }
+                }
+            }
+
+            PopupWindow {
+                id: calendarPopupWindow
+
+                visible: shell.calendarPopupOpen
+                width: 300
+                height: 260
+                color: "transparent"
+
+                anchor.window: panel
+                anchor.rect.x: panel.width / 2 - width / 2
+                anchor.rect.y: island.y + island.height + 8
+
+                Item {
+                    anchors.fill: parent
+                    opacity: shell.calendarPopupOpen ? 1 : 0
+                    scale: shell.calendarPopupOpen ? 1 : 0.92
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    CalendarPopup {
+                        anchors.fill: parent
                     }
                 }
             }

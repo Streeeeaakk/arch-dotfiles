@@ -6,6 +6,8 @@ Rectangle {
     id: root
 
     property string appClass: ""
+    property bool showCava: false
+    property string bars: "▁▁▁▁▁▁▁▁▁▁▁▁▁▁"
 
     function appIcon(cls) {
         let c = cls.toLowerCase()
@@ -71,7 +73,20 @@ Rectangle {
     color: "#313244"
     clip: true
 
+    Text {
+        visible: root.showCava
+        anchors.centerIn: parent
+        text: root.bars
+        color: "#cdd6f4"
+        font.pixelSize: 14
+        font.bold: true
+        width: parent.width - 10
+        horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideRight
+    }
+
     RowLayout {
+        visible: !root.showCava
         anchors.centerIn: parent
         spacing: 7
 
@@ -107,6 +122,16 @@ Rectangle {
             onRead: data => {
                 root.appClass = data.trim()
             }
+        }
+    }
+
+    Process {
+        id: cavaProc
+        command: ["sh", "-c", "~/.config/quickshell/scripts/cava-bars.sh"]
+        running: root.showCava
+
+        stdout: SplitParser {
+            onRead: data => root.bars = data
         }
     }
 
