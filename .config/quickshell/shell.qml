@@ -1,13 +1,9 @@
 import Quickshell
-import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 import "modules"
 
 ShellRoot {
-    id: root
-    property string time: ""
-
     Variants {
         model: Quickshell.screens
 
@@ -42,31 +38,11 @@ ShellRoot {
                         Layout.fillWidth: true
                     }
 
-                    Text {
-                        text: root.time
-                        color: "#cdd6f4"
-                        font.pixelSize: 14
+                    Clock {
                         Layout.alignment: Qt.AlignVCenter
                     }
                 }
             }
         }
-    }
-
-    Process {
-        id: dateProc
-        command: ["date", "+%a %b %d  %I:%M:%S %p"]
-        running: true
-
-        stdout: SplitParser {
-            onRead: data => root.time = data
-        }
-    }
-
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: dateProc.running = true
     }
 }
