@@ -70,3 +70,9 @@ alias qsoff='pkill quickshell'
 alias qsrestart='pkill quickshell; sleep 0.3; quickshell >/tmp/quickshell.log 2>&1 &'
 alias qslog='tail -f /tmp/quickshell.log'
 alias qscfg='nano ~/.config/quickshell/shell.qml'
+
+# Quickshell theme
+alias qstheme='~/.config/quickshell/scripts/qs-theme.sh'
+alias qscyan='~/.config/quickshell/scripts/qs-theme.sh cyan'
+alias qsgaming='~/.config/quickshell/scripts/qs-theme.sh gaming'
+alias qstoggle='~/.config/quickshell/scripts/qs-theme.sh toggle'

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import "../theme" as Theme
 
 Rectangle {
     id: root
@@ -21,7 +22,7 @@ Rectangle {
 
     height: 24
     radius: 9
-    color: root.hovered ? "#2a2d40" : "#1b1d2e"
+    color: root.hovered ? Theme.Colors.pillHover : Theme.Colors.pillBg
     clip: true
 
     Text {
@@ -45,7 +46,7 @@ Rectangle {
             return icon + " " + root.percent + "%"
         }
 
-        color: root.hovered ? "#ffffff" : "#cdd6f4"
+        color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
         font.pixelSize: 12
         font.bold: root.hovered
         width: parent.width - 8

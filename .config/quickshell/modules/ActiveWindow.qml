@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import "../theme" as Theme
 
 Rectangle {
     id: root
@@ -71,14 +72,14 @@ Rectangle {
 
     height: 24
     radius: 10
-    color: hovered ? "#343850" : "#24283b"
+    color: root.hovered ? Theme.Colors.activeHover : Theme.Colors.activeBg
     clip: true
 
     Text {
         visible: root.showCava
         anchors.centerIn: parent
         text: root.bars
-        color: "#cdd6f4"
+        color: Theme.Colors.text
         font.pixelSize: 14
         font.bold: true
         width: parent.width - 12
@@ -93,14 +94,14 @@ Rectangle {
 
         Text {
             text: root.appIcon(root.appClass)
-            color: "#cdd6f4"
+            color: Theme.Colors.text
             font.pixelSize: 13
             Layout.alignment: Qt.AlignVCenter
         }
 
         Text {
             text: root.appName(root.appClass)
-            color: hovered ? "#ffffff" : "#cdd6f4"
+            color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
             font.pixelSize: 12
             font.bold: true
             Layout.alignment: Qt.AlignVCenter

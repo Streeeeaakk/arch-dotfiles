@@ -3,6 +3,7 @@ import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 import "modules"
+import "theme" as Theme
 
 ShellRoot {
     id: shell
@@ -170,9 +171,9 @@ ShellRoot {
                 height: 28
                 radius: 14
 
-                color: "#11111b"
+                color: Theme.Colors.barBg
                 opacity: 0.96
-                border.color: "#242638"
+                border.color: Theme.Colors.border
                 border.width: 1
                 clip: true
 
@@ -299,29 +300,8 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                CalendarPopup {
                     anchors.fill: parent
-                    opacity: calendarPopupWindow.visible ? 1 : 0
-                    scale: calendarPopupWindow.visible ? 1 : 0.90
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
-
-                    CalendarPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
@@ -337,29 +317,8 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                MediaPopup {
                     anchors.fill: parent
-                    opacity: mediaPopupWindow.visible ? 1 : 0
-                    scale: mediaPopupWindow.visible ? 1 : 0.90
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
-
-                    MediaPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
@@ -375,29 +334,8 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                NetworkPopup {
                     anchors.fill: parent
-                    opacity: networkPopupWindow.visible ? 1 : 0
-                    scale: networkPopupWindow.visible ? 1 : 0.90
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
-
-                    NetworkPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
@@ -413,29 +351,8 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                SystemPopup {
                     anchors.fill: parent
-                    opacity: systemPopupWindow.visible ? 1 : 0
-                    scale: systemPopupWindow.visible ? 1 : 0.90
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
-
-                    SystemPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
@@ -451,29 +368,8 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                PowerPopup {
                     anchors.fill: parent
-                    opacity: powerPopupWindow.visible ? 1 : 0
-                    scale: powerPopupWindow.visible ? 1 : 0.90
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
-
-                    PowerPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
@@ -489,29 +385,8 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                AudioPopup {
                     anchors.fill: parent
-                    opacity: audioPopupWindow.visible ? 1 : 0
-                    scale: audioPopupWindow.visible ? 1 : 0.90
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
-
-                    AudioPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
         }

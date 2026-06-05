@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import "../theme" as Theme
 
 RowLayout {
     id: root
@@ -35,10 +36,10 @@ RowLayout {
                 radius: wsItem.active ? 5 : 2
 
                 color: wsItem.active
-                    ? "#89b4fa"
+                    ? Theme.Colors.accent
                     : wsItem.occupied
-                        ? "#cdd6f4"
-                        : "#45475a"
+                        ? Theme.Colors.text
+                        : Theme.Colors.muted
 
                 opacity: wsItem.hovered ? 1.0 : (wsItem.active ? 1.0 : wsItem.occupied ? 0.75 : 0.45)
 
