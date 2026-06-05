@@ -41,8 +41,13 @@ ShellRoot {
                     MediaCava {
                         Layout.alignment: Qt.AlignVCenter
                     }
+
+                    Network {
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
                     Volume {
-                       Layout.alignment: Qt.AlignVCenter
+                        Layout.alignment: Qt.AlignVCenter
                     }
                 }
             }
