@@ -9,24 +9,20 @@ Rectangle {
     property date now: new Date()
     property bool hovered: mouseArea.containsMouse
 
-    implicitWidth: 150
-    Layout.preferredWidth: 150
-    Layout.minimumWidth: 150
-    Layout.maximumWidth: 150
+    implicitWidth: 130
+    Layout.preferredWidth: 130
+    Layout.minimumWidth: 130
+    Layout.maximumWidth: 130
 
     height: 24
-    radius: 7
-    color: hovered ? "#45475a" : "#313244"
+    radius: 9
+    color: root.hovered ? "#2a2d40" : "#1b1d2e"
     clip: true
 
     Text {
         anchors.centerIn: parent
-
-        text: root.hovered
-            ? Qt.formatDateTime(root.now, "MMM dd  h:mm:ss AP")
-            : Qt.formatDateTime(root.now, "MMM dd  h:mm AP")
-
-        color: "#cdd6f4"
+        text: Qt.formatDateTime(root.now, root.hovered ? "MMM dd  h:mm:ss AP" : "MMM dd  h:mm AP")
+        color: root.hovered ? "#ffffff" : "#cdd6f4"
         font.pixelSize: 12
         font.bold: root.hovered
         width: parent.width - 10
@@ -39,7 +35,6 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-
         onClicked: root.clicked()
     }
 

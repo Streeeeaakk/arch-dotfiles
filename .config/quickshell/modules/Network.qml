@@ -11,37 +11,31 @@ Rectangle {
     property string connectionName: "disconnected"
     property bool hovered: mouseArea.containsMouse
 
-    implicitWidth: 90
-    Layout.preferredWidth: 90
-    Layout.minimumWidth: 90
-    Layout.maximumWidth: 90
+    implicitWidth: 72
+    Layout.preferredWidth: 72
+    Layout.minimumWidth: 72
+    Layout.maximumWidth: 72
 
     height: 24
-    radius: 7
-    color: hovered ? "#45475a" : "#313244"
+    radius: 9
+    color: root.hovered ? "#2a2d40" : "#1b1d2e"
     clip: true
 
     Text {
         anchors.centerIn: parent
 
         text: {
-            if (root.connectionType === "wifi") {
-                return root.hovered ? "󰖩 " + root.connectionName : "󰖩 wifi"
-            }
-
-            if (root.connectionType === "ethernet") {
-                return root.hovered ? "󰈀 " + root.connectionName : "󰈀 lan"
-            }
-
-            return root.hovered ? "󰤭 offline" : "󰤭 net"
+            if (root.connectionType === "wifi") return "󰖩 wifi"
+            if (root.connectionType === "ethernet") return "󰈀 lan"
+            return "󰤭 net"
         }
 
-        color: "#cdd6f4"
+        color: root.hovered ? "#ffffff" : "#cdd6f4"
         font.pixelSize: 12
         font.bold: root.hovered
-        elide: Text.ElideRight
-        width: parent.width - 10
+        width: parent.width - 8
         horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideRight
     }
 
     MouseArea {
@@ -49,19 +43,16 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-
         onClicked: root.clicked()
     }
 
     Process {
         id: networkProc
-
         command: [
             "sh",
             "-c",
             "nmcli -t -f TYPE,STATE,CONNECTION dev 2>/dev/null | awk -F: '$2==\"connected\" && $1!=\"loopback\" {print $1\":\"$3; found=1; exit} END {if (!found) print \"none:disconnected\"}'"
         ]
-
         running: true
 
         stdout: SplitParser {

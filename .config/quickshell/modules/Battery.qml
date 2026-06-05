@@ -12,14 +12,14 @@ Rectangle {
 
     visible: hasBattery
 
-    implicitWidth: hasBattery ? 82 : 0
-    Layout.preferredWidth: hasBattery ? 82 : 0
-    Layout.minimumWidth: hasBattery ? 82 : 0
-    Layout.maximumWidth: hasBattery ? 82 : 0
+    implicitWidth: hasBattery ? 66 : 0
+    Layout.preferredWidth: hasBattery ? 66 : 0
+    Layout.minimumWidth: hasBattery ? 66 : 0
+    Layout.maximumWidth: hasBattery ? 66 : 0
 
     height: 24
-    radius: 7
-    color: hovered ? "#45475a" : "#313244"
+    radius: 9
+    color: root.hovered ? "#2a2d40" : "#1b1d2e"
     clip: true
 
     Text {
@@ -38,39 +38,32 @@ Rectangle {
                 icon = "󰁻"
             } else if (parseInt(root.percent) <= 60) {
                 icon = "󰁾"
-            } else {
-                icon = "󰁹"
             }
 
-            return root.hovered
-                ? icon + " " + root.percent + "%"
-                : icon + " " + root.percent + "%"
+            return icon + " " + root.percent + "%"
         }
 
-        color: "#cdd6f4"
+        color: root.hovered ? "#ffffff" : "#cdd6f4"
         font.pixelSize: 12
         font.bold: root.hovered
-        elide: Text.ElideRight
-        width: parent.width - 10
+        width: parent.width - 8
         horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideRight
     }
 
     MouseArea {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
     }
 
     Process {
         id: batteryProc
-
         command: [
             "sh",
             "-c",
             "for b in /sys/class/power_supply/BAT*; do [ -d \"$b\" ] || continue; cap=$(cat \"$b/capacity\" 2>/dev/null); stat=$(cat \"$b/status\" 2>/dev/null); echo \"$cap:$stat\"; exit; done; echo \"none:Unknown\""
         ]
-
         running: true
 
         stdout: SplitParser {

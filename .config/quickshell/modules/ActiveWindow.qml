@@ -8,6 +8,7 @@ Rectangle {
     property string appClass: ""
     property bool showCava: false
     property string bars: "▁▁▁▁▁▁▁▁▁▁▁▁▁▁"
+    property bool hovered: mouseArea.containsMouse
 
     function appIcon(cls) {
         let c = cls.toLowerCase()
@@ -63,14 +64,14 @@ Rectangle {
         return cls.length > 0 ? cls : "Desktop"
     }
 
-    implicitWidth: 130
-    Layout.preferredWidth: 130
-    Layout.minimumWidth: 130
-    Layout.maximumWidth: 130
+    implicitWidth: 112
+    Layout.preferredWidth: 112
+    Layout.minimumWidth: 112
+    Layout.maximumWidth: 112
 
     height: 24
-    radius: 7
-    color: "#313244"
+    radius: 9
+    color: hovered ? "#2a2d40" : "#1b1d2e"
     clip: true
 
     Text {
@@ -99,12 +100,18 @@ Rectangle {
 
         Text {
             text: root.appName(root.appClass)
-            color: "#cdd6f4"
+            color: hovered ? "#ffffff" : "#cdd6f4"
             font.pixelSize: 12
             font.bold: true
             Layout.alignment: Qt.AlignVCenter
             elide: Text.ElideRight
         }
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
     }
 
     Process {
@@ -119,9 +126,7 @@ Rectangle {
         running: true
 
         stdout: SplitParser {
-            onRead: data => {
-                root.appClass = data.trim()
-            }
+            onRead: data => root.appClass = data.trim()
         }
     }
 

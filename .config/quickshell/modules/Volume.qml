@@ -11,20 +11,20 @@ Rectangle {
     property bool muted: false
     property bool hovered: mouseArea.containsMouse
 
-    implicitWidth: 74
-    Layout.preferredWidth: 74
-    Layout.minimumWidth: 74
-    Layout.maximumWidth: 74
+    implicitWidth: 62
+    Layout.preferredWidth: 62
+    Layout.minimumWidth: 62
+    Layout.maximumWidth: 62
 
     height: 24
-    radius: 7
-    color: hovered ? "#45475a" : "#313244"
+    radius: 9
+    color: root.hovered ? "#2a2d40" : "#1b1d2e"
     clip: true
 
     Text {
         anchors.centerIn: parent
-        text: root.muted ? "󰝟 mute" : "󰕾 " + root.volume + "%"
-        color: "#cdd6f4"
+        text: root.muted ? "󰝟" : "󰕾 " + root.volume + "%"
+        color: root.hovered ? "#ffffff" : "#cdd6f4"
         font.pixelSize: 12
         font.bold: root.hovered
         width: parent.width - 8
@@ -37,7 +37,6 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-
         onClicked: root.clicked()
 
         onWheel: function(wheel) {

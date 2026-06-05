@@ -13,6 +13,10 @@ ShellRoot {
     property bool systemPopupOpen: false
     property bool calendarPopupOpen: false
 
+    property bool workspaceOverlayOpen: false
+    property string lastWorkspaceTrigger: ""
+    property string workspaceTriggerMonitor: ""
+
     property string mediaStatus: "Stopped"
     property bool mediaPlaying: mediaStatus === "Playing"
 
@@ -26,13 +30,11 @@ ShellRoot {
 
     Process {
         id: mediaStatusProc
-
         command: [
             "sh",
             "-c",
             "playerctl -a status 2>/dev/null | grep -q '^Playing$' && echo Playing || echo Stopped"
         ]
-
         running: true
 
         stdout: SplitParser {
@@ -47,6 +49,51 @@ ShellRoot {
         onTriggered: mediaStatusProc.running = true
     }
 
+    Process {
+        id: workspaceTriggerProc
+        command: [
+            "sh",
+            "-c",
+            "cat /tmp/quickshell-workspace-trigger 2>/dev/null || true"
+        ]
+        running: true
+
+        stdout: SplitParser {
+            onRead: data => {
+                let current = data.trim()
+
+                if (current.length > 0 && current !== shell.lastWorkspaceTrigger) {
+                    let parts = current.split("\t")
+
+                    shell.workspaceTriggerMonitor = parts[4] || ""
+                    shell.workspaceOverlayOpen = true
+
+                    workspaceOverlayTimer.restart()
+                    shell.closeOtherPopups("")
+                    shell.lastWorkspaceTrigger = current
+                }
+            }
+        }
+    }
+
+    Timer {
+        interval: 120
+        running: true
+        repeat: true
+        onTriggered: workspaceTriggerProc.running = true
+    }
+
+    Timer {
+        id: workspaceOverlayTimer
+        interval: 1200
+        repeat: false
+
+        onTriggered: {
+            shell.workspaceOverlayOpen = false
+            shell.workspaceTriggerMonitor = ""
+        }
+    }
+
     Variants {
         model: Quickshell.screens
 
@@ -54,9 +101,11 @@ ShellRoot {
             id: panel
 
             property var modelData
+            property string screenName: modelData.name
             property bool islandHovered: islandHover.hovered
-            property bool normalMode: !shell.mediaPlaying || islandHovered
-            property bool cavaMode: shell.mediaPlaying && !islandHovered
+            property bool workspaceMode: shell.workspaceOverlayOpen && shell.workspaceTriggerMonitor === screenName
+            property bool normalMode: !workspaceMode && (!shell.mediaPlaying || islandHovered)
+            property bool cavaMode: !workspaceMode && shell.mediaPlaying && !islandHovered
 
             screen: modelData
 
@@ -66,7 +115,7 @@ ShellRoot {
                 right: true
             }
 
-            implicitHeight: 46
+            implicitHeight: 40
             color: "transparent"
 
             Rectangle {
@@ -76,15 +125,18 @@ ShellRoot {
                 anchors.top: parent.top
                 anchors.topMargin: 8
 
-                width: panel.cavaMode
-                    ? Math.min(panel.width * 0.62, 760)
-                    : centerRow.implicitWidth + 18
+                width: panel.workspaceMode
+                    ? workspaceRow.implicitWidth + 18
+                    : panel.cavaMode
+                        ? Math.min(panel.width * 0.56, 680)
+                        : centerRow.implicitWidth + 18
 
-                height: 34
-                radius: 17
+                height: 28
+                radius: 14
 
                 color: "#11111b"
-                border.color: "#313244"
+                opacity: 0.96
+                border.color: "#242638"
                 border.width: 1
                 clip: true
 
@@ -94,7 +146,7 @@ ShellRoot {
 
                 Behavior on width {
                     NumberAnimation {
-                        duration: 220
+                        duration: 180
                         easing.type: Easing.OutCubic
                     }
                 }
@@ -117,13 +169,34 @@ ShellRoot {
                 }
 
                 RowLayout {
+                    id: workspaceRow
+
+                    visible: panel.workspaceMode
+                    opacity: panel.workspaceMode ? 1 : 0
+
+                    anchors.centerIn: parent
+                    spacing: 6
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 120
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    WorkspacesOverlay {
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+                }
+
+                RowLayout {
                     id: centerRow
 
                     visible: panel.normalMode
                     opacity: panel.normalMode ? 1 : 0
 
                     anchors.centerIn: parent
-                    spacing: 7
+                    spacing: 5
 
                     Behavior on opacity {
                         NumberAnimation {
@@ -181,7 +254,6 @@ ShellRoot {
 
             PopupWindow {
                 id: calendarPopupWindow
-
                 visible: shell.calendarPopupOpen
                 width: 300
                 height: 260
@@ -191,35 +263,13 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                CalendarPopup {
                     anchors.fill: parent
-                    opacity: shell.calendarPopupOpen ? 1 : 0
-                    scale: shell.calendarPopupOpen ? 1 : 0.92
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    CalendarPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
             PopupWindow {
                 id: mediaPopupWindow
-
                 visible: shell.mediaPopupOpen
                 width: 380
                 height: 112
@@ -229,35 +279,13 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                MediaPopup {
                     anchors.fill: parent
-                    opacity: shell.mediaPopupOpen ? 1 : 0
-                    scale: shell.mediaPopupOpen ? 1 : 0.92
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    MediaPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
             PopupWindow {
                 id: networkPopupWindow
-
                 visible: shell.networkPopupOpen
                 width: 420
                 height: 162
@@ -267,35 +295,13 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                NetworkPopup {
                     anchors.fill: parent
-                    opacity: shell.networkPopupOpen ? 1 : 0
-                    scale: shell.networkPopupOpen ? 1 : 0.92
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    NetworkPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
             PopupWindow {
                 id: systemPopupWindow
-
                 visible: shell.systemPopupOpen
                 width: 420
                 height: 214
@@ -305,35 +311,13 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                SystemPopup {
                     anchors.fill: parent
-                    opacity: shell.systemPopupOpen ? 1 : 0
-                    scale: shell.systemPopupOpen ? 1 : 0.92
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    SystemPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
 
             PopupWindow {
                 id: audioPopupWindow
-
                 visible: shell.audioPopupOpen
                 width: 460
                 height: 260
@@ -343,29 +327,8 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                Item {
+                AudioPopup {
                     anchors.fill: parent
-                    opacity: shell.audioPopupOpen ? 1 : 0
-                    scale: shell.audioPopupOpen ? 1 : 0.92
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    AudioPopup {
-                        anchors.fill: parent
-                    }
                 }
             }
         }
