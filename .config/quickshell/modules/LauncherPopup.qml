@@ -16,6 +16,7 @@ Rectangle {
     property string initialMode: "apps"
     property var apps: []
     property var clips: []
+    property var calcs: []
     property var filteredItems: []
     property string query: ""
 
@@ -51,12 +52,36 @@ Rectangle {
     }
 
     function toggleMode() {
-        root.switchMode(root.mode === "apps" ? "clipboard" : "apps")
+        if (root.mode === "apps") {
+            root.switchMode("clipboard")
+        } else if (root.mode === "clipboard") {
+            root.switchMode("calculator")
+        } else {
+            root.switchMode("apps")
+        }
     }
 
     function refreshFilter() {
         let q = root.query.toLowerCase().trim()
-        let source = root.mode === "apps" ? root.apps : root.clips
+        let source = root.mode === "apps" ? root.apps : root.mode === "clipboard" ? root.clips : root.calcs
+
+        if (root.mode === "calculator") {
+            let history = source
+
+            if (q.length > 0) {
+                root.filteredItems = [{
+                    "name": "Calculate: " + root.query,
+                    "comment": "Press Enter to calculate",
+                    "icon": "",
+                    "isImage": false,
+                    "path": ""
+                }].concat(history.slice(0, 7))
+            } else {
+                root.filteredItems = history.slice(0, 8)
+            }
+
+            return
+        }
 
         if (q.length === 0) {
             root.filteredItems = source.slice(0, 8)
@@ -85,16 +110,36 @@ Rectangle {
                 "~/.config/quickshell/scripts/app-launch.sh " + root.shellQuote(item.path)
             ]
             launchProc.running = true
-        } else {
+            root.closeRequested()
+        } else if (root.mode === "clipboard") {
             clipCopyProc.command = [
                 "sh",
                 "-c",
                 "~/.config/quickshell/scripts/clipboard-copy.sh " + root.shellQuote(item.path)
             ]
             clipCopyProc.running = true
-        }
+            root.closeRequested()
+        } else {
+            let expr = root.query.trim()
 
-        root.closeRequested()
+            if (expr.length > 0) {
+                calcProc.command = [
+                    "sh",
+                    "-c",
+                    "result=$(~/.config/quickshell/scripts/calc-eval.sh " + root.shellQuote(expr) + ") && printf '%s' \"$result\" | wl-copy"
+                ]
+                calcProc.running = true
+            } else if (item.path && item.path.length > 0) {
+                calcProc.command = [
+                    "sh",
+                    "-c",
+                    "printf '%s' " + root.shellQuote(item.path) + " | wl-copy"
+                ]
+                calcProc.running = true
+            }
+
+            root.closeRequested()
+        }
     }
 
     RowLayout {
@@ -221,7 +266,7 @@ Rectangle {
                         spacing: 10
 
                         Text {
-                            text: root.mode === "apps" ? "󰍉" : ""
+                            text: root.mode === "apps" ? "󰍉" : root.mode === "clipboard" ? "" : "󰃬"
                             color: Theme.Colors.accent
                             font.pixelSize: 17
                             Layout.alignment: Qt.AlignVCenter
@@ -272,7 +317,7 @@ Rectangle {
 
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: root.mode === "apps" ? "Search Apps..." : "Search Clipboard..."
+                                text: root.mode === "apps" ? "Search Apps..." : root.mode === "clipboard" ? "Search Clipboard..." : "Calculate..."
                                 visible: searchInput.text.length === 0
                                 color: Theme.Colors.muted
                                 font.family: "Figtree"
@@ -354,7 +399,7 @@ Rectangle {
                                 Text {
                                     anchors.centerIn: parent
                                     visible: itemRow.iconSource.length === 0
-                                    text: root.mode === "clipboard" ? "" : "󰣆"
+                                    text: root.mode === "clipboard" ? "" : root.mode === "calculator" ? "󰃬" : "󰣆"
                                     color: itemRow.selected ? Theme.Colors.accent : Theme.Colors.text
                                     font.pixelSize: 16
                                 }
@@ -390,7 +435,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: root.mode === "apps" ? "No apps found" : "No clipboard history"
+                        text: root.mode === "apps" ? "No apps found" : root.mode === "clipboard" ? "No clipboard history" : "No calculation history"
                         visible: root.filteredItems.length === 0
                         color: Theme.Colors.muted
                         font.family: "Figtree"
@@ -441,11 +486,37 @@ Rectangle {
     }
 
     Process {
+        id: calcsProc
+        command: ["sh", "-c", "~/.config/quickshell/scripts/calc-history.sh"]
+        running: true
+
+        stdout: SplitParser {
+            onRead: function(data) {
+                try {
+                    root.calcs = JSON.parse(data.trim())
+                    root.refreshFilter()
+                    listView.currentIndex = 0
+                } catch (e) {
+                    root.calcs = []
+                    root.refreshFilter()
+                }
+            }
+        }
+    }
+
+    Process {
         id: launchProc
     }
 
     Process {
         id: clipCopyProc
+    }
+
+    Process {
+        id: calcProc
+        onExited: {
+            calcsProc.running = true
+        }
     }
 
     Timer {
@@ -463,6 +534,7 @@ Rectangle {
         if (active) {
             appsProc.running = true
             clipsProc.running = true
+            calcsProc.running = true
             root.switchMode(root.initialMode)
             root.takeFocus()
             focusTimer.restart()
