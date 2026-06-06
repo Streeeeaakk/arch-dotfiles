@@ -14,7 +14,7 @@ Rectangle {
     height: 260
     radius: 16
 
-    color: Theme.Colors.barBg
+    color: Qt.rgba(Theme.Colors.barBg.r, Theme.Colors.barBg.g, Theme.Colors.barBg.b, 0.88)
     border.color: Theme.Colors.accent
     border.width: 1
     clip: true
