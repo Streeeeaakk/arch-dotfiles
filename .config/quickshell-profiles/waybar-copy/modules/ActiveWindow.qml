@@ -6,6 +6,8 @@ import "../theme" as Theme
 Item {
     id: root
 
+    signal clicked()
+
     property string appClass: ""
     property string monitorName: ""
     property bool hovered: mouseArea.containsMouse
@@ -85,7 +87,9 @@ Item {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-        acceptedButtons: Qt.NoButton
+        acceptedButtons: Qt.LeftButton
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.clicked()
     }
 
     Process {
