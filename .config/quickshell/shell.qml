@@ -658,11 +658,6 @@ ShellRoot {
                     }
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    hoverEnabled: true
-                }
             }
         }
     }

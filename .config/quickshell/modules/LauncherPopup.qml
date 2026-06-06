@@ -342,10 +342,10 @@ Rectangle {
 
                                 Image {
                                     anchors.centerIn: parent
-                                    width: 24
-                                    height: 24
+                                    width: root.mode === "clipboard" ? 28 : 24
+                                    height: root.mode === "clipboard" ? 28 : 24
                                     source: itemRow.iconSource
-                                    visible: root.mode === "apps" && itemRow.iconSource.length > 0
+                                    visible: itemRow.iconSource.length > 0
                                     fillMode: Image.PreserveAspectFit
                                     smooth: true
                                     asynchronous: true
@@ -353,7 +353,7 @@ Rectangle {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    visible: root.mode === "clipboard" || itemRow.iconSource.length === 0
+                                    visible: itemRow.iconSource.length === 0
                                     text: root.mode === "clipboard" ? "" : "󰣆"
                                     color: itemRow.selected ? Theme.Colors.accent : Theme.Colors.text
                                     font.pixelSize: 16
@@ -361,7 +361,7 @@ Rectangle {
                             }
 
                             Text {
-                                text: modelData.name || ""
+                                text: modelData.isImage ? (modelData.name || "Image from clipboard") : (modelData.name || "")
                                 color: itemRow.selected ? Theme.Colors.accent : Theme.Colors.text
                                 font.family: "Figtree"
                                 font.pixelSize: 13
