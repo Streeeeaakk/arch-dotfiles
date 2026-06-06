@@ -2,7 +2,11 @@
 
 STATE="/tmp/quickshell-launcher-trigger"
 
-monitor="$(hyprctl monitors -j 2>/dev/null | jq -r '.[] | select(.focused == true) | .name' | head -n1)"
+monitor="$(
+  hyprctl monitors -j 2>/dev/null \
+    | jq -r '.[] | select(.focused == true) | .name' \
+    | head -n1
+)"
 
 [ -z "$monitor" ] && monitor="unknown"
 

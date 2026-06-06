@@ -78,11 +78,13 @@ sleep 0.2
 #waybar -c "$WAYBAR_CFG" -s "$WAYBAR_STYLE" >/dev/null 2>&1 &
 #disown || true
 
+rm -f /tmp/quickshell-launcher-trigger /tmp/quickshell-workspace-trigger 2>/dev/null || true
 pkill -x quickshell 2>/dev/null || true
-sleep 0.2
+sleep 0.5
 
-quickshell >/tmp/quickshell.log 2>&1 &
+nohup quickshell >/tmp/quickshell.log 2>&1 &
 disown || true
+sleep 0.3
 
 pkill -f workspace-wallpaper.sh 2>/dev/null || true
 sleep 0.2

@@ -192,7 +192,11 @@ ShellRoot {
         interval: 120
         running: true
         repeat: true
-        onTriggered: launcherTriggerProc.running = true
+
+        onTriggered: {
+            launcherTriggerProc.running = false
+            launcherTriggerProc.running = true
+        }
     }
 
     Variants {
@@ -353,10 +357,11 @@ ShellRoot {
 
             PopupWindow {
                 id: launcherWindow
-                visible: shell.launcherOpen
-                width: 810
-                height: 510
+                visible: shell.launcherOpen && shell.launcherMonitor === panel.screenName
+                width: 816
+                height: 516
                 color: "transparent"
+                grabFocus: true
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
@@ -374,7 +379,7 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
 
-                    LauncherPopup {
+                    AppLauncher {
                         anchors.centerIn: parent
                         width: 800
                         height: 500
@@ -417,8 +422,8 @@ ShellRoot {
             PopupWindow {
                 id: mediaPopupWindow
                 visible: shell.mediaPopupOpen && shell.popupMonitor === panel.screenName
-                width: 430
-                height: 170
+                width: 540
+                height: 230
                 color: "transparent"
 
                 anchor.window: panel
