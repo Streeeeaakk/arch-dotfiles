@@ -11,6 +11,9 @@ Rectangle {
     property var apps: []
     property var filteredApps: []
     property string query: ""
+    property bool cavaEnabled: true
+
+    signal toggleCavaRequested()
 
     width: 800
     height: 500
@@ -18,7 +21,7 @@ Rectangle {
 
     color: Theme.Colors.barBg
     border.color: Theme.Colors.accent
-    border.width: 2
+    border.width: 1
     clip: true
 
     function shellQuote(s) {
@@ -69,7 +72,7 @@ Rectangle {
         color: "transparent"
         border.color: Theme.Colors.accent
         border.width: 1
-        opacity: 0.28
+        opacity: 0.12
     }
 
     RowLayout {
@@ -103,7 +106,7 @@ Rectangle {
                 anchors.bottom: parent.bottom
                 width: 1
                 color: Theme.Colors.accent
-                opacity: 0.55
+                opacity: 0.28
             }
         }
 
@@ -189,12 +192,39 @@ Rectangle {
                     }
 
                     Rectangle {
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 78
+                        height: 24
+                        radius: 8
+                        color: root.cavaEnabled ? Theme.Colors.activeBg : Theme.Colors.pillBg
+                        border.color: Theme.Colors.accent
+                        border.width: 1
+                        opacity: 0.9
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: root.cavaEnabled ? "Cava ON" : "Cava OFF"
+                            color: root.cavaEnabled ? Theme.Colors.accent : Theme.Colors.muted
+                            font.family: "Figtree"
+                            font.pixelSize: 10
+                            font.bold: true
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.toggleCavaRequested()
+                        }
+                    }
+
+                    Rectangle {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
                         height: 1
                         color: Theme.Colors.accent
-                        opacity: 0.7
+                        opacity: 0.35
                     }
                 }
 

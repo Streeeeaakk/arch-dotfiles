@@ -26,7 +26,20 @@ ShellRoot {
     property string workspaceTriggerMonitor: ""
 
     property string mediaStatus: "Stopped"
-    property bool mediaPlaying: mediaStatus === "Playing"
+    property bool cavaEnabled: true
+    property bool mediaPlaying: cavaEnabled && mediaStatus === "Playing"
+
+    function toggleCava() {
+        shell.cavaEnabled = !shell.cavaEnabled
+
+        cavaToggleProc.command = [
+            "sh",
+            "-c",
+            "~/.config/quickshell/scripts/cava-toggle.sh " + (shell.cavaEnabled ? "on" : "off")
+        ]
+
+        cavaToggleProc.running = true
+    }
 
     function closeAllPopups() {
         shell.mediaPopupOpen = false
@@ -72,6 +85,20 @@ ShellRoot {
     }
 
     Process {
+        id: cavaStatusProc
+        command: ["sh", "-c", "~/.config/quickshell/scripts/cava-toggle.sh status"]
+        running: true
+
+        stdout: SplitParser {
+            onRead: data => shell.cavaEnabled = data.trim() !== "0"
+        }
+    }
+
+    Process {
+        id: cavaToggleProc
+    }
+
+    Process {
         id: mediaStatusProc
         command: [
             "sh",
@@ -89,7 +116,10 @@ ShellRoot {
         interval: 1000
         running: true
         repeat: true
-        onTriggered: mediaStatusProc.running = true
+        onTriggered: {
+            mediaStatusProc.running = true
+            cavaStatusProc.running = true
+        }
     }
 
     Process {
@@ -401,6 +431,9 @@ ShellRoot {
                         anchors.centerIn: parent
                         width: 800
                         height: 500
+                        cavaEnabled: shell.cavaEnabled
+
+                        onToggleCavaRequested: shell.toggleCava()
 
                         onCloseRequested: {
                             shell.launcherOpen = false

@@ -151,7 +151,7 @@ Item {
 
     Timer {
         interval: 16
-        running: true
+        running: root.visible
         repeat: true
 
         onTriggered: {
@@ -185,7 +185,7 @@ Item {
     Process {
         id: cavaProc
         command: ["sh", "-c", "~/.config/quickshell/scripts/cava-wide-bars.sh"]
-        running: true
+        running: root.visible
 
         stdout: SplitParser {
             onRead: function(data) {
