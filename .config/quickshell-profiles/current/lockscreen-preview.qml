@@ -26,9 +26,9 @@ ShellRoot {
                 width: 680
                 height: 360
                 radius: 22
-                color: Qt.rgba(0, 0, 0, 0.32)
+                color: Qt.rgba(0, 0, 0, 0.55)
                 border.width: 1
-                border.color: Qt.rgba(1, 1, 1, 0.10)
+                border.color: Qt.rgba(1, 1, 1, 0.16)
                 anchors.centerIn: parent
 
                 Column {
