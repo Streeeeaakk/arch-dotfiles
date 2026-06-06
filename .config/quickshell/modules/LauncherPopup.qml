@@ -128,9 +128,7 @@ Rectangle {
                 "~/.config/quickshell/scripts/app-launch.sh " + root.shellQuote(item.path)
             ]
             launchProc.running = true
-            root.calcPreview = ""
-            calcsProc.running = true
-            root.refreshFilter()
+            root.closeRequested()
         } else if (root.mode === "clipboard") {
             clipCopyProc.command = [
                 "sh",
