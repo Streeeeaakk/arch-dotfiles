@@ -17,6 +17,7 @@ Rectangle {
     property var apps: []
     property var clips: []
     property var calcs: []
+    property string calcPreview: ""
     property var filteredItems: []
     property string query: ""
 
@@ -51,6 +52,23 @@ Rectangle {
         root.takeFocus()
     }
 
+    function looksCalculatorInput(t) {
+        let q = String(t || "").trim()
+
+        if (q.length === 0) return false
+
+        // plain number: 123, 12.5
+        if (/^[0-9]+(\.[0-9]+)?$/.test(q)) return true
+
+        // math-looking expression: 1+1, 1000 * 1.12, (5+3)/2
+        if (/^[0-9\.\s\+\-\*\/\%\^\(\)]+$/.test(q) && /[0-9]/.test(q)) return true
+
+        // supported math functions/constants
+        if (/^(sqrt|sin|cos|tan|log|log10|abs|round|floor|ceil|pi|e|tau)\b/i.test(q)) return true
+
+        return false
+    }
+
     function toggleMode() {
         if (root.mode === "apps") {
             root.switchMode("clipboard")
@@ -70,8 +88,8 @@ Rectangle {
 
             if (q.length > 0) {
                 root.filteredItems = [{
-                    "name": "Calculate: " + root.query,
-                    "comment": "Press Enter to calculate",
+                    "name": root.calcPreview.length > 0 ? root.query + " = " + root.calcPreview : "Calculate: " + root.query,
+                    "comment": root.calcPreview.length > 0 ? "Enter to copy/save result" : "Live result pending",
                     "icon": "",
                     "isImage": false,
                     "path": ""
@@ -110,7 +128,9 @@ Rectangle {
                 "~/.config/quickshell/scripts/app-launch.sh " + root.shellQuote(item.path)
             ]
             launchProc.running = true
-            root.closeRequested()
+            root.calcPreview = ""
+            calcsProc.running = true
+            root.refreshFilter()
         } else if (root.mode === "clipboard") {
             clipCopyProc.command = [
                 "sh",
@@ -292,6 +312,23 @@ Rectangle {
 
                             onTextChanged: {
                                 root.query = text
+
+                                if (root.mode !== "calculator" && root.looksCalculatorInput(text)) {
+                                    root.mode = "calculator"
+                                    calcsProc.running = true
+                                }
+
+                                if (root.mode === "calculator" && text.trim().length > 0) {
+                                    calcPreviewProc.command = [
+                                        "sh",
+                                        "-c",
+                                        "~/.config/quickshell/scripts/calc-preview.sh " + root.shellQuote(text.trim())
+                                    ]
+                                    calcPreviewProc.running = true
+                                } else if (root.mode === "calculator") {
+                                    root.calcPreview = ""
+                                }
+
                                 root.refreshFilter()
                                 listView.currentIndex = 0
                             }
@@ -510,6 +547,24 @@ Rectangle {
 
     Process {
         id: clipCopyProc
+    }
+
+    Process {
+        id: calcPreviewProc
+
+        stdout: SplitParser {
+            onRead: function(data) {
+                root.calcPreview = data.trim()
+                root.refreshFilter()
+            }
+        }
+
+        onExited: {
+            if (exitCode !== 0) {
+                root.calcPreview = ""
+                root.refreshFilter()
+            }
+        }
     }
 
     Process {
