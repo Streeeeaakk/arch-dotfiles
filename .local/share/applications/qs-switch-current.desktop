@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Switch Quickshell Current
+Comment=Switch Quickshell to current stable profile
+Exec=sh -c "$HOME/.config/hypr/scripts/qs-config-switch.sh current"
+Icon=preferences-desktop-theme
+Terminal=false
+Categories=Utility;Settings;
+Keywords=quickshell;config;switch;profile;current;
