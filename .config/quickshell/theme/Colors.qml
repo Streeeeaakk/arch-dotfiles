@@ -2,18 +2,18 @@ pragma Singleton
 import QtQuick
 
 QtObject {
-    property color barBg: "#11111b"
-    property color pillBg: "#1b1d2e"
-    property color pillHover: "#2a2d40"
-    property color activeBg: "#24283b"
-    property color activeHover: "#343850"
-    property color border: "#242638"
+    property color barBg: "#120d1b"
+    property color pillBg: "#1e172b"
+    property color pillHover: "#312342"
+    property color activeBg: "#442c5c"
+    property color activeHover: "#5d3d80"
+    property color border: "#9b5de5"
 
-    property color text: "#cdd6f4"
+    property color text: "#eadcff"
     property color textHover: "#ffffff"
-    property color muted: "#7f849c"
+    property color muted: "#a995c9"
 
-    property color accent: "#89b4fa"
-    property color accentText: "#11111b"
+    property color accent: "#cba6f7"
+    property color accentText: "#120d1b"
     property color warning: "#f9e2af"
 }

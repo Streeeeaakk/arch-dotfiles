@@ -6,6 +6,8 @@ import "../theme" as Theme
 Rectangle {
     id: root
 
+    signal clicked()
+
     property string appClass: ""
     property bool showCava: false
     property string bars: "▁▁▁▁▁▁▁▁▁▁▁▁▁▁"
@@ -113,6 +115,8 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.clicked()
     }
 
     Process {

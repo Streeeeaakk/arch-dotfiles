@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 import QtQuick
 import QtQuick.Layouts
 import "modules"
@@ -14,8 +15,11 @@ ShellRoot {
     property bool systemPopupOpen: false
     property bool calendarPopupOpen: false
     property bool powerPopupOpen: false
+    property bool launcherOpen: false
 
     property string popupMonitor: ""
+    property string launcherMonitor: ""
+    property string lastLauncherTrigger: ""
 
     property bool workspaceOverlayOpen: false
     property string lastWorkspaceTrigger: ""
@@ -31,7 +35,15 @@ ShellRoot {
         shell.systemPopupOpen = false
         shell.calendarPopupOpen = false
         shell.powerPopupOpen = false
+        shell.launcherOpen = false
         shell.popupMonitor = ""
+        shell.launcherMonitor = ""
+    }
+
+    function openLauncher(monitor) {
+        shell.closeAllPopups()
+        shell.launcherMonitor = monitor
+        shell.launcherOpen = true
     }
 
     function togglePopup(name, monitor) {
@@ -63,13 +75,11 @@ ShellRoot {
 
     Process {
         id: mediaStatusProc
-
         command: [
             "sh",
             "-c",
             "playerctl -a status 2>/dev/null | grep -q '^Playing$' && echo Playing || echo Stopped"
         ]
-
         running: true
 
         stdout: SplitParser {
@@ -86,13 +96,11 @@ ShellRoot {
 
     Process {
         id: workspaceTriggerProc
-
         command: [
             "sh",
             "-c",
             "cat /tmp/quickshell-workspace-trigger 2>/dev/null || true"
         ]
-
         running: true
 
         stdout: SplitParser {
@@ -131,6 +139,36 @@ ShellRoot {
         }
     }
 
+    Process {
+        id: launcherTriggerProc
+        command: [
+            "sh",
+            "-c",
+            "cat /tmp/quickshell-launcher-trigger 2>/dev/null || true"
+        ]
+        running: true
+
+        stdout: SplitParser {
+            onRead: data => {
+                let current = data.trim()
+
+                if (current.length > 0 && current !== shell.lastLauncherTrigger) {
+                    let parts = current.split("\t")
+
+                    shell.openLauncher(parts[1] || "")
+                    shell.lastLauncherTrigger = current
+                }
+            }
+        }
+    }
+
+    Timer {
+        interval: 120
+        running: true
+        repeat: true
+        onTriggered: launcherTriggerProc.running = true
+    }
+
     Variants {
         model: Quickshell.screens
 
@@ -145,6 +183,9 @@ ShellRoot {
             property bool cavaMode: !workspaceMode && shell.mediaPlaying && !islandHovered
 
             screen: modelData
+
+            // Only allow keyboard focus while launcher is open on this monitor.
+            focusable: shell.launcherOpen && shell.launcherMonitor === panel.screenName
 
             anchors {
                 top: true
@@ -243,46 +284,86 @@ ShellRoot {
 
                     MediaCava {
                         Layout.alignment: Qt.AlignVCenter
-
-                        onClicked: {
-                            shell.togglePopup("calendar", panel.screenName)
-                        }
+                        onClicked: shell.togglePopup("calendar", panel.screenName)
                     }
 
                     Temps {
                         Layout.alignment: Qt.AlignVCenter
-
-                        onClicked: {
-                            shell.togglePopup("system", panel.screenName)
-                        }
+                        onClicked: shell.togglePopup("system", panel.screenName)
                     }
 
                     ActiveWindow {
                         Layout.alignment: Qt.AlignVCenter
                         showCava: shell.mediaPlaying
+                        onClicked: shell.openLauncher(panel.screenName)
                     }
 
                     Network {
                         Layout.alignment: Qt.AlignVCenter
-
-                        onClicked: {
-                            shell.togglePopup("network", panel.screenName)
-                        }
+                        onClicked: shell.togglePopup("network", panel.screenName)
                     }
 
                     Battery {
                         Layout.alignment: Qt.AlignVCenter
-
-                        onClicked: {
-                            shell.togglePopup("power", panel.screenName)
-                        }
+                        onClicked: shell.togglePopup("power", panel.screenName)
                     }
 
                     Volume {
                         Layout.alignment: Qt.AlignVCenter
+                        onClicked: shell.togglePopup("audio", panel.screenName)
+                    }
+                }
+            }
 
-                        onClicked: {
-                            shell.togglePopup("audio", panel.screenName)
+            PopupWindow {
+                id: launcherWindow
+
+                visible: shell.launcherOpen && shell.launcherMonitor === panel.screenName
+                width: 560
+                height: 480
+                color: "transparent"
+
+                anchor.window: panel
+                anchor.rect.x: panel.width / 2 - width / 2
+                anchor.rect.y: island.y + island.height + 14
+
+                HyprlandFocusGrab {
+                    id: launcherGrab
+                    windows: [ launcherWindow ]
+                    active: launcherWindow.visible
+
+                    onCleared: {
+                        shell.launcherOpen = false
+                        shell.launcherMonitor = ""
+                    }
+                }
+
+                Item {
+                    anchors.fill: parent
+                    opacity: launcherWindow.visible ? 1 : 0
+                    scale: launcherWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    LauncherPopup {
+                        anchors.fill: parent
+
+                        onCloseRequested: {
+                            shell.launcherOpen = false
+                            shell.launcherMonitor = ""
                         }
                     }
                 }
@@ -300,8 +381,29 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                CalendarPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: calendarPopupWindow.visible ? 1 : 0
+                    scale: calendarPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    CalendarPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
@@ -317,8 +419,29 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                MediaPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: mediaPopupWindow.visible ? 1 : 0
+                    scale: mediaPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    MediaPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
@@ -334,8 +457,29 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                NetworkPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: networkPopupWindow.visible ? 1 : 0
+                    scale: networkPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    NetworkPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
@@ -351,8 +495,29 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                SystemPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: systemPopupWindow.visible ? 1 : 0
+                    scale: systemPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    SystemPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
@@ -368,8 +533,29 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                PowerPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: powerPopupWindow.visible ? 1 : 0
+                    scale: powerPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    PowerPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
 
@@ -385,8 +571,29 @@ ShellRoot {
                 anchor.rect.x: panel.width / 2 - width / 2
                 anchor.rect.y: island.y + island.height + 8
 
-                AudioPopup {
+                Item {
                     anchors.fill: parent
+                    opacity: audioPopupWindow.visible ? 1 : 0
+                    scale: audioPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 160
+                            easing.type: Easing.OutBack
+                        }
+                    }
+
+                    AudioPopup {
+                        anchors.fill: parent
+                    }
                 }
             }
         }

@@ -1,23 +1,55 @@
 #!/usr/bin/env bash
 
-CONF="$HOME/.config/cava/quickshell-wide.conf"
-N=64
+N=56
+FIFO="/tmp/quickshell-cava-wave-$$.fifo"
+CONF="/tmp/quickshell-cava-wave-$$.conf"
 
-bars=( "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█" )
+cleanup() {
+    kill "$CAVA_PID" 2>/dev/null || true
+    rm -f "$FIFO" "$CONF"
+}
 
-cava -p "$CONF" 2>/tmp/quickshell-cava-wide.err | while IFS= read -r line; do
-  [[ -z "$line" ]] && continue
+trap cleanup EXIT INT TERM
 
-  out=""
-  IFS=';' read -ra vals <<< "$line"
+mkfifo "$FIFO"
 
-  for ((i=0; i<N; i++)); do
-    v="${vals[$i]:-0}"
-    idx=$(( v * 8 / 100 ))
-    (( idx < 0 )) && idx=0
-    (( idx > 7 )) && idx=7
-    out+="${bars[$idx]}"
-  done
+cat > "$CONF" <<CAVACONF
+[general]
+bars = $N
+framerate = 45
+autosens = 1
+sensitivity = 80
 
-  echo "$out"
-done
+[input]
+method = pulse
+source = auto
+
+[output]
+method = raw
+raw_target = $FIFO
+data_format = ascii
+ascii_max_range = 100
+CAVACONF
+
+cava -p "$CONF" >/dev/null 2>&1 &
+CAVA_PID=$!
+
+while IFS= read -r line; do
+    out=""
+    IFS=';' read -ra vals <<< "$line"
+
+    for ((i=0; i<N; i++)); do
+        v="${vals[$i]:-0}"
+        [[ "$v" =~ ^[0-9]+$ ]] || v=0
+        (( v < 0 )) && v=0
+        (( v > 100 )) && v=100
+
+        if [ -z "$out" ]; then
+            out="$v"
+        else
+            out="$out,$v"
+        fi
+    done
+
+    printf '%s\n' "$out"
+done < "$FIFO"
