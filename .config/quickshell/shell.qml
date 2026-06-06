@@ -11,6 +11,7 @@ ShellRoot {
 
     property bool mediaPopupOpen: false
     property bool networkPopupOpen: false
+    property bool bluetoothPopupOpen: false
     property bool audioPopupOpen: false
     property bool systemPopupOpen: false
     property bool calendarPopupOpen: false
@@ -46,6 +47,7 @@ ShellRoot {
     function closeAllPopups() {
         shell.mediaPopupOpen = false
         shell.networkPopupOpen = false
+        shell.bluetoothPopupOpen = false
         shell.audioPopupOpen = false
         shell.systemPopupOpen = false
         shell.calendarPopupOpen = false
@@ -68,6 +70,7 @@ ShellRoot {
 
         if (name === "media") alreadyOpen = shell.mediaPopupOpen
         if (name === "network") alreadyOpen = shell.networkPopupOpen
+        if (name === "bluetooth") alreadyOpen = shell.bluetoothPopupOpen
         if (name === "audio") alreadyOpen = shell.audioPopupOpen
         if (name === "system") alreadyOpen = shell.systemPopupOpen
         if (name === "calendar") alreadyOpen = shell.calendarPopupOpen
@@ -81,6 +84,7 @@ ShellRoot {
 
         if (name === "media") shell.mediaPopupOpen = true
         if (name === "network") shell.networkPopupOpen = true
+        if (name === "bluetooth") shell.bluetoothPopupOpen = true
         if (name === "audio") shell.audioPopupOpen = true
         if (name === "system") shell.systemPopupOpen = true
         if (name === "calendar") shell.calendarPopupOpen = true
@@ -252,7 +256,7 @@ ShellRoot {
                         ? workspaceRow.implicitWidth + 28
                         : panel.cavaMode
                             ? Math.min(panel.width * 0.56, 680)
-                            : 600
+                            : 660
 
                     height: 28
                     radius: 14
@@ -328,9 +332,9 @@ ShellRoot {
                         RowLayout {
                             id: leftCenterGroup
                             anchors.right: hostCenterPill.left
-                            anchors.rightMargin: 18
+                            anchors.rightMargin: 8
                             anchors.verticalCenter: parent.verticalCenter
-                            spacing: 8
+                            spacing: 6
                             MediaCava {
                                 Layout.alignment: Qt.AlignVCenter
                                 onClicked: shell.togglePopup("calendar", panel.screenName)
@@ -340,6 +344,7 @@ ShellRoot {
                                 Layout.alignment: Qt.AlignVCenter
                                 onClicked: shell.togglePopup("network", panel.screenName)
                             }
+
                         }
 
                         RowLayout {
@@ -347,7 +352,14 @@ ShellRoot {
                             anchors.left: hostCenterPill.right
                             anchors.leftMargin: 18
                             anchors.verticalCenter: parent.verticalCenter
-                            spacing: 8
+                            spacing: 6
+
+
+                            SearchButton {
+                                Layout.alignment: Qt.AlignVCenter
+                                onClicked: shell.openLauncher(panel.screenName, "apps")
+                            }
+
                             ActiveWindow {
                                 Layout.alignment: Qt.AlignVCenter
                             }
@@ -511,6 +523,40 @@ ShellRoot {
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                     NetworkPopup { anchors.fill: parent }
+                }
+            }
+
+            PopupWindow {
+                id: bluetoothPopupWindow
+                visible: shell.bluetoothPopupOpen && shell.popupMonitor === panel.screenName
+                width: 360
+                height: 190
+                color: "transparent"
+                grabFocus: true
+
+                anchor.window: panel
+                anchor.rect.x: panel.width / 2 - width / 2
+                anchor.rect.y: islandWrap.y + island.height + 8
+
+                Item {
+                    anchors.fill: parent
+                    opacity: bluetoothPopupWindow.visible ? 1 : 0
+                    scale: bluetoothPopupWindow.visible ? 1 : 0.90
+                    transformOrigin: Item.Top
+                    focus: true
+                    activeFocusOnTab: true
+
+                    Keys.onPressed: function(event) {
+                        if (event.key === Qt.Key_Escape) {
+                            shell.closeAllPopups()
+                            event.accepted = true
+                        }
+                    }
+
+                    Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
+
+                    BluetoothPopup { anchors.fill: parent }
                 }
             }
 

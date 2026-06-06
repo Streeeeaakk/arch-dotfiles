@@ -10,21 +10,33 @@ Item {
     property bool hovered: mouseArea.containsMouse
     property string dateTimeText: Qt.formatDateTime(new Date(), "MMMM d, h:mm AP")
 
-    implicitWidth: 128
-    Layout.preferredWidth: 128
-    Layout.minimumWidth: 128
-    Layout.maximumWidth: 128
+    implicitWidth: 158
+    Layout.preferredWidth: 158
+    Layout.minimumWidth: 158
+    Layout.maximumWidth: 158
 
     height: 24
 
-    Text {
+    RowLayout {
         anchors.centerIn: parent
-        text: root.dateTimeText
-        color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
-        font.family: "Figtree"
-        font.pixelSize: 12
-        font.bold: root.hovered
-        elide: Text.ElideRight
+        spacing: 6
+
+        Text {
+            text: ""
+            color: root.hovered ? Theme.Colors.accent : Theme.Colors.text
+            font.pixelSize: 11
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+        Text {
+            text: root.dateTimeText
+            color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
+            font.family: "Figtree"
+            font.pixelSize: 12
+            font.bold: root.hovered
+            elide: Text.ElideRight
+            Layout.alignment: Qt.AlignVCenter
+        }
     }
 
     MouseArea {

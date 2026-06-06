@@ -21,7 +21,7 @@ Item {
         spacing: 7
 
         Text {
-            text: "󰌢"
+            text: ""
             color: root.hovered ? Theme.Colors.accent : Theme.Colors.text
             font.pixelSize: 13
             Layout.alignment: Qt.AlignVCenter

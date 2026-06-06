@@ -8,15 +8,15 @@ Item {
 
     signal clicked()
 
-    property string ssid: "wifi"
-    property string signal: ""
-    property bool connected: ssid !== "" && ssid !== "--" && ssid !== "Disconnected"
+    property string status: "off"
+    property string device: ""
     property bool hovered: mouseArea.containsMouse
+    property bool enabled: status === "on"
 
-    implicitWidth: Math.max(66, textRow.implicitWidth + 8)
+    implicitWidth: enabled && device.length > 0 ? Math.min(110, textRow.implicitWidth + 12) : 34
     Layout.preferredWidth: implicitWidth
-    Layout.minimumWidth: 66
-    Layout.maximumWidth: 120
+    Layout.minimumWidth: 34
+    Layout.maximumWidth: 110
 
     height: 24
 
@@ -26,19 +26,20 @@ Item {
         spacing: 5
 
         Text {
-            text: "󰖩"
-            color: root.hovered ? Theme.Colors.accent : Theme.Colors.text
+            text: ""
+            color: root.hovered ? Theme.Colors.accent : root.enabled ? Theme.Colors.text : Theme.Colors.muted
             font.pixelSize: 12
             Layout.alignment: Qt.AlignVCenter
         }
 
         Text {
-            text: root.connected ? root.ssid : "wifi"
+            visible: root.enabled && root.device.length > 0
+            text: root.device
             color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
             font.family: "Figtree"
             font.pixelSize: 12
             font.bold: root.hovered
-            Layout.maximumWidth: 82
+            Layout.maximumWidth: 78
             elide: Text.ElideRight
             Layout.alignment: Qt.AlignVCenter
         }
@@ -53,21 +54,19 @@ Item {
     }
 
     Process {
-        id: networkProc
-
+        id: btProc
         command: [
             "sh",
             "-c",
-            "nmcli -t -f ACTIVE,SSID,SIGNAL dev wifi 2>/dev/null | awk -F: '$1==\"yes\" {print $2\":\"$3; exit}'"
+            "power=$(bluetoothctl show 2>/dev/null | awk -F': ' '/Powered/ {print tolower($2); exit}'); dev=$(bluetoothctl devices Connected 2>/dev/null | sed 's/^Device [^ ]* //' | head -n1); [ \"$power\" = \"yes\" ] && echo \"on:$dev\" || echo \"off:\""
         ]
-
         running: true
 
         stdout: SplitParser {
             onRead: data => {
                 let parts = data.trim().split(":")
-                root.ssid = parts[0] || "wifi"
-                root.signal = parts[1] || ""
+                root.status = parts[0] || "off"
+                root.device = parts.slice(1).join(":") || ""
             }
         }
     }
@@ -76,6 +75,6 @@ Item {
         interval: 5000
         running: true
         repeat: true
-        onTriggered: networkProc.running = true
+        onTriggered: btProc.running = true
     }
 }
