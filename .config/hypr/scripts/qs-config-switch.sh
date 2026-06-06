@@ -45,6 +45,14 @@ rsync -a --delete "$SRC/" "$LIVE_DIR/"
 
 echo "$PROFILE" > "$PROFILES_DIR/active-profile"
 
+THEME_STATE="$PROFILES_DIR/theme-state"
+ACTIVE_THEME="$(cat "$THEME_STATE" 2>/dev/null || true)"
+
+if [[ -n "$ACTIVE_THEME" && -x "$LIVE_DIR/scripts/qs-theme.sh" ]]; then
+  echo "Applying saved theme: $ACTIVE_THEME"
+  QS_THEME_NO_RESTART=1 "$LIVE_DIR/scripts/qs-theme.sh" "$ACTIVE_THEME" || true
+fi
+
 echo "Restarting Quickshell..."
 if command -v qsrestart >/dev/null 2>&1; then
   qsrestart

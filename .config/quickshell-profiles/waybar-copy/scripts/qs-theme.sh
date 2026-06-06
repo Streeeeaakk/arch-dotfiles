@@ -2,6 +2,7 @@
 
 QS_DIR="$HOME/.config/quickshell"
 MODE_FILE="$QS_DIR/.mode"
+GLOBAL_THEME_FILE="$HOME/.config/quickshell-profiles/theme-state"
 THEME_DIR="$QS_DIR/theme"
 COLORS_FILE="$THEME_DIR/Colors.qml"
 
@@ -87,6 +88,11 @@ QML
 esac
 
 echo "$mode" > "$MODE_FILE"
+echo "$mode" > "$GLOBAL_THEME_FILE"
+
+if [ "${QS_THEME_NO_RESTART:-0}" = "1" ]; then
+    exit 0
+fi
 
 pkill quickshell 2>/dev/null || true
 sleep 0.2
