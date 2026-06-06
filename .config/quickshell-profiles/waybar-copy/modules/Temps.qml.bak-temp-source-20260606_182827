@@ -12,20 +12,19 @@ Item {
     property string gpuTemp: "?"
     property bool hovered: mouseArea.containsMouse
 
-    implicitWidth: 142
-    Layout.preferredWidth: 142
-    Layout.minimumWidth: 142
-    Layout.maximumWidth: 142
+    implicitWidth: 76
+    Layout.preferredWidth: 76
+    Layout.minimumWidth: 76
+    Layout.maximumWidth: 76
 
     height: 24
 
     Text {
         anchors.centerIn: parent
-        text: "CPU: " + root.cpuTemp + "°C    GPU: " + root.gpuTemp + "°"
+        text: " " + root.cpuTemp + "° " + root.gpuTemp + "°"
         color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
-        font.family: "Figtree"
         font.pixelSize: 12
-        font.bold: true
+        font.bold: root.hovered
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
@@ -44,7 +43,7 @@ Item {
         command: [
             "sh",
             "-c",
-            "cpu=''; for z in /sys/class/thermal/thermal_zone*/temp; do type=$(cat ${z%/temp}/type 2>/dev/null); if [ \"$type\" = \"acpitz\" ]; then raw=$(cat \"$z\" 2>/dev/null); cpu=$((raw/1000)); break; fi; done; if [ -z \"$cpu\" ]; then cpu=$(sensors 2>/dev/null | awk '/acpitz-acpi-0/{found=1} found && /temp1:/ {gsub(/[+°C]/,\"\",$2); print int($2); exit}'); fi; gpu=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1); [ -z \"$cpu\" ] && cpu=\"?\"; [ -z \"$gpu\" ] && gpu=\"?\"; echo \"$cpu:$gpu\""
+            "cpu=$(sensors 2>/dev/null | awk '/Package id 0:/ {gsub(/[+°C]/,\"\",$4); print int($4); exit} /Tctl:/ {gsub(/[+°C]/,\"\",$2); print int($2); exit} /CPU:/ {gsub(/[+°C]/,\"\",$2); print int($2); exit}'); gpu=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1); [ -z \"$cpu\" ] && cpu=\"?\"; [ -z \"$gpu\" ] && gpu=\"?\"; echo \"$cpu:$gpu\""
         ]
         running: true
 
@@ -58,7 +57,7 @@ Item {
     }
 
     Timer {
-        interval: 2000
+        interval: 3000
         running: true
         repeat: true
         onTriggered: tempProc.running = true

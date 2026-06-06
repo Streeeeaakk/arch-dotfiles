@@ -12,10 +12,10 @@ Item {
     property string gpuTemp: "?"
     property bool hovered: mouseArea.containsMouse
 
-    implicitWidth: 142
-    Layout.preferredWidth: 142
-    Layout.minimumWidth: 142
-    Layout.maximumWidth: 142
+    implicitWidth: 112
+    Layout.preferredWidth: 112
+    Layout.minimumWidth: 112
+    Layout.maximumWidth: 112
 
     height: 24
 
@@ -44,7 +44,7 @@ Item {
         command: [
             "sh",
             "-c",
-            "cpu=''; for z in /sys/class/thermal/thermal_zone*/temp; do type=$(cat ${z%/temp}/type 2>/dev/null); if [ \"$type\" = \"acpitz\" ]; then raw=$(cat \"$z\" 2>/dev/null); cpu=$((raw/1000)); break; fi; done; if [ -z \"$cpu\" ]; then cpu=$(sensors 2>/dev/null | awk '/acpitz-acpi-0/{found=1} found && /temp1:/ {gsub(/[+°C]/,\"\",$2); print int($2); exit}'); fi; gpu=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1); [ -z \"$cpu\" ] && cpu=\"?\"; [ -z \"$gpu\" ] && gpu=\"?\"; echo \"$cpu:$gpu\""
+            "cpu=''; for z in /sys/class/thermal/thermal_zone*/temp; do type=$(cat ${z%/temp}/type 2>/dev/null); if [ \"$type\" = \"x86_pkg_temp\" ]; then raw=$(cat \"$z\" 2>/dev/null); cpu=$((raw/1000)); break; fi; done; if [ -z \"$cpu\" ]; then cpu=$(sensors 2>/dev/null | awk '/Package id 0:/ {gsub(/[+°C]/,\"\",$4); print int($4); exit} /Tctl:/ {gsub(/[+°C]/,\"\",$2); print int($2); exit}'); fi; gpu=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1); [ -z \"$cpu\" ] && cpu=\"?\"; [ -z \"$gpu\" ] && gpu=\"?\"; echo \"$cpu:$gpu\""
         ]
         running: true
 
