@@ -9,8 +9,12 @@ Item {
     property string appClass: ""
     property bool hovered: mouseArea.containsMouse
 
-    width: Math.max(110, textRow.implicitWidth + 22)
-    height: 26
+    implicitWidth: Math.min(92, Math.max(68, textRow.implicitWidth + 16))
+    Layout.preferredWidth: implicitWidth
+    Layout.minimumWidth: 68
+    Layout.maximumWidth: 92
+
+    height: 24
 
     function appIcon(cls) {
         let c = cls.toLowerCase()
@@ -52,19 +56,10 @@ Item {
         return cls.length > 0 ? cls : "Desktop"
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: 13
-        color: Theme.Colors.barBg
-        border.color: Theme.Colors.accent
-        border.width: 1
-        opacity: 0.96
-    }
-
     RowLayout {
         id: textRow
         anchors.centerIn: parent
-        spacing: 7
+        spacing: 6
 
         Text {
             text: root.appIcon(root.appClass)
@@ -79,7 +74,7 @@ Item {
             font.family: "Figtree"
             font.pixelSize: 12
             font.bold: true
-            Layout.maximumWidth: 120
+            Layout.maximumWidth: 54
             elide: Text.ElideRight
             Layout.alignment: Qt.AlignVCenter
         }

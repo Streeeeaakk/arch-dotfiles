@@ -5,26 +5,23 @@ import "../theme" as Theme
 Item {
     id: root
 
-    signal clicked()
-
+    property string dateText: Qt.formatDate(new Date(), "MMM dd")
     property bool hovered: mouseArea.containsMouse
-    property string dateTimeText: Qt.formatDateTime(new Date(), "MMMM d, h:mm AP")
 
-    implicitWidth: 128
-    Layout.preferredWidth: 128
-    Layout.minimumWidth: 128
-    Layout.maximumWidth: 128
+    implicitWidth: 66
+    Layout.preferredWidth: 66
+    Layout.minimumWidth: 66
+    Layout.maximumWidth: 66
 
     height: 24
 
     Text {
         anchors.centerIn: parent
-        text: root.dateTimeText
+        text: root.dateText
         color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
         font.family: "Figtree"
         font.pixelSize: 12
         font.bold: root.hovered
-        elide: Text.ElideRight
     }
 
     MouseArea {
@@ -32,13 +29,12 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.clicked()
     }
 
     Timer {
-        interval: 1000
+        interval: 60000
         running: true
         repeat: true
-        onTriggered: root.dateTimeText = Qt.formatDateTime(new Date(), "MMMM d, h:mm AP")
+        onTriggered: root.dateText = Qt.formatDate(new Date(), "MMM dd")
     }
 }

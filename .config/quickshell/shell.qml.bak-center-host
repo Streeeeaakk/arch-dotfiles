@@ -230,8 +230,23 @@ ShellRoot {
                 }
             }
 
-            
+            ActiveWindow {
+                id: activeWindowPill
 
+                visible: panel.normalMode
+                anchors.left: parent.left
+                anchors.leftMargin: 14
+                anchors.verticalCenter: islandWrap.verticalCenter
+
+                opacity: panel.normalMode ? 1 : 0
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 120
+                        easing.type: Easing.OutCubic
+                    }
+                }
+            }
 
             Item {
                 id: islandWrap
@@ -252,7 +267,7 @@ ShellRoot {
                         ? workspaceRow.implicitWidth + 28
                         : panel.cavaMode
                             ? Math.min(panel.width * 0.56, 680)
-                            : 600
+                            : centerRow.implicitWidth + 28
 
                     height: 28
                     radius: 14
@@ -306,11 +321,12 @@ ShellRoot {
                         }
                     }
 
-                    Item {
+                    RowLayout {
                         id: centerRow
                         visible: panel.normalMode
                         opacity: panel.normalMode ? 1 : 0
-                        anchors.fill: parent
+                        anchors.centerIn: parent
+                        spacing: 8
 
                         Behavior on opacity {
                             NumberAnimation {
@@ -319,48 +335,45 @@ ShellRoot {
                             }
                         }
 
+                        MediaCava {
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: shell.togglePopup("calendar", panel.screenName)
+                        }
+
+                        Network {
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: shell.togglePopup("network", panel.screenName)
+                        }
+
+                        Rectangle {
+                            Layout.preferredWidth: 1
+                            Layout.preferredHeight: 14
+                            Layout.alignment: Qt.AlignVCenter
+                            color: Theme.Colors.accent
+                            opacity: 0.45
+                        }
+
                         HostCenter {
-                            id: hostCenterPill
-                            anchors.centerIn: parent
+                            Layout.alignment: Qt.AlignVCenter
                             onClicked: shell.togglePopup("media", panel.screenName)
                         }
 
-                        RowLayout {
-                            id: leftCenterGroup
-                            anchors.right: hostCenterPill.left
-                            anchors.rightMargin: 18
-                            anchors.verticalCenter: parent.verticalCenter
-                            spacing: 8
-                            MediaCava {
-                                Layout.alignment: Qt.AlignVCenter
-                                onClicked: shell.togglePopup("calendar", panel.screenName)
-                            }
-
-                            Network {
-                                Layout.alignment: Qt.AlignVCenter
-                                onClicked: shell.togglePopup("network", panel.screenName)
-                            }
+                        Rectangle {
+                            Layout.preferredWidth: 1
+                            Layout.preferredHeight: 14
+                            Layout.alignment: Qt.AlignVCenter
+                            color: Theme.Colors.accent
+                            opacity: 0.45
                         }
 
-                        RowLayout {
-                            id: rightCenterGroup
-                            anchors.left: hostCenterPill.right
-                            anchors.leftMargin: 18
-                            anchors.verticalCenter: parent.verticalCenter
-                            spacing: 8
-                            ActiveWindow {
-                                Layout.alignment: Qt.AlignVCenter
-                            }
+                        Battery {
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: shell.togglePopup("power", panel.screenName)
+                        }
 
-                            Battery {
-                                Layout.alignment: Qt.AlignVCenter
-                                onClicked: shell.togglePopup("power", panel.screenName)
-                            }
-
-                            Volume {
-                                Layout.alignment: Qt.AlignVCenter
-                                onClicked: shell.togglePopup("audio", panel.screenName)
-                            }
+                        Volume {
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: shell.togglePopup("audio", panel.screenName)
                         }
                     }
                 }
