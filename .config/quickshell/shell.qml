@@ -59,9 +59,7 @@ ShellRoot {
 
         shell.closeAllPopups()
 
-        if (alreadyOpen && sameMonitor) {
-            return
-        }
+        if (alreadyOpen && sameMonitor) return
 
         shell.popupMonitor = monitor
 
@@ -109,10 +107,8 @@ ShellRoot {
 
                 if (current.length > 0 && current !== shell.lastWorkspaceTrigger) {
                     let parts = current.split("\t")
-
                     shell.workspaceTriggerMonitor = parts[4] || ""
                     shell.workspaceOverlayOpen = true
-
                     workspaceOverlayTimer.restart()
                     shell.closeAllPopups()
                     shell.lastWorkspaceTrigger = current
@@ -154,7 +150,6 @@ ShellRoot {
 
                 if (current.length > 0 && current !== shell.lastLauncherTrigger) {
                     let parts = current.split("\t")
-
                     shell.openLauncher(parts[1] || "")
                     shell.lastLauncherTrigger = current
                 }
@@ -183,8 +178,6 @@ ShellRoot {
             property bool cavaMode: !workspaceMode && shell.mediaPlaying && !islandHovered
 
             screen: modelData
-
-            // Only allow keyboard focus while launcher is open on this monitor.
             focusable: shell.launcherOpen && shell.launcherMonitor === panel.screenName
 
             anchors {
@@ -233,9 +226,7 @@ ShellRoot {
                     visible: panel.cavaMode
                     opacity: panel.cavaMode ? 1 : 0
 
-                    onClicked: {
-                        shell.togglePopup("media", panel.screenName)
-                    }
+                    onClicked: shell.togglePopup("media", panel.screenName)
 
                     Behavior on opacity {
                         NumberAnimation {
@@ -250,7 +241,6 @@ ShellRoot {
 
                     visible: panel.workspaceMode
                     opacity: panel.workspaceMode ? 1 : 0
-
                     anchors.centerIn: parent
                     spacing: 6
 
@@ -271,7 +261,6 @@ ShellRoot {
 
                     visible: panel.normalMode
                     opacity: panel.normalMode ? 1 : 0
-
                     anchors.centerIn: parent
                     spacing: 5
 
@@ -319,16 +308,15 @@ ShellRoot {
                 id: launcherWindow
 
                 visible: shell.launcherOpen && shell.launcherMonitor === panel.screenName
-                width: 560
-                height: 480
+                width: 660
+                height: 360
                 color: "transparent"
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: island.y + island.height + 14
+                anchor.rect.y: 72
 
                 HyprlandFocusGrab {
-                    id: launcherGrab
                     windows: [ launcherWindow ]
                     active: launcherWindow.visible
 
@@ -341,19 +329,19 @@ ShellRoot {
                 Item {
                     anchors.fill: parent
                     opacity: launcherWindow.visible ? 1 : 0
-                    scale: launcherWindow.visible ? 1 : 0.90
+                    scale: launcherWindow.visible ? 1 : 0.92
                     transformOrigin: Item.Top
 
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 160
+                            duration: 150
                             easing.type: Easing.OutCubic
                         }
                     }
 
                     Behavior on scale {
                         NumberAnimation {
-                            duration: 160
+                            duration: 150
                             easing.type: Easing.OutBack
                         }
                     }
@@ -371,7 +359,6 @@ ShellRoot {
 
             PopupWindow {
                 id: calendarPopupWindow
-
                 visible: shell.calendarPopupOpen && shell.popupMonitor === panel.screenName
                 width: 300
                 height: 260
@@ -387,19 +374,8 @@ ShellRoot {
                     scale: calendarPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
+                    Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                     CalendarPopup {
                         anchors.fill: parent
@@ -409,7 +385,6 @@ ShellRoot {
 
             PopupWindow {
                 id: mediaPopupWindow
-
                 visible: shell.mediaPopupOpen && shell.popupMonitor === panel.screenName
                 width: 380
                 height: 112
@@ -425,19 +400,8 @@ ShellRoot {
                     scale: mediaPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
+                    Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                     MediaPopup {
                         anchors.fill: parent
@@ -447,7 +411,6 @@ ShellRoot {
 
             PopupWindow {
                 id: networkPopupWindow
-
                 visible: shell.networkPopupOpen && shell.popupMonitor === panel.screenName
                 width: 360
                 height: 138
@@ -463,19 +426,8 @@ ShellRoot {
                     scale: networkPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
+                    Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                     NetworkPopup {
                         anchors.fill: parent
@@ -485,7 +437,6 @@ ShellRoot {
 
             PopupWindow {
                 id: systemPopupWindow
-
                 visible: shell.systemPopupOpen && shell.popupMonitor === panel.screenName
                 width: 420
                 height: 214
@@ -501,19 +452,8 @@ ShellRoot {
                     scale: systemPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
+                    Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                     SystemPopup {
                         anchors.fill: parent
@@ -523,7 +463,6 @@ ShellRoot {
 
             PopupWindow {
                 id: powerPopupWindow
-
                 visible: shell.powerPopupOpen && shell.popupMonitor === panel.screenName
                 width: 360
                 height: 176
@@ -539,19 +478,8 @@ ShellRoot {
                     scale: powerPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
+                    Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                     PowerPopup {
                         anchors.fill: parent
@@ -561,7 +489,6 @@ ShellRoot {
 
             PopupWindow {
                 id: audioPopupWindow
-
                 visible: shell.audioPopupOpen && shell.popupMonitor === panel.screenName
                 width: 460
                 height: 260
@@ -577,19 +504,8 @@ ShellRoot {
                     scale: audioPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 160
-                            easing.type: Easing.OutBack
-                        }
-                    }
+                    Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                     AudioPopup {
                         anchors.fill: parent

@@ -12,9 +12,9 @@ Rectangle {
     property var filteredApps: []
     property string query: ""
 
-    width: 560
-    height: 480
-    radius: 18
+    width: 660
+    height: 360
+    radius: 22
 
     color: Theme.Colors.barBg
     border.color: Theme.Colors.border
@@ -29,15 +29,19 @@ Rectangle {
         let q = root.query.toLowerCase().trim()
 
         if (q.length === 0) {
-            root.filteredApps = root.apps
+            root.filteredApps = root.apps.slice(0, 8)
             return
         }
 
         root.filteredApps = root.apps.filter(function(app) {
             let name = String(app.name || "").toLowerCase()
             let comment = String(app.comment || "").toLowerCase()
-            return name.indexOf(q) !== -1 || comment.indexOf(q) !== -1
-        })
+            let iconName = String(app.iconName || "").toLowerCase()
+
+            return name.indexOf(q) !== -1
+                || comment.indexOf(q) !== -1
+                || iconName.indexOf(q) !== -1
+        }).slice(0, 8)
     }
 
     function launchCurrent() {
@@ -60,77 +64,80 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 16
+        anchors.margins: 18
         spacing: 12
-
-        RowLayout {
-            Layout.fillWidth: true
-            height: 38
-            spacing: 10
-
-            Text {
-                text: "󰀻"
-                color: Theme.Colors.accent
-                font.pixelSize: 20
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            TextInput {
-                id: searchInput
-
-                Layout.fillWidth: true
-                height: 36
-
-                focus: true
-                color: Theme.Colors.text
-                selectedTextColor: Theme.Colors.accentText
-                selectionColor: Theme.Colors.accent
-                font.pixelSize: 17
-                font.bold: true
-
-                clip: true
-                verticalAlignment: TextInput.AlignVCenter
-
-                onTextChanged: {
-                    root.query = text
-                    root.refreshFilter()
-                    listView.currentIndex = 0
-                }
-
-                Keys.onPressed: function(event) {
-                    if (event.key === Qt.Key_Escape) {
-                        root.closeRequested()
-                        event.accepted = true
-                    } else if (event.key === Qt.Key_Down) {
-                        listView.currentIndex = Math.min(listView.currentIndex + 1, root.filteredApps.length - 1)
-                        event.accepted = true
-                    } else if (event.key === Qt.Key_Up) {
-                        listView.currentIndex = Math.max(listView.currentIndex - 1, 0)
-                        event.accepted = true
-                    } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                        root.launchCurrent()
-                        event.accepted = true
-                    }
-                }
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: "Search apps..."
-                    visible: searchInput.text.length === 0
-                    color: Theme.Colors.muted
-                    font.pixelSize: 17
-                    font.bold: true
-                }
-
-                Component.onCompleted: forceActiveFocus()
-            }
-        }
 
         Rectangle {
             Layout.fillWidth: true
-            height: 1
-            color: Theme.Colors.border
-            opacity: 0.75
+            height: 58
+            radius: 17
+            color: Theme.Colors.pillBg
+            border.color: Theme.Colors.border
+            border.width: 1
+            clip: true
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 18
+                anchors.rightMargin: 18
+                spacing: 13
+
+                Text {
+                    text: "󰍉"
+                    color: Theme.Colors.accent
+                    font.pixelSize: 23
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                TextInput {
+                    id: searchInput
+
+                    Layout.fillWidth: true
+                    height: parent.height
+
+                    focus: true
+                    color: Theme.Colors.text
+                    selectedTextColor: Theme.Colors.accentText
+                    selectionColor: Theme.Colors.accent
+                    font.pixelSize: 22
+                    font.bold: true
+                    clip: true
+                    verticalAlignment: TextInput.AlignVCenter
+
+                    onTextChanged: {
+                        root.query = text
+                        root.refreshFilter()
+                        listView.currentIndex = 0
+                    }
+
+                    Keys.onPressed: function(event) {
+                        if (event.key === Qt.Key_Escape) {
+                            root.closeRequested()
+                            event.accepted = true
+                        } else if (event.key === Qt.Key_Down) {
+                            listView.currentIndex = Math.min(listView.currentIndex + 1, root.filteredApps.length - 1)
+                            event.accepted = true
+                        } else if (event.key === Qt.Key_Up) {
+                            listView.currentIndex = Math.max(listView.currentIndex - 1, 0)
+                            event.accepted = true
+                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            root.launchCurrent()
+                            event.accepted = true
+                        }
+                    }
+
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "Spotlight Search"
+                        visible: searchInput.text.length === 0
+                        color: Theme.Colors.muted
+                        font.pixelSize: 22
+                        font.bold: true
+                    }
+
+                    Component.onCompleted: forceActiveFocus()
+                }
+            }
         }
 
         ListView {
@@ -142,7 +149,7 @@ Rectangle {
             model: root.filteredApps
             currentIndex: 0
             clip: true
-            spacing: 6
+            spacing: 7
 
             delegate: Rectangle {
                 id: appRow
@@ -152,8 +159,8 @@ Rectangle {
                 property string iconSource: modelData.icon || ""
 
                 width: listView.width
-                height: 44
-                radius: 12
+                height: 46
+                radius: 14
 
                 color: selected
                     ? Theme.Colors.activeBg
@@ -163,19 +170,19 @@ Rectangle {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 12
-                    anchors.rightMargin: 12
-                    spacing: 12
+                    anchors.leftMargin: 14
+                    anchors.rightMargin: 14
+                    spacing: 13
 
                     Item {
-                        Layout.preferredWidth: 28
-                        Layout.preferredHeight: 28
+                        Layout.preferredWidth: 34
+                        Layout.preferredHeight: 34
                         Layout.alignment: Qt.AlignVCenter
 
                         Image {
                             anchors.centerIn: parent
-                            width: 24
-                            height: 24
+                            width: 28
+                            height: 28
                             source: appRow.iconSource
                             visible: appRow.iconSource.length > 0
                             fillMode: Image.PreserveAspectFit
@@ -188,7 +195,7 @@ Rectangle {
                             visible: appRow.iconSource.length === 0
                             text: "󰣆"
                             color: appRow.selected ? Theme.Colors.accent : Theme.Colors.text
-                            font.pixelSize: 17
+                            font.pixelSize: 20
                         }
                     }
 
@@ -200,20 +207,29 @@ Rectangle {
                         Text {
                             text: modelData.name || ""
                             color: Theme.Colors.text
-                            font.pixelSize: 13
+                            font.pixelSize: 14
                             font.bold: appRow.selected
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                         }
 
                         Text {
-                            text: modelData.comment || modelData.path || ""
+                            text: modelData.comment || ""
                             color: Theme.Colors.muted
                             font.pixelSize: 10
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                             visible: text.length > 0
                         }
+                    }
+
+                    Text {
+                        visible: appRow.selected
+                        text: "↵"
+                        color: Theme.Colors.muted
+                        font.pixelSize: 16
+                        font.bold: true
+                        Layout.alignment: Qt.AlignVCenter
                     }
                 }
 
@@ -234,20 +250,12 @@ Rectangle {
 
             Text {
                 anchors.centerIn: parent
-                text: "No apps found"
+                text: "No results"
                 visible: root.filteredApps.length === 0
                 color: Theme.Colors.muted
-                font.pixelSize: 14
+                font.pixelSize: 15
                 font.bold: true
             }
-        }
-
-        Text {
-            text: "Enter to open  •  Esc to close"
-            color: Theme.Colors.muted
-            font.pixelSize: 11
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
         }
     }
 
