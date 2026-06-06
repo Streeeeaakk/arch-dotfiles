@@ -2,8 +2,15 @@
 set -euo pipefail
 
 RUN_DIR="$HOME/.config/quickshell-lockscreen-fullscreen"
+BG="/tmp/qs-lock-bg.png"
+RAW="/tmp/qs-lock-bg-raw.png"
 
 mkdir -p "$RUN_DIR"
+
+# Capture current screen and make blurred/dimmed background.
+grim "$RAW"
+magick "$RAW" -resize 25% -blur 0x8 -resize 400% -brightness-contrast -12x-4 "$BG"
+rm -f "$RAW"
 
 cp "$HOME/.config/quickshell-profiles/current/lockscreen/LockscreenFullscreen.qml" \
   "$RUN_DIR/shell.qml"

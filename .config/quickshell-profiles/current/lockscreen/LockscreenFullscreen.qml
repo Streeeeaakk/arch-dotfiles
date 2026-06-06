@@ -14,12 +14,19 @@ ShellRoot {
 
         Rectangle {
             anchors.fill: parent
-            color: Theme.Colors.barBg
+            color: "#000000"
+
+            Image {
+                anchors.fill: parent
+                source: "file:///tmp/qs-lock-bg.png"
+                fillMode: Image.PreserveAspectCrop
+                cache: false
+            }
 
             Rectangle {
                 anchors.fill: parent
                 color: "#000000"
-                opacity: 0.38
+                opacity: 0.35
             }
 
             Rectangle {
@@ -116,13 +123,20 @@ ShellRoot {
                         }
 
                         Keys.onEscapePressed: text = ""
-                        Keys.onReturnPressed: text = ""
+
+                        Keys.onReturnPressed: {
+                            if (text === "devunlock") {
+                                Qt.quit()
+                            } else {
+                                text = ""
+                            }
+                        }
                     }
 
                     Text {
                         width: parent.width
                         horizontalAlignment: Text.AlignHCenter
-                        text: "Fullscreen prototype — Enter/Escape clears input"
+                        text: "Fullscreen prototype — type devunlock then Enter to close"
                         color: Theme.Colors.text
                         opacity: 0.35
                         font.family: "Ubuntu Nerd Font"
