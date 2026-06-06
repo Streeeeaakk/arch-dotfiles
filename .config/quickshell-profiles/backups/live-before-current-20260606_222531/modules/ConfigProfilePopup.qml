@@ -1,0 +1,121 @@
+import QtQuick
+import QtQuick.Layouts
+import Quickshell.Io
+import "../theme" as Theme
+
+Rectangle {
+    id: root
+
+    signal closeRequested()
+
+    property string activeProfile: ""
+
+    width: 260
+    height: 130
+    radius: 14
+
+    color: Qt.rgba(Theme.Colors.barBg.r, Theme.Colors.barBg.g, Theme.Colors.barBg.b, 0.96)
+    border.color: Theme.Colors.accent
+    border.width: 1
+    clip: true
+
+    function switchProfile(profile) {
+        switchProc.command = [
+            "sh",
+            "-c",
+            "~/.config/hypr/scripts/qs-config-switch.sh " + profile
+        ]
+        switchProc.running = true
+        root.closeRequested()
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+        anchors.margins: 12
+        spacing: 8
+
+        Text {
+            text: "Quickshell Config"
+            color: "#ffffff"
+            font.family: "Figtree"
+            font.pixelSize: 13
+            font.bold: true
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        ConfigButton {
+            title: "Demeter 2.0"
+            selected: root.activeProfile === "demeter-2.0"
+            onClicked: root.switchProfile("demeter-2.0")
+        }
+
+        ConfigButton {
+            title: "Kaktos"
+            selected: root.activeProfile === "kaktos"
+            onClicked: root.switchProfile("kaktos")
+        }
+    }
+
+    component ConfigButton: Rectangle {
+        id: btn
+
+        signal clicked()
+
+        property string title: ""
+        property bool selected: false
+        property bool hovered: mouse.containsMouse
+
+        Layout.fillWidth: true
+        height: 32
+        radius: 9
+
+        color: selected
+            ? Theme.Colors.activeBg
+            : hovered
+                ? Theme.Colors.pillHover
+                : Theme.Colors.pillBg
+
+        border.color: selected || hovered ? Theme.Colors.accent : "transparent"
+        border.width: 1
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            spacing: 8
+
+            Text {
+                text: btn.selected ? "●" : "○"
+                color: btn.selected || btn.hovered ? Theme.Colors.accent : "#ffffff"
+                font.pixelSize: 10
+                Layout.alignment: Qt.AlignVCenter
+            }
+
+            Text {
+                text: btn.title
+                color: "#ffffff"
+                font.family: "Figtree"
+                font.pixelSize: 12
+                font.bold: true
+                Layout.alignment: Qt.AlignVCenter
+            }
+
+            Item {
+                Layout.fillWidth: true
+            }
+        }
+
+        MouseArea {
+            id: mouse
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: btn.clicked()
+        }
+    }
+
+    Process {
+        id: switchProc
+    }
+}

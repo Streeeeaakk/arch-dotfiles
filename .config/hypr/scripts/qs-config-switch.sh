@@ -56,8 +56,10 @@ fi
 echo "Restarting Quickshell..."
 if command -v qsrestart >/dev/null 2>&1; then
   qsrestart
-elif bash -lc 'type qsrestart >/dev/null 2>&1'; then
-  bash -lc 'qsrestart'
+elif zsh -ic 'type qsrestart >/dev/null 2>&1' >/dev/null 2>&1; then
+  zsh -ic 'qsrestart'
+elif bash -ic 'type qsrestart >/dev/null 2>&1' >/dev/null 2>&1; then
+  bash -ic 'qsrestart'
 else
   pkill quickshell 2>/dev/null || true
   nohup quickshell >/tmp/quickshell.log 2>&1 &
