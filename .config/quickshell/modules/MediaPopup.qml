@@ -130,7 +130,7 @@ Rectangle {
                     height: 32
                     radius: 10
                     color: Theme.Colors.pillBg
-                    border.color: Theme.Colors.border
+                    border.color: Theme.Colors.accent
                     border.width: 1
 
                     Text {
