@@ -10,16 +10,17 @@ monitor="$(
 
 [ -z "$monitor" ] && monitor="unknown"
 
+# Toggle fullscreen on current active window only
+hyprctl dispatch fullscreen 0 >/dev/null
+sleep 0.08
+
 is_full="$(
   hyprctl activewindow -j 2>/dev/null |
   jq -r '.fullscreen // 0'
 )"
 
-# 0 = real fullscreen for current active window
-hyprctl dispatch fullscreen 0 >/dev/null
-
 if [ "$is_full" = "1" ] || [ "$is_full" = "true" ]; then
-  printf '%s\t0\n' "$monitor" > "$STATE"
-else
   printf '%s\t1\n' "$monitor" > "$STATE"
+else
+  printf '%s\t0\n' "$monitor" > "$STATE"
 fi

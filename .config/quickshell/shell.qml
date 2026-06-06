@@ -213,7 +213,7 @@ ShellRoot {
             onRead: data => {
                 let parts = data.trim().split("\t")
                 shell.barHiddenMonitor = parts[0] || ""
-                shell.barHidden = (parts[1] || "0") === "1"
+                shell.barHidden = (parts.length >= 2 && (parts[1] || "0") === "1")
             }
         }
     }
