@@ -404,7 +404,6 @@ ShellRoot {
                 width: 300
                 height: 260
                 color: "transparent"
-                grabFocus: true
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
@@ -415,16 +414,6 @@ ShellRoot {
                     opacity: calendarPopupWindow.visible ? 1 : 0
                     scale: calendarPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
-
-                    focus: true
-                    activeFocusOnTab: true
-
-                    Keys.onPressed: function(event) {
-                        if (event.key === Qt.Key_Escape) {
-                            shell.closeAllPopups()
-                            event.accepted = true
-                        }
-                    }
 
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
@@ -439,7 +428,6 @@ ShellRoot {
                 width: 540
                 height: 230
                 color: "transparent"
-                grabFocus: true
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
@@ -450,16 +438,6 @@ ShellRoot {
                     opacity: mediaPopupWindow.visible ? 1 : 0
                     scale: mediaPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
-
-                    focus: true
-                    activeFocusOnTab: true
-
-                    Keys.onPressed: function(event) {
-                        if (event.key === Qt.Key_Escape) {
-                            shell.closeAllPopups()
-                            event.accepted = true
-                        }
-                    }
 
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
@@ -478,7 +456,6 @@ ShellRoot {
                 width: 390
                 height: 300
                 color: "transparent"
-                grabFocus: true
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
@@ -489,16 +466,6 @@ ShellRoot {
                     opacity: networkPopupWindow.visible ? 1 : 0
                     scale: networkPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
-
-                    focus: true
-                    activeFocusOnTab: true
-
-                    Keys.onPressed: function(event) {
-                        if (event.key === Qt.Key_Escape) {
-                            shell.closeAllPopups()
-                            event.accepted = true
-                        }
-                    }
 
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
@@ -513,7 +480,6 @@ ShellRoot {
                 width: 360
                 height: 176
                 color: "transparent"
-                grabFocus: true
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
@@ -524,16 +490,6 @@ ShellRoot {
                     opacity: powerPopupWindow.visible ? 1 : 0
                     scale: powerPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
-
-                    focus: true
-                    activeFocusOnTab: true
-
-                    Keys.onPressed: function(event) {
-                        if (event.key === Qt.Key_Escape) {
-                            shell.closeAllPopups()
-                            event.accepted = true
-                        }
-                    }
 
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
@@ -548,7 +504,6 @@ ShellRoot {
                 width: 460
                 height: 260
                 color: "transparent"
-                grabFocus: true
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
@@ -559,16 +514,6 @@ ShellRoot {
                     opacity: audioPopupWindow.visible ? 1 : 0
                     scale: audioPopupWindow.visible ? 1 : 0.90
                     transformOrigin: Item.Top
-
-                    focus: true
-                    activeFocusOnTab: true
-
-                    Keys.onPressed: function(event) {
-                        if (event.key === Qt.Key_Escape) {
-                            shell.closeAllPopups()
-                            event.accepted = true
-                        }
-                    }
 
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
