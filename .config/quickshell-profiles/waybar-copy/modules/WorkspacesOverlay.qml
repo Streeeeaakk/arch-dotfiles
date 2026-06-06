@@ -40,18 +40,18 @@ RowLayout {
                 radius: wsItem.active ? 5 : 2
 
                 color: wsItem.active
-                    ? Theme.Colors.accent
+                    ? "#ffffff"
                     : wsItem.occupied
-                        ? Theme.Colors.text
-                        : Theme.Colors.muted
+                        ? "#ffffff"
+                        : "#ffffff"
 
                 opacity: wsItem.hovered
                     ? 1.0
                     : wsItem.active
                         ? 1.0
                         : wsItem.occupied
-                            ? 0.72
-                            : 0.38
+                            ? 0.75
+                            : 0.45
 
                 Behavior on width {
                     NumberAnimation {
