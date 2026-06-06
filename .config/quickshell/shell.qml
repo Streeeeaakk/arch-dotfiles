@@ -230,6 +230,24 @@ ShellRoot {
                 }
             }
 
+            ActiveWindow {
+                id: activeWindowPill
+
+                visible: panel.normalMode
+                anchors.left: parent.left
+                anchors.leftMargin: 14
+                anchors.verticalCenter: islandWrap.verticalCenter
+
+                opacity: panel.normalMode ? 1 : 0
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 120
+                        easing.type: Easing.OutCubic
+                    }
+                }
+            }
+
             Item {
                 id: islandWrap
 
@@ -335,7 +353,7 @@ ShellRoot {
                             opacity: 0.45
                         }
 
-                        ActiveWindow {
+                        HostCenter {
                             Layout.alignment: Qt.AlignVCenter
                             onClicked: shell.togglePopup("media", panel.screenName)
                         }
