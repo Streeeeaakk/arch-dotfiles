@@ -20,6 +20,7 @@ ShellRoot {
 
     property string popupMonitor: ""
     property string launcherMonitor: ""
+    property string launcherMode: "apps"
     property string lastLauncherTrigger: ""
 
     property bool workspaceOverlayOpen: false
@@ -54,9 +55,10 @@ ShellRoot {
         shell.launcherMonitor = ""
     }
 
-    function openLauncher(monitor) {
+    function openLauncher(monitor, mode) {
         shell.closeAllPopups()
         shell.launcherMonitor = monitor
+        shell.launcherMode = mode || "apps"
         shell.launcherOpen = true
     }
 
@@ -182,7 +184,7 @@ ShellRoot {
 
                 if (current.length > 0 && current !== shell.lastLauncherTrigger) {
                     let parts = current.split("\t")
-                    shell.openLauncher(parts[1] || "")
+                    shell.openLauncher(parts[1] || "", parts[2] || "apps")
                     shell.lastLauncherTrigger = current
                 }
             }
@@ -645,6 +647,7 @@ ShellRoot {
                 LauncherPopup {
                     anchors.fill: parent
                     active: launcherOverlayPanel.visible
+                    initialMode: shell.launcherMode
                     cavaEnabled: shell.cavaEnabled
 
                     onToggleCavaRequested: shell.toggleCava()

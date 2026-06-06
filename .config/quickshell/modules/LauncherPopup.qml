@@ -11,8 +11,12 @@ Rectangle {
 
     property bool active: false
     property bool cavaEnabled: true
+
+    property string mode: "apps"
+    property string initialMode: "apps"
     property var apps: []
-    property var filteredApps: []
+    property var clips: []
+    property var filteredItems: []
     property string query: ""
 
     width: 800
@@ -24,7 +28,7 @@ Rectangle {
 
     color: Theme.Colors.barBg
     border.color: Theme.Colors.accent
-    border.width: 1
+    border.width: 2
     clip: true
 
     function shellQuote(s) {
@@ -32,51 +36,65 @@ Rectangle {
     }
 
     function takeFocus() {
+        root.forceActiveFocus()
         searchInput.forceActiveFocus()
         searchInput.cursorPosition = searchInput.text.length
     }
 
+    function switchMode(newMode) {
+        root.mode = newMode
+        root.query = ""
+        searchInput.text = ""
+        root.refreshFilter()
+        listView.currentIndex = 0
+        root.takeFocus()
+    }
+
+    function toggleMode() {
+        root.switchMode(root.mode === "apps" ? "clipboard" : "apps")
+    }
+
     function refreshFilter() {
         let q = root.query.toLowerCase().trim()
+        let source = root.mode === "apps" ? root.apps : root.clips
 
         if (q.length === 0) {
-            root.filteredApps = root.apps.slice(0, 8)
+            root.filteredItems = source.slice(0, 8)
             return
         }
 
-        root.filteredApps = root.apps.filter(function(app) {
-            let name = String(app.name || "").toLowerCase()
-            let comment = String(app.comment || "").toLowerCase()
-            let iconName = String(app.iconName || "").toLowerCase()
-
-            return name.indexOf(q) !== -1
-                || comment.indexOf(q) !== -1
-                || iconName.indexOf(q) !== -1
+        root.filteredItems = source.filter(function(item) {
+            let name = String(item.name || "").toLowerCase()
+            let comment = String(item.comment || "").toLowerCase()
+            return name.indexOf(q) !== -1 || comment.indexOf(q) !== -1
         }).slice(0, 8)
     }
 
-    function launchCurrent() {
-        if (root.filteredApps.length === 0) return
+    function activateCurrent() {
+        if (root.filteredItems.length === 0) return
 
         let idx = listView.currentIndex
-        if (idx < 0 || idx >= root.filteredApps.length) idx = 0
+        if (idx < 0 || idx >= root.filteredItems.length) idx = 0
 
-        let app = root.filteredApps[idx]
+        let item = root.filteredItems[idx]
 
-        launchProc.command = [
-            "sh",
-            "-c",
-            "~/.config/quickshell/scripts/app-launch.sh " + root.shellQuote(app.path)
-        ]
-
-        launchProc.running = true
-        root.closeRequested()
-    }
-
-    onActiveChanged: {
-        if (active) {
-            focusTimer.restart()
+        if (root.mode === "apps") {
+            launchProc.command = [
+                "sh",
+                "-c",
+                "~/.config/quickshell/scripts/app-launch.sh " + root.shellQuote(item.path)
+            ]
+            launchProc.running = true
+        } else {
+            clipCopyProc.command = [
+                "sh",
+                "-c",
+                "~/.config/quickshell/scripts/clipboard-copy.sh " + root.shellQuote(item.path)
+            ]
+            clipCopyProc.running = true
         }
+
+        root.closeRequested()
     }
 
     RowLayout {
@@ -110,7 +128,7 @@ Rectangle {
                 anchors.bottom: parent.bottom
                 width: 1
                 color: Theme.Colors.accent
-                opacity: 0.25
+                opacity: 0.35
             }
         }
 
@@ -127,6 +145,72 @@ Rectangle {
                 anchors.bottomMargin: 16
                 spacing: 10
 
+                RowLayout {
+                    Layout.fillWidth: true
+                    height: 30
+                    spacing: 8
+
+                    Rectangle {
+                        width: 72
+                        height: 24
+                        radius: 8
+                        color: root.mode === "apps" ? Theme.Colors.activeBg : Theme.Colors.pillBg
+                        border.color: Theme.Colors.accent
+                        border.width: 1
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Apps"
+                            color: root.mode === "apps" ? Theme.Colors.accent : Theme.Colors.muted
+                            font.family: "Figtree"
+                            font.pixelSize: 11
+                            font.bold: true
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.switchMode("apps")
+                        }
+                    }
+
+                    Rectangle {
+                        width: 96
+                        height: 24
+                        radius: 8
+                        color: root.mode === "clipboard" ? Theme.Colors.activeBg : Theme.Colors.pillBg
+                        border.color: Theme.Colors.accent
+                        border.width: 1
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Clipboard"
+                            color: root.mode === "clipboard" ? Theme.Colors.accent : Theme.Colors.muted
+                            font.family: "Figtree"
+                            font.pixelSize: 11
+                            font.bold: true
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.switchMode("clipboard")
+                        }
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
+
+                    Text {
+                        text: "Tab"
+                        color: Theme.Colors.muted
+                        font.family: "Figtree"
+                        font.pixelSize: 10
+                        font.bold: true
+                    }
+                }
+
                 Rectangle {
                     Layout.fillWidth: true
                     height: 46
@@ -137,7 +221,7 @@ Rectangle {
                         spacing: 10
 
                         Text {
-                            text: "󰍉"
+                            text: root.mode === "apps" ? "󰍉" : ""
                             color: Theme.Colors.accent
                             font.pixelSize: 17
                             Layout.alignment: Qt.AlignVCenter
@@ -171,21 +255,24 @@ Rectangle {
                                 if (event.key === Qt.Key_Escape) {
                                     root.closeRequested()
                                     event.accepted = true
+                                } else if (event.key === Qt.Key_Tab) {
+                                    root.toggleMode()
+                                    event.accepted = true
                                 } else if (event.key === Qt.Key_Down) {
-                                    listView.currentIndex = Math.min(listView.currentIndex + 1, root.filteredApps.length - 1)
+                                    listView.currentIndex = Math.min(listView.currentIndex + 1, root.filteredItems.length - 1)
                                     event.accepted = true
                                 } else if (event.key === Qt.Key_Up) {
                                     listView.currentIndex = Math.max(listView.currentIndex - 1, 0)
                                     event.accepted = true
                                 } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                                    root.launchCurrent()
+                                    root.activateCurrent()
                                     event.accepted = true
                                 }
                             }
 
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: "Search Apps..."
+                                text: root.mode === "apps" ? "Search Apps..." : "Search Clipboard..."
                                 visible: searchInput.text.length === 0
                                 color: Theme.Colors.muted
                                 font.family: "Figtree"
@@ -193,9 +280,6 @@ Rectangle {
                                 font.bold: true
                             }
                         }
-
-                        
-
                     }
 
                     Rectangle {
@@ -214,13 +298,13 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    model: root.filteredApps
+                    model: root.filteredItems
                     currentIndex: 0
                     clip: true
                     spacing: 4
 
                     delegate: Rectangle {
-                        id: appRow
+                        id: itemRow
 
                         property bool selected: ListView.isCurrentItem
                         property bool hovered: rowMouse.containsMouse
@@ -242,7 +326,7 @@ Rectangle {
                             anchors.bottom: parent.bottom
                             width: 3
                             color: Theme.Colors.accent
-                            visible: appRow.selected || appRow.hovered
+                            visible: itemRow.selected || itemRow.hovered
                         }
 
                         RowLayout {
@@ -260,8 +344,8 @@ Rectangle {
                                     anchors.centerIn: parent
                                     width: 24
                                     height: 24
-                                    source: appRow.iconSource
-                                    visible: appRow.iconSource.length > 0
+                                    source: itemRow.iconSource
+                                    visible: root.mode === "apps" && itemRow.iconSource.length > 0
                                     fillMode: Image.PreserveAspectFit
                                     smooth: true
                                     asynchronous: true
@@ -269,22 +353,23 @@ Rectangle {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    visible: appRow.iconSource.length === 0
-                                    text: "󰣆"
-                                    color: appRow.selected ? Theme.Colors.accent : Theme.Colors.text
+                                    visible: root.mode === "clipboard" || itemRow.iconSource.length === 0
+                                    text: root.mode === "clipboard" ? "" : "󰣆"
+                                    color: itemRow.selected ? Theme.Colors.accent : Theme.Colors.text
                                     font.pixelSize: 16
                                 }
                             }
 
                             Text {
                                 text: modelData.name || ""
-                                color: appRow.selected ? Theme.Colors.accent : Theme.Colors.text
+                                color: itemRow.selected ? Theme.Colors.accent : Theme.Colors.text
                                 font.family: "Figtree"
                                 font.pixelSize: 13
-                                font.bold: appRow.selected
+                                font.bold: itemRow.selected
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignVCenter
                                 elide: Text.ElideRight
+                                maximumLineCount: 1
                             }
                         }
 
@@ -298,15 +383,15 @@ Rectangle {
 
                             onClicked: {
                                 listView.currentIndex = index
-                                root.launchCurrent()
+                                root.activateCurrent()
                             }
                         }
                     }
 
                     Text {
                         anchors.centerIn: parent
-                        text: "No results"
-                        visible: root.filteredApps.length === 0
+                        text: root.mode === "apps" ? "No apps found" : "No clipboard history"
+                        visible: root.filteredItems.length === 0
                         color: Theme.Colors.muted
                         font.family: "Figtree"
                         font.pixelSize: 14
@@ -330,7 +415,26 @@ Rectangle {
                     listView.currentIndex = 0
                 } catch (e) {
                     root.apps = []
-                    root.filteredApps = []
+                    root.refreshFilter()
+                }
+            }
+        }
+    }
+
+    Process {
+        id: clipsProc
+        command: ["sh", "-c", "~/.config/quickshell/scripts/clipboard-list.sh"]
+        running: true
+
+        stdout: SplitParser {
+            onRead: function(data) {
+                try {
+                    root.clips = JSON.parse(data.trim())
+                    root.refreshFilter()
+                    listView.currentIndex = 0
+                } catch (e) {
+                    root.clips = []
+                    root.refreshFilter()
                 }
             }
         }
@@ -340,24 +444,33 @@ Rectangle {
         id: launchProc
     }
 
-    Timer {
-        id: focusTimer
-        interval: 60
-        running: false
-        repeat: false
-        onTriggered: root.takeFocus()
+    Process {
+        id: clipCopyProc
     }
 
     Timer {
-        id: focusRetryTimer
-        interval: 180
+        id: focusTimer
+        interval: 80
         running: root.active
         repeat: true
-        onTriggered: root.takeFocus()
+
+        onTriggered: {
+            root.takeFocus()
+        }
+    }
+
+    onActiveChanged: {
+        if (active) {
+            appsProc.running = true
+            clipsProc.running = true
+            root.switchMode(root.initialMode)
+            root.takeFocus()
+            focusTimer.restart()
+        }
     }
 
     Component.onCompleted: {
         root.refreshFilter()
-        focusTimer.restart()
+        root.takeFocus()
     }
 }
