@@ -19,9 +19,6 @@ Rectangle {
     height: 500
     radius: 8
 
-    focus: true
-    activeFocusOnTab: true
-
     color: Theme.Colors.barBg
     border.color: Theme.Colors.accent
     border.width: 1

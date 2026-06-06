@@ -353,7 +353,7 @@ ShellRoot {
 
             PopupWindow {
                 id: launcherWindow
-                visible: false
+                visible: shell.launcherOpen
                 width: 810
                 height: 510
                 color: "transparent"
@@ -511,82 +511,4 @@ ShellRoot {
             }
         }
     }
-
-    Variants {
-        model: Quickshell.screens
-
-        PanelWindow {
-            id: launcherOverlayPanel
-
-            property var modelData
-            property string screenName: modelData.name
-
-            screen: modelData
-            visible: shell.launcherOpen
-            focusable: shell.launcherOpen
-            color: "transparent"
-
-            anchors {
-                top: true
-                bottom: true
-                left: true
-                right: true
-            }
-
-            MouseArea {
-                anchors.fill: parent
-
-                onClicked: {
-                    shell.launcherOpen = false
-                    shell.launcherMonitor = ""
-                }
-            }
-
-            Item {
-                id: launcherOverlayBox
-
-                anchors.centerIn: parent
-                width: 800
-                height: 500
-
-                opacity: launcherOverlayPanel.visible ? 1 : 0
-                scale: launcherOverlayPanel.visible ? 1 : 0.94
-                transformOrigin: Item.Center
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: 150
-                        easing.type: Easing.OutCubic
-                    }
-                }
-
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: 150
-                        easing.type: Easing.OutBack
-                    }
-                }
-
-                LauncherPopup {
-                    anchors.fill: parent
-                    active: launcherOverlayPanel.visible
-                    cavaEnabled: shell.cavaEnabled
-
-                    onToggleCavaRequested: shell.toggleCava()
-
-                    onCloseRequested: {
-                        shell.launcherOpen = false
-                        shell.launcherMonitor = ""
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    hoverEnabled: true
-                }
-            }
-        }
-    }
-
 }
