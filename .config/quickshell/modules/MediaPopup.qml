@@ -13,9 +13,9 @@ Rectangle {
     property string album: ""
     property string art: ""
 
-    width: 430
-    height: 170
-    radius: 16
+    width: 540
+    height: 230
+    radius: 18
 
     color: Theme.Colors.barBg
     border.color: Theme.Colors.accent
@@ -28,16 +28,16 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 14
-        spacing: 14
+        anchors.margins: 18
+        spacing: 18
 
         Rectangle {
-            Layout.preferredWidth: 112
-            Layout.preferredHeight: 112
+            Layout.preferredWidth: 160
+            Layout.preferredHeight: 160
             Layout.alignment: Qt.AlignVCenter
-            radius: 12
+            radius: 14
             color: Theme.Colors.pillBg
-            border.color: Theme.Colors.border
+            border.color: Theme.Colors.accent
             border.width: 1
             clip: true
 
@@ -56,24 +56,23 @@ Rectangle {
                 visible: root.art.length === 0
                 text: "󰎆"
                 color: Theme.Colors.accent
-                font.pixelSize: 38
+                font.pixelSize: 48
             }
         }
 
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 7
+            spacing: 8
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
 
                 Text {
                     text: root.player
                     color: Theme.Colors.accent
                     font.family: "Figtree"
-                    font.pixelSize: 11
+                    font.pixelSize: 12
                     font.bold: true
                     Layout.fillWidth: true
                     elide: Text.ElideRight
@@ -83,7 +82,7 @@ Rectangle {
                     text: root.status
                     color: Theme.Colors.muted
                     font.family: "Figtree"
-                    font.pixelSize: 10
+                    font.pixelSize: 11
                     font.bold: true
                 }
             }
@@ -92,7 +91,7 @@ Rectangle {
                 text: root.title
                 color: Theme.Colors.textHover
                 font.family: "Figtree"
-                font.pixelSize: 15
+                font.pixelSize: 20
                 font.bold: true
                 Layout.fillWidth: true
                 elide: Text.ElideRight
@@ -103,7 +102,7 @@ Rectangle {
                 text: root.artist.length > 0 ? root.artist : "Unknown Artist"
                 color: Theme.Colors.text
                 font.family: "Figtree"
-                font.pixelSize: 12
+                font.pixelSize: 14
                 Layout.fillWidth: true
                 elide: Text.ElideRight
             }
@@ -113,7 +112,7 @@ Rectangle {
                 visible: root.album.length > 0
                 color: Theme.Colors.muted
                 font.family: "Figtree"
-                font.pixelSize: 11
+                font.pixelSize: 13
                 Layout.fillWidth: true
                 elide: Text.ElideRight
             }
@@ -124,12 +123,12 @@ Rectangle {
 
             RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 10
+                spacing: 12
 
                 Rectangle {
-                    width: 42
-                    height: 28
-                    radius: 9
+                    width: 48
+                    height: 32
+                    radius: 10
                     color: Theme.Colors.pillBg
                     border.color: Theme.Colors.border
                     border.width: 1
@@ -138,7 +137,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: ""
                         color: Theme.Colors.text
-                        font.pixelSize: 12
+                        font.pixelSize: 13
                     }
 
                     MouseArea {
@@ -149,9 +148,9 @@ Rectangle {
                 }
 
                 Rectangle {
-                    width: 52
-                    height: 30
-                    radius: 10
+                    width: 60
+                    height: 34
+                    radius: 11
                     color: Theme.Colors.activeBg
                     border.color: Theme.Colors.accent
                     border.width: 1
@@ -160,7 +159,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: root.status === "Playing" ? "" : ""
                         color: Theme.Colors.textHover
-                        font.pixelSize: 13
+                        font.pixelSize: 14
                     }
 
                     MouseArea {
@@ -171,9 +170,9 @@ Rectangle {
                 }
 
                 Rectangle {
-                    width: 42
-                    height: 28
-                    radius: 9
+                    width: 48
+                    height: 32
+                    radius: 10
                     color: Theme.Colors.pillBg
                     border.color: Theme.Colors.border
                     border.width: 1
@@ -182,7 +181,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: ""
                         color: Theme.Colors.text
-                        font.pixelSize: 12
+                        font.pixelSize: 13
                     }
 
                     MouseArea {
@@ -204,7 +203,6 @@ Rectangle {
             onRead: function(data) {
                 try {
                     let obj = JSON.parse(data.trim())
-
                     root.player = obj.player || "No Player"
                     root.status = obj.status || "Stopped"
                     root.title = obj.title || "Nothing Playing"

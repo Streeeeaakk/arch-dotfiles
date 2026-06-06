@@ -417,8 +417,8 @@ ShellRoot {
             PopupWindow {
                 id: mediaPopupWindow
                 visible: shell.mediaPopupOpen && shell.popupMonitor === panel.screenName
-                width: 430
-                height: 170
+                width: 540
+                height: 230
                 color: "transparent"
 
                 anchor.window: panel
