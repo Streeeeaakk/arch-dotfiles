@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell.Io
 import "../theme" as Theme
 
-Rectangle {
+Item {
     id: root
 
     signal clicked()
@@ -12,15 +12,12 @@ Rectangle {
     property string connectionName: "disconnected"
     property bool hovered: mouseArea.containsMouse
 
-    implicitWidth: 72
-    Layout.preferredWidth: 72
-    Layout.minimumWidth: 72
-    Layout.maximumWidth: 72
+    implicitWidth: 56
+    Layout.preferredWidth: 56
+    Layout.minimumWidth: 56
+    Layout.maximumWidth: 56
 
     height: 24
-    radius: 9
-    color: root.hovered ? Theme.Colors.pillHover : Theme.Colors.pillBg
-    clip: true
 
     Text {
         anchors.centerIn: parent
@@ -34,7 +31,7 @@ Rectangle {
         color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
         font.pixelSize: 12
         font.bold: root.hovered
-        width: parent.width - 8
+        width: parent.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
     }

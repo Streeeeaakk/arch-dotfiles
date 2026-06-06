@@ -189,132 +189,174 @@ ShellRoot {
             implicitHeight: 40
             color: "transparent"
 
-            Rectangle {
-                id: island
+            Item {
+                id: islandWrap
 
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 8
 
-                width: panel.workspaceMode
-                    ? workspaceRow.implicitWidth + 18
-                    : panel.cavaMode
-                        ? Math.min(panel.width * 0.56, 680)
-                        : centerRow.implicitWidth + 18
+                width: island.width + 8
+                height: island.height + 8
 
-                height: 28
-                radius: 14
+                Rectangle {
+                    id: neonGlowOuter
 
-                color: Theme.Colors.barBg
-                opacity: 0.96
-                border.color: Theme.Colors.border
-                border.width: 1
-                clip: true
+                    anchors.centerIn: island
+                    width: island.width + 8
+                    height: island.height + 8
+                    radius: island.radius + 5
 
-                HoverHandler {
-                    id: islandHover
+                    color: Theme.Colors.accent
+                    opacity: panel.cavaMode ? 0.26 : 0.16
                 }
 
-                Behavior on width {
-                    NumberAnimation {
-                        duration: 140
-                        easing.type: Easing.OutCubic
-                    }
+                Rectangle {
+                    id: neonGlowInner
+
+                    anchors.centerIn: island
+                    width: island.width + 3
+                    height: island.height + 3
+                    radius: island.radius + 2
+
+                    color: "transparent"
+                    border.color: Theme.Colors.accent
+                    border.width: 1
+                    opacity: panel.cavaMode ? 0.85 : 0.55
                 }
 
-                CavaFull {
-                    visible: panel.cavaMode
-                    opacity: panel.cavaMode ? 1 : 0
+                Rectangle {
+                    id: island
 
-                    onClicked: shell.togglePopup("media", panel.screenName)
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 90
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-                }
-
-                RowLayout {
-                    id: workspaceRow
-
-                    visible: panel.workspaceMode
-                    opacity: panel.workspaceMode ? 1 : 0
                     anchors.centerIn: parent
-                    spacing: 6
 
-                    Behavior on opacity {
+                    width: panel.workspaceMode
+                        ? workspaceRow.implicitWidth + 28
+                        : panel.cavaMode
+                            ? Math.min(panel.width * 0.56, 680)
+                            : centerRow.implicitWidth + 28
+
+                    height: 28
+                    radius: 14
+
+                    color: Theme.Colors.barBg
+                    opacity: 0.96
+                    border.color: Theme.Colors.accent
+                    border.width: 1
+                    clip: true
+
+                    HoverHandler {
+                        id: islandHover
+                    }
+
+                    Behavior on width {
                         NumberAnimation {
-                            duration: 90
+                            duration: 140
                             easing.type: Easing.OutCubic
                         }
                     }
 
-                    WorkspacesOverlay {
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-                }
+                    CavaFull {
+                        visible: panel.cavaMode
+                        opacity: panel.cavaMode ? 1 : 0
+                        onClicked: shell.togglePopup("media", panel.screenName)
 
-                RowLayout {
-                    id: centerRow
-
-                    visible: panel.normalMode
-                    opacity: panel.normalMode ? 1 : 0
-                    anchors.centerIn: parent
-                    spacing: 5
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 90
-                            easing.type: Easing.OutCubic
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 90
+                                easing.type: Easing.OutCubic
+                            }
                         }
                     }
 
-                    MediaCava {
-                        Layout.alignment: Qt.AlignVCenter
-                        onClicked: shell.togglePopup("calendar", panel.screenName)
+                    RowLayout {
+                        id: workspaceRow
+                        visible: panel.workspaceMode
+                        opacity: panel.workspaceMode ? 1 : 0
+                        anchors.centerIn: parent
+                        spacing: 6
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 90
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+
+                        WorkspacesOverlay {
+                            Layout.alignment: Qt.AlignVCenter
+                        }
                     }
 
-                    Temps {
-                        Layout.alignment: Qt.AlignVCenter
-                        onClicked: shell.togglePopup("system", panel.screenName)
-                    }
+                    RowLayout {
+                        id: centerRow
+                        visible: panel.normalMode
+                        opacity: panel.normalMode ? 1 : 0
+                        anchors.centerIn: parent
+                        spacing: 8
 
-                    ActiveWindow {
-                        Layout.alignment: Qt.AlignVCenter
-                        showCava: shell.mediaPlaying
-                        onClicked: shell.openLauncher(panel.screenName)
-                    }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 90
+                                easing.type: Easing.OutCubic
+                            }
+                        }
 
-                    Network {
-                        Layout.alignment: Qt.AlignVCenter
-                        onClicked: shell.togglePopup("network", panel.screenName)
-                    }
+                        MediaCava {
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: shell.togglePopup("calendar", panel.screenName)
+                        }
 
-                    Battery {
-                        Layout.alignment: Qt.AlignVCenter
-                        onClicked: shell.togglePopup("power", panel.screenName)
-                    }
+                        Network {
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: shell.togglePopup("network", panel.screenName)
+                        }
 
-                    Volume {
-                        Layout.alignment: Qt.AlignVCenter
-                        onClicked: shell.togglePopup("audio", panel.screenName)
+                        Rectangle {
+                            Layout.preferredWidth: 1
+                            Layout.preferredHeight: 14
+                            Layout.alignment: Qt.AlignVCenter
+                            color: Theme.Colors.accent
+                            opacity: 0.45
+                        }
+
+                        ActiveWindow {
+                            Layout.alignment: Qt.AlignVCenter
+                            showCava: shell.mediaPlaying
+                            onClicked: shell.openLauncher(panel.screenName)
+                        }
+
+                        Rectangle {
+                            Layout.preferredWidth: 1
+                            Layout.preferredHeight: 14
+                            Layout.alignment: Qt.AlignVCenter
+                            color: Theme.Colors.accent
+                            opacity: 0.45
+                        }
+
+                        Battery {
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: shell.togglePopup("power", panel.screenName)
+                        }
+
+                        Volume {
+                            Layout.alignment: Qt.AlignVCenter
+                            onClicked: shell.togglePopup("audio", panel.screenName)
+                        }
                     }
                 }
             }
 
             PopupWindow {
                 id: launcherWindow
-
                 visible: shell.launcherOpen && shell.launcherMonitor === panel.screenName
-                width: 660
-                height: 360
+                width: 830
+                height: 530
                 color: "transparent"
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: 72
+                anchor.rect.y: modelData.height / 2 - height / 2
 
                 HyprlandFocusGrab {
                     windows: [ launcherWindow ]
@@ -329,25 +371,36 @@ ShellRoot {
                 Item {
                     anchors.fill: parent
                     opacity: launcherWindow.visible ? 1 : 0
-                    scale: launcherWindow.visible ? 1 : 0.92
-                    transformOrigin: Item.Top
+                    scale: launcherWindow.visible ? 1 : 0.94
+                    transformOrigin: Item.Center
 
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 150
-                            easing.type: Easing.OutCubic
-                        }
+                    Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
+
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: 820
+                        height: 520
+                        radius: 14
+                        color: Theme.Colors.accent
+                        opacity: 0.24
                     }
 
-                    Behavior on scale {
-                        NumberAnimation {
-                            duration: 150
-                            easing.type: Easing.OutBack
-                        }
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: 808
+                        height: 508
+                        radius: 11
+                        color: "transparent"
+                        border.color: Theme.Colors.accent
+                        border.width: 1
+                        opacity: 0.95
                     }
 
                     LauncherPopup {
-                        anchors.fill: parent
+                        anchors.centerIn: parent
+                        width: 800
+                        height: 500
 
                         onCloseRequested: {
                             shell.launcherOpen = false
@@ -366,7 +419,7 @@ ShellRoot {
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: island.y + island.height + 8
+                anchor.rect.y: islandWrap.y + island.height + 8
 
                 Item {
                     anchors.fill: parent
@@ -377,9 +430,7 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
-                    CalendarPopup {
-                        anchors.fill: parent
-                    }
+                    CalendarPopup { anchors.fill: parent }
                 }
             }
 
@@ -392,7 +443,7 @@ ShellRoot {
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: island.y + island.height + 8
+                anchor.rect.y: islandWrap.y + island.height + 8
 
                 Item {
                     anchors.fill: parent
@@ -403,9 +454,7 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
-                    MediaPopup {
-                        anchors.fill: parent
-                    }
+                    MediaPopup { anchors.fill: parent }
                 }
             }
 
@@ -418,7 +467,7 @@ ShellRoot {
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: island.y + island.height + 8
+                anchor.rect.y: islandWrap.y + island.height + 8
 
                 Item {
                     anchors.fill: parent
@@ -429,9 +478,7 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
-                    NetworkPopup {
-                        anchors.fill: parent
-                    }
+                    NetworkPopup { anchors.fill: parent }
                 }
             }
 
@@ -444,7 +491,7 @@ ShellRoot {
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: island.y + island.height + 8
+                anchor.rect.y: islandWrap.y + island.height + 8
 
                 Item {
                     anchors.fill: parent
@@ -455,9 +502,7 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
-                    SystemPopup {
-                        anchors.fill: parent
-                    }
+                    SystemPopup { anchors.fill: parent }
                 }
             }
 
@@ -470,7 +515,7 @@ ShellRoot {
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: island.y + island.height + 8
+                anchor.rect.y: islandWrap.y + island.height + 8
 
                 Item {
                     anchors.fill: parent
@@ -481,9 +526,7 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
-                    PowerPopup {
-                        anchors.fill: parent
-                    }
+                    PowerPopup { anchors.fill: parent }
                 }
             }
 
@@ -496,7 +539,7 @@ ShellRoot {
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: island.y + island.height + 8
+                anchor.rect.y: islandWrap.y + island.height + 8
 
                 Item {
                     anchors.fill: parent
@@ -507,9 +550,7 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
-                    AudioPopup {
-                        anchors.fill: parent
-                    }
+                    AudioPopup { anchors.fill: parent }
                 }
             }
         }

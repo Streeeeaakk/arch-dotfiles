@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell.Io
 import "../theme" as Theme
 
-Rectangle {
+Item {
     id: root
 
     signal clicked()
@@ -15,15 +15,12 @@ Rectangle {
 
     visible: hasBattery
 
-    implicitWidth: hasBattery ? 66 : 0
-    Layout.preferredWidth: hasBattery ? 66 : 0
-    Layout.minimumWidth: hasBattery ? 66 : 0
-    Layout.maximumWidth: hasBattery ? 66 : 0
+    implicitWidth: hasBattery ? 56 : 0
+    Layout.preferredWidth: hasBattery ? 56 : 0
+    Layout.minimumWidth: hasBattery ? 56 : 0
+    Layout.maximumWidth: hasBattery ? 56 : 0
 
     height: 24
-    radius: 9
-    color: root.hovered ? Theme.Colors.pillHover : Theme.Colors.pillBg
-    clip: true
 
     Text {
         anchors.centerIn: parent
@@ -49,7 +46,7 @@ Rectangle {
         color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
         font.pixelSize: 12
         font.bold: root.hovered
-        width: parent.width - 8
+        width: parent.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
     }

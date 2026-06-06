@@ -12,13 +12,13 @@ Rectangle {
     property var filteredApps: []
     property string query: ""
 
-    width: 660
-    height: 360
-    radius: 22
+    width: 800
+    height: 500
+    radius: 8
 
     color: Theme.Colors.barBg
-    border.color: Theme.Colors.border
-    border.width: 1
+    border.color: Theme.Colors.accent
+    border.width: 2
     clip: true
 
     function shellQuote(s) {
@@ -62,199 +62,247 @@ Rectangle {
         root.closeRequested()
     }
 
-    ColumnLayout {
+    Rectangle {
         anchors.fill: parent
-        anchors.margins: 18
-        spacing: 12
+        anchors.margins: 4
+        radius: 6
+        color: "transparent"
+        border.color: Theme.Colors.accent
+        border.width: 1
+        opacity: 0.28
+    }
+
+    RowLayout {
+        anchors.fill: parent
+        spacing: 0
 
         Rectangle {
-            Layout.fillWidth: true
-            height: 58
-            radius: 17
-            color: Theme.Colors.pillBg
-            border.color: Theme.Colors.border
-            border.width: 1
+            Layout.preferredWidth: 400
+            Layout.fillHeight: true
+            color: "#000000"
             clip: true
 
-            RowLayout {
+            Image {
                 anchors.fill: parent
-                anchors.leftMargin: 18
-                anchors.rightMargin: 18
-                spacing: 13
+                source: "../assets/launcher.jpg"
+                cache: false
+                fillMode: Image.PreserveAspectCrop
+                smooth: true
+                asynchronous: false
+            }
 
-                Text {
-                    text: "󰍉"
-                    color: Theme.Colors.accent
-                    font.pixelSize: 23
-                    Layout.alignment: Qt.AlignVCenter
-                }
+            Rectangle {
+                anchors.fill: parent
+                color: "#000000"
+                opacity: 0.08
+            }
 
-                TextInput {
-                    id: searchInput
-
-                    Layout.fillWidth: true
-                    height: parent.height
-
-                    focus: true
-                    color: Theme.Colors.text
-                    selectedTextColor: Theme.Colors.accentText
-                    selectionColor: Theme.Colors.accent
-                    font.pixelSize: 22
-                    font.bold: true
-                    clip: true
-                    verticalAlignment: TextInput.AlignVCenter
-
-                    onTextChanged: {
-                        root.query = text
-                        root.refreshFilter()
-                        listView.currentIndex = 0
-                    }
-
-                    Keys.onPressed: function(event) {
-                        if (event.key === Qt.Key_Escape) {
-                            root.closeRequested()
-                            event.accepted = true
-                        } else if (event.key === Qt.Key_Down) {
-                            listView.currentIndex = Math.min(listView.currentIndex + 1, root.filteredApps.length - 1)
-                            event.accepted = true
-                        } else if (event.key === Qt.Key_Up) {
-                            listView.currentIndex = Math.max(listView.currentIndex - 1, 0)
-                            event.accepted = true
-                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                            root.launchCurrent()
-                            event.accepted = true
-                        }
-                    }
-
-                    Text {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: "Spotlight Search"
-                        visible: searchInput.text.length === 0
-                        color: Theme.Colors.muted
-                        font.pixelSize: 22
-                        font.bold: true
-                    }
-
-                    Component.onCompleted: forceActiveFocus()
-                }
+            Rectangle {
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: 1
+                color: Theme.Colors.accent
+                opacity: 0.55
             }
         }
 
-        ListView {
-            id: listView
-
-            Layout.fillWidth: true
+        Rectangle {
+            Layout.preferredWidth: 400
             Layout.fillHeight: true
+            color: Theme.Colors.barBg
 
-            model: root.filteredApps
-            currentIndex: 0
-            clip: true
-            spacing: 7
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.topMargin: 30
+                anchors.leftMargin: 20
+                anchors.rightMargin: 20
+                anchors.bottomMargin: 16
+                spacing: 10
 
-            delegate: Rectangle {
-                id: appRow
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 46
+                    color: "transparent"
 
-                property bool selected: ListView.isCurrentItem
-                property bool hovered: rowMouse.containsMouse
-                property string iconSource: modelData.icon || ""
-
-                width: listView.width
-                height: 46
-                radius: 14
-
-                color: selected
-                    ? Theme.Colors.activeBg
-                    : hovered
-                        ? Theme.Colors.pillHover
-                        : "transparent"
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 14
-                    anchors.rightMargin: 14
-                    spacing: 13
-
-                    Item {
-                        Layout.preferredWidth: 34
-                        Layout.preferredHeight: 34
-                        Layout.alignment: Qt.AlignVCenter
-
-                        Image {
-                            anchors.centerIn: parent
-                            width: 28
-                            height: 28
-                            source: appRow.iconSource
-                            visible: appRow.iconSource.length > 0
-                            fillMode: Image.PreserveAspectFit
-                            smooth: true
-                            asynchronous: true
-                        }
+                    RowLayout {
+                        anchors.fill: parent
+                        spacing: 10
 
                         Text {
-                            anchors.centerIn: parent
-                            visible: appRow.iconSource.length === 0
-                            text: "󰣆"
-                            color: appRow.selected ? Theme.Colors.accent : Theme.Colors.text
-                            font.pixelSize: 20
+                            text: "󰍉"
+                            color: Theme.Colors.accent
+                            font.pixelSize: 17
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+
+                        TextInput {
+                            id: searchInput
+
+                            Layout.fillWidth: true
+                            height: parent.height
+
+                            focus: true
+                            color: Theme.Colors.text
+                            selectedTextColor: Theme.Colors.accentText
+                            selectionColor: Theme.Colors.accent
+                            font.family: "Figtree"
+                            font.pixelSize: 16
+                            font.bold: true
+                            clip: true
+                            verticalAlignment: TextInput.AlignVCenter
+
+                            onTextChanged: {
+                                root.query = text
+                                root.refreshFilter()
+                                listView.currentIndex = 0
+                            }
+
+                            Keys.onPressed: function(event) {
+                                if (event.key === Qt.Key_Escape) {
+                                    root.closeRequested()
+                                    event.accepted = true
+                                } else if (event.key === Qt.Key_Down) {
+                                    listView.currentIndex = Math.min(listView.currentIndex + 1, root.filteredApps.length - 1)
+                                    event.accepted = true
+                                } else if (event.key === Qt.Key_Up) {
+                                    listView.currentIndex = Math.max(listView.currentIndex - 1, 0)
+                                    event.accepted = true
+                                } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                                    root.launchCurrent()
+                                    event.accepted = true
+                                }
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Search Apps..."
+                                visible: searchInput.text.length === 0
+                                color: Theme.Colors.muted
+                                font.family: "Figtree"
+                                font.pixelSize: 16
+                                font.bold: true
+                            }
+
+                            Component.onCompleted: forceActiveFocus()
                         }
                     }
 
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignVCenter
-                        spacing: 1
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        height: 1
+                        color: Theme.Colors.accent
+                        opacity: 0.7
+                    }
+                }
 
-                        Text {
-                            text: modelData.name || ""
-                            color: Theme.Colors.text
-                            font.pixelSize: 14
-                            font.bold: appRow.selected
-                            Layout.fillWidth: true
-                            elide: Text.ElideRight
+                ListView {
+                    id: listView
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    model: root.filteredApps
+                    currentIndex: 0
+                    clip: true
+                    spacing: 4
+
+                    delegate: Rectangle {
+                        id: appRow
+
+                        property bool selected: ListView.isCurrentItem
+                        property bool hovered: rowMouse.containsMouse
+                        property string iconSource: modelData.icon || ""
+
+                        width: listView.width
+                        height: 43
+                        radius: 4
+
+                        color: selected
+                            ? Theme.Colors.activeBg
+                            : hovered
+                                ? Theme.Colors.pillHover
+                                : "transparent"
+
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 3
+                            color: Theme.Colors.accent
+                            visible: appRow.selected || appRow.hovered
                         }
 
-                        Text {
-                            text: modelData.comment || ""
-                            color: Theme.Colors.muted
-                            font.pixelSize: 10
-                            Layout.fillWidth: true
-                            elide: Text.ElideRight
-                            visible: text.length > 0
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 10
+                            anchors.rightMargin: 10
+                            spacing: 12
+
+                            Item {
+                                Layout.preferredWidth: 28
+                                Layout.preferredHeight: 28
+                                Layout.alignment: Qt.AlignVCenter
+
+                                Image {
+                                    anchors.centerIn: parent
+                                    width: 24
+                                    height: 24
+                                    source: appRow.iconSource
+                                    visible: appRow.iconSource.length > 0
+                                    fillMode: Image.PreserveAspectFit
+                                    smooth: true
+                                    asynchronous: true
+                                }
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    visible: appRow.iconSource.length === 0
+                                    text: "󰣆"
+                                    color: appRow.selected ? Theme.Colors.accent : Theme.Colors.text
+                                    font.pixelSize: 16
+                                }
+                            }
+
+                            Text {
+                                text: modelData.name || ""
+                                color: appRow.selected ? Theme.Colors.accent : Theme.Colors.text
+                                font.family: "Figtree"
+                                font.pixelSize: 13
+                                font.bold: appRow.selected
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignVCenter
+                                elide: Text.ElideRight
+                            }
+                        }
+
+                        MouseArea {
+                            id: rowMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+
+                            onEntered: listView.currentIndex = index
+
+                            onClicked: {
+                                listView.currentIndex = index
+                                root.launchCurrent()
+                            }
                         }
                     }
 
                     Text {
-                        visible: appRow.selected
-                        text: "↵"
+                        anchors.centerIn: parent
+                        text: "No results"
+                        visible: root.filteredApps.length === 0
                         color: Theme.Colors.muted
-                        font.pixelSize: 16
+                        font.family: "Figtree"
+                        font.pixelSize: 14
                         font.bold: true
-                        Layout.alignment: Qt.AlignVCenter
                     }
                 }
-
-                MouseArea {
-                    id: rowMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-
-                    onEntered: listView.currentIndex = index
-
-                    onClicked: {
-                        listView.currentIndex = index
-                        root.launchCurrent()
-                    }
-                }
-            }
-
-            Text {
-                anchors.centerIn: parent
-                text: "No results"
-                visible: root.filteredApps.length === 0
-                color: Theme.Colors.muted
-                font.pixelSize: 15
-                font.bold: true
             }
         }
     }

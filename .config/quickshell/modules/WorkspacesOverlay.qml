@@ -12,7 +12,7 @@ RowLayout {
     property int groupEnd: 5
     property int workspaceCount: groupEnd - groupStart + 1
 
-    spacing: 8
+    spacing: 4
 
     Repeater {
         model: root.workspaceCount
@@ -25,7 +25,11 @@ RowLayout {
             property bool occupied: root.occupiedWorkspaces.split(",").indexOf(String(ws)) !== -1
             property bool hovered: mouseArea.containsMouse
 
-            width: active ? 18 : 24
+            Layout.preferredWidth: 30
+            Layout.minimumWidth: 30
+            Layout.maximumWidth: 30
+
+            width: 30
             height: 20
 
             Rectangle {
@@ -41,7 +45,13 @@ RowLayout {
                         ? Theme.Colors.text
                         : Theme.Colors.muted
 
-                opacity: wsItem.hovered ? 1.0 : (wsItem.active ? 1.0 : wsItem.occupied ? 0.75 : 0.45)
+                opacity: wsItem.hovered
+                    ? 1.0
+                    : wsItem.active
+                        ? 1.0
+                        : wsItem.occupied
+                            ? 0.72
+                            : 0.38
 
                 Behavior on width {
                     NumberAnimation {

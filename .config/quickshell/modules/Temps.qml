@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell.Io
 import "../theme" as Theme
 
-Rectangle {
+Item {
     id: root
 
     signal clicked()
@@ -12,23 +12,20 @@ Rectangle {
     property string gpuTemp: "?"
     property bool hovered: mouseArea.containsMouse
 
-    implicitWidth: 92
-    Layout.preferredWidth: 92
-    Layout.minimumWidth: 92
-    Layout.maximumWidth: 92
+    implicitWidth: 76
+    Layout.preferredWidth: 76
+    Layout.minimumWidth: 76
+    Layout.maximumWidth: 76
 
     height: 24
-    radius: 9
-    color: root.hovered ? Theme.Colors.pillHover : Theme.Colors.pillBg
-    clip: true
 
     Text {
         anchors.centerIn: parent
-        text: " " + root.cpuTemp + "°  " + root.gpuTemp + "°"
+        text: " " + root.cpuTemp + "° " + root.gpuTemp + "°"
         color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
         font.pixelSize: 12
         font.bold: root.hovered
-        width: parent.width - 8
+        width: parent.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
     }

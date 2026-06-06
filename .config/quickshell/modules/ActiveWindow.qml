@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell.Io
 import "../theme" as Theme
 
-Rectangle {
+Item {
     id: root
 
     signal clicked()
@@ -15,6 +15,13 @@ Rectangle {
     property int pointCount: 28
     property var targetValues: []
     property var smoothValues: []
+
+    implicitWidth: 132
+    Layout.preferredWidth: 132
+    Layout.minimumWidth: 132
+    Layout.maximumWidth: 132
+
+    height: 24
 
     function resetValues() {
         let arr = []
@@ -59,7 +66,7 @@ Rectangle {
         if (c.includes("code")) return "󰨞"
         if (c.includes("spotify")) return ""
         if (c.includes("dolphin")) return "󰉋"
-        if (c.includes("thunar")) return "Thunar"
+        if (c.includes("thunar")) return "󰉋"
         if (c.includes("discord")) return ""
         if (c.includes("vesktop")) return ""
         if (c.includes("caprine")) return "󰈎"
@@ -102,23 +109,13 @@ Rectangle {
         return cls.length > 0 ? cls : "Desktop"
     }
 
-    implicitWidth: 138
-    Layout.preferredWidth: 138
-    Layout.minimumWidth: 138
-    Layout.maximumWidth: 138
-
-    height: 24
-    radius: 10
-    color: root.hovered ? Theme.Colors.activeHover : Theme.Colors.activeBg
-    clip: true
-
     Canvas {
         id: miniWave
 
         visible: root.showCava
         anchors.fill: parent
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
+        anchors.leftMargin: 8
+        anchors.rightMargin: 8
         antialiasing: true
         renderTarget: Canvas.FramebufferObject
 
@@ -137,23 +134,19 @@ Rectangle {
             let amp = (h - 7) / 2
             let step = w / (root.pointCount - 1)
 
-            ctx.globalAlpha = 0.75
+            ctx.globalAlpha = 0.72
             ctx.fillStyle = Theme.Colors.accent
-
             ctx.beginPath()
 
             for (let i = 0; i < root.pointCount; i++) {
                 let x = i * step
                 let y = mid - root.smoothValues[i] * amp
 
-                if (i === 0) {
-                    ctx.moveTo(x, y)
-                } else {
+                if (i === 0) ctx.moveTo(x, y)
+                else {
                     let px = (i - 1) * step
                     let py = mid - root.smoothValues[i - 1] * amp
-                    let cx = (px + x) / 2
-                    let cy = (py + y) / 2
-                    ctx.quadraticCurveTo(px, py, cx, cy)
+                    ctx.quadraticCurveTo(px, py, (px + x) / 2, (py + y) / 2)
                 }
             }
 
@@ -161,42 +154,16 @@ Rectangle {
                 let x2 = j * step
                 let y2 = mid + root.smoothValues[j] * amp
 
-                if (j === root.pointCount - 1) {
-                    ctx.lineTo(x2, y2)
-                } else {
+                if (j === root.pointCount - 1) ctx.lineTo(x2, y2)
+                else {
                     let nx = (j + 1) * step
                     let ny = mid + root.smoothValues[j + 1] * amp
-                    let cx2 = (nx + x2) / 2
-                    let cy2 = (ny + y2) / 2
-                    ctx.quadraticCurveTo(nx, ny, cx2, cy2)
+                    ctx.quadraticCurveTo(nx, ny, (nx + x2) / 2, (ny + y2) / 2)
                 }
             }
 
             ctx.closePath()
             ctx.fill()
-
-            ctx.globalAlpha = 0.95
-            ctx.strokeStyle = Theme.Colors.text
-            ctx.lineWidth = 1
-
-            ctx.beginPath()
-
-            for (let k = 0; k < root.pointCount; k++) {
-                let lx = k * step
-                let ly = mid - root.smoothValues[k] * amp
-
-                if (k === 0) {
-                    ctx.moveTo(lx, ly)
-                } else {
-                    let pxx = (k - 1) * step
-                    let pyy = mid - root.smoothValues[k - 1] * amp
-                    let mcx = (pxx + lx) / 2
-                    let mcy = (pyy + ly) / 2
-                    ctx.quadraticCurveTo(pxx, pyy, mcx, mcy)
-                }
-            }
-
-            ctx.stroke()
             ctx.globalAlpha = 1
         }
     }
@@ -204,11 +171,11 @@ Rectangle {
     RowLayout {
         visible: !root.showCava
         anchors.centerIn: parent
-        spacing: 8
+        spacing: 7
 
         Text {
             text: root.appIcon(root.appClass)
-            color: Theme.Colors.text
+            color: root.hovered ? Theme.Colors.accent : Theme.Colors.text
             font.pixelSize: 13
             Layout.alignment: Qt.AlignVCenter
         }
@@ -220,6 +187,31 @@ Rectangle {
             font.bold: true
             Layout.alignment: Qt.AlignVCenter
             elide: Text.ElideRight
+        }
+    }
+
+    Rectangle {
+        visible: !root.showCava
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        width: root.hovered ? 52 : 28
+        height: 2
+        radius: 1
+        color: Theme.Colors.accent
+        opacity: root.hovered ? 0.9 : 0.45
+
+        Behavior on width {
+            NumberAnimation {
+                duration: 130
+                easing.type: Easing.OutCubic
+            }
+        }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 130
+                easing.type: Easing.OutCubic
+            }
         }
     }
 
@@ -238,7 +230,6 @@ Rectangle {
             for (let i = 0; i < root.pointCount; i++) {
                 let current = root.smoothValues[i] || 0
                 let target = root.targetValues[i] || 0
-
                 next.push(current + (target - current) * 0.18)
             }
 
