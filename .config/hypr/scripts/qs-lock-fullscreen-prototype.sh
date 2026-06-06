@@ -7,7 +7,6 @@ RAW="/tmp/qs-lock-bg-raw.png"
 
 mkdir -p "$RUN_DIR"
 
-# Capture current screen and make blurred/dimmed background.
 grim "$RAW"
 magick "$RAW" -resize 25% -blur 0x8 -resize 400% -brightness-contrast -12x-4 "$BG"
 rm -f "$RAW"

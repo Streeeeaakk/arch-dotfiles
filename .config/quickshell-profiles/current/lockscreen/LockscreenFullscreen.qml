@@ -1,9 +1,16 @@
 import QtQuick
 import QtQuick.Controls
 import Quickshell
+import Quickshell.Io
 import "theme" as Theme
 
 ShellRoot {
+    property string authStatus: ""
+    property bool authRunning: false
+
+    function shellQuote(str) {
+        return "'" + String(str).replace(/'/g, "'\\''") + "'"
+    }
     FloatingWindow {
         id: win
         visible: true
@@ -104,6 +111,7 @@ ShellRoot {
                     }
 
                     TextField {
+                        id: passwordInput
                         width: 300
                         height: 52
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -122,25 +130,65 @@ ShellRoot {
                             border.color: Qt.rgba(1, 1, 1, 0.08)
                         }
 
-                        Keys.onEscapePressed: text = ""
+                        Keys.onEscapePressed: {
+                            text = ""
+                            authStatus = ""
+                        }
 
                         Keys.onReturnPressed: {
-                            if (text === "devunlock") {
-                                Qt.quit()
-                            } else {
-                                text = ""
-                            }
+                            if (text.length === 0 || authRunning)
+                                return
+
+                            authRunning = true
+                            authStatus = "Checking..."
+
+                            authProcess.command = [
+                                "sh",
+                                "-c",
+                                "~/.config/hypr/scripts/qs-unlock-check-arg.sh " + shellQuote(text)
+                            ]
+                            authProcess.running = true
                         }
                     }
 
                     Text {
                         width: parent.width
                         horizontalAlignment: Text.AlignHCenter
-                        text: "Fullscreen prototype — type devunlock then Enter to close"
+                        text: "Enter password to unlock"
                         color: Theme.Colors.text
                         opacity: 0.35
                         font.family: "Ubuntu Nerd Font"
                         font.pixelSize: 12
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: authStatus
+                        color: authStatus === "Wrong password" ? Theme.Colors.warning : Theme.Colors.text
+                        opacity: authStatus.length > 0 ? 0.80 : 0
+                        font.family: "Ubuntu Nerd Font"
+                        font.pixelSize: 13
+                    }
+                }
+            }
+
+            Process {
+                id: authProcess
+                running: false
+
+                stdout: SplitParser {
+                    onRead: line => {
+                        authRunning = false
+
+                        if (String(line).trim() === "OK") {
+                            authStatus = "Unlocked"
+                            Qt.quit()
+                        } else {
+                            authStatus = "Wrong password"
+                            passwordInput.text = ""
+                            passwordInput.forceActiveFocus()
+                        }
                     }
                 }
             }
