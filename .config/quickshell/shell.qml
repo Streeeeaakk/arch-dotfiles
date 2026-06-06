@@ -17,6 +17,8 @@ ShellRoot {
     property bool calendarPopupOpen: false
     property bool powerPopupOpen: false
     property bool launcherOpen: false
+    property bool barHidden: false
+    property string barHiddenMonitor: ""
     property bool anyPopupOpen: mediaPopupOpen || networkPopupOpen || audioPopupOpen || systemPopupOpen || calendarPopupOpen || powerPopupOpen
 
     property string popupMonitor: ""
@@ -202,6 +204,27 @@ ShellRoot {
         onTriggered: launcherTriggerProc.running = true
     }
 
+    Process {
+        id: barHiddenProc
+        command: ["sh", "-c", "cat /tmp/quickshell-bar-hidden 2>/dev/null || echo 0"]
+        running: true
+
+        stdout: SplitParser {
+            onRead: data => {
+                let parts = data.trim().split("\t")
+                shell.barHiddenMonitor = parts[0] || ""
+                shell.barHidden = (parts[1] || "0") === "1"
+            }
+        }
+    }
+
+    Timer {
+        interval: 150
+        running: true
+        repeat: true
+        onTriggered: barHiddenProc.running = true
+    }
+
     Variants {
         model: Quickshell.screens
 
@@ -216,6 +239,7 @@ ShellRoot {
             property bool cavaMode: !workspaceMode && shell.mediaPlaying && !islandHovered
 
             screen: modelData
+            visible: !(shell.barHidden && shell.barHiddenMonitor === panel.screenName)
             focusable: shell.anyPopupOpen && !shell.launcherOpen
 
             anchors {
