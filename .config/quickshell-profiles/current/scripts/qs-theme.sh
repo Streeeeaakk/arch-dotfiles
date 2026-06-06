@@ -88,6 +88,7 @@ QML
 esac
 
 echo "$mode" > "$MODE_FILE"
+~/.config/hypr/scripts/p10k-theme.sh "$mode" 2>/dev/null || true
 echo "$mode" > "$GLOBAL_THEME_FILE"
 
 if [ "${QS_THEME_NO_RESTART:-0}" = "1" ]; then
