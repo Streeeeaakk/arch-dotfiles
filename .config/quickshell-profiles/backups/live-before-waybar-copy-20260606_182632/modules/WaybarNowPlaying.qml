@@ -38,11 +38,7 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-
-        onPressed: function(mouse) {
-            root.clicked()
-            mouse.accepted = true
-        }
+        onClicked: root.clicked()
     }
 
     Process {
