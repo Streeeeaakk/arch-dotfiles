@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Switch Quickshell Config
-Comment=Switch between Quickshell config profiles
+Comment=Open Quickshell native config switcher
 Exec=sh -c "$HOME/.config/hypr/scripts/qs-profile-menu.sh"
 Icon=preferences-desktop-theme
 Terminal=false

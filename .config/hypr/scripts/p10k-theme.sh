@@ -8,17 +8,17 @@ P10K="$HOME/.p10k.zsh"
 
 case "$theme" in
   green)
-    os_bg=2
+    os_bg=40
     os_fg=0
-    dir_bg=2
+    dir_bg=40
     dir_fg=0
-    vcs_clean_bg=2
-    vcs_mod_bg=3
+    vcs_clean_bg=40
+    vcs_mod_bg=82
     status_ok_bg=0
-    status_ok_fg=2
-    time_bg=2
+    status_ok_fg=40
+    time_bg=40
     time_fg=0
-    ornament_fg=2
+    ornament_fg=40
     ;;
 
   purple|mauve)
@@ -64,17 +64,17 @@ case "$theme" in
     ;;
 
   red)
-    os_bg=1
-    os_fg=7
-    dir_bg=1
-    dir_fg=7
-    vcs_clean_bg=1
-    vcs_mod_bg=3
+    os_bg=160
+    os_fg=15
+    dir_bg=160
+    dir_fg=15
+    vcs_clean_bg=160
+    vcs_mod_bg=202
     status_ok_bg=0
-    status_ok_fg=1
-    time_bg=1
-    time_fg=7
-    ornament_fg=1
+    status_ok_fg=160
+    time_bg=160
+    time_fg=15
+    ornament_fg=160
     ;;
 
   white)

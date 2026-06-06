@@ -90,4 +90,7 @@ pkill -f workspace-wallpaper.sh 2>/dev/null || true
 sleep 0.2
 nohup "$HOME/.config/hypr/workspace-wallpaper.sh" >/tmp/workspace-wallpaper.log 2>&1 &
 
+~/.config/hypr/scripts/p10k-theme.sh "$theme" 2>/dev/null || true
 notify-send "Theme Switcher" "Switched to $theme"
+
+source ~/.p10k.zsh
