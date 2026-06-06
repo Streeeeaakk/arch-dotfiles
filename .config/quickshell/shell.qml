@@ -19,6 +19,7 @@ ShellRoot {
     property bool launcherOpen: false
     property bool barHidden: false
     property string barHiddenMonitor: ""
+    property string barHiddenMonitors: ""
     property bool anyPopupOpen: mediaPopupOpen || networkPopupOpen || audioPopupOpen || systemPopupOpen || calendarPopupOpen || powerPopupOpen
 
     property string popupMonitor: ""
@@ -206,7 +207,7 @@ ShellRoot {
 
     Process {
         id: barHiddenProc
-        command: ["sh", "-c", "cat /tmp/quickshell-bar-hidden 2>/dev/null || echo 0"]
+        command: ["sh", "-c", "~/.config/quickshell/scripts/bar-hide-state.sh"]
         running: true
 
         stdout: SplitParser {
@@ -239,7 +240,7 @@ ShellRoot {
             property bool cavaMode: !workspaceMode && shell.mediaPlaying && !islandHovered
 
             screen: modelData
-            visible: !(shell.barHidden && shell.barHiddenMonitor === panel.screenName)
+            visible: shell.barHiddenMonitors.indexOf("|" + panel.screenName + "|") === -1
             focusable: shell.anyPopupOpen && !shell.launcherOpen
 
             anchors {
