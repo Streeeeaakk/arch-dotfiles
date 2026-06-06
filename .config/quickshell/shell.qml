@@ -362,6 +362,7 @@ ShellRoot {
 
                             ActiveWindow {
                                 Layout.alignment: Qt.AlignVCenter
+                                monitorName: panel.screenName
                             }
 
                             Battery {

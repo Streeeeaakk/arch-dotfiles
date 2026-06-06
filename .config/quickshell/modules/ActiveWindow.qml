@@ -7,6 +7,7 @@ Item {
     id: root
 
     property string appClass: ""
+    property string monitorName: ""
     property bool hovered: mouseArea.containsMouse
 
     implicitWidth: Math.min(92, Math.max(68, textRow.implicitWidth + 16))
@@ -92,7 +93,7 @@ Item {
         command: [
             "sh",
             "-c",
-            "hyprctl activewindow -j 2>/dev/null | jq -r '.class // \"Desktop\"'"
+            "mon=" + root.monitorName + "; ws=$(hyprctl monitors -j 2>/dev/null | jq -r --arg mon \"$mon\" '.[] | select(.name == $mon) | .activeWorkspace.id' | head -n1); hyprctl clients -j 2>/dev/null | jq -r --argjson ws \"${ws:-0}\" '[.[] | select(.workspace.id == $ws)] | sort_by(.focusHistoryID // 999999) | .[0].class // \"Desktop\"'"
         ]
         running: true
 
