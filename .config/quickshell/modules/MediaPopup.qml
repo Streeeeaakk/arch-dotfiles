@@ -1,174 +1,250 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import "../theme" as Theme
 
 Rectangle {
     id: root
 
-    property string title: "No media"
-    property string artist: ""
+    property string player: "No Player"
     property string status: "Stopped"
-    property date now: new Date()
+    property string title: "Nothing Playing"
+    property string artist: ""
+    property string album: ""
+    property string art: ""
 
-    width: 380
-    height: 112
+    width: 430
+    height: 170
     radius: 16
 
-    color: "#11111b"
-    border.color: "#313244"
+    color: Theme.Colors.barBg
+    border.color: Theme.Colors.accent
     border.width: 1
     clip: true
 
-    ColumnLayout {
+    function refresh() {
+        infoProc.running = true
+    }
+
+    RowLayout {
         anchors.fill: parent
-        anchors.margins: 12
-        spacing: 8
+        anchors.margins: 14
+        spacing: 14
 
-        Text {
-            text: Qt.formatDateTime(root.now, "dddd, MMMM dd  •  h:mm AP")
-            color: "#cdd6f4"
-            font.pixelSize: 13
-            font.bold: true
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-            elide: Text.ElideRight
+        Rectangle {
+            Layout.preferredWidth: 112
+            Layout.preferredHeight: 112
+            Layout.alignment: Qt.AlignVCenter
+            radius: 12
+            color: Theme.Colors.pillBg
+            border.color: Theme.Colors.border
+            border.width: 1
+            clip: true
+
+            Image {
+                anchors.fill: parent
+                source: root.art
+                visible: root.art.length > 0
+                fillMode: Image.PreserveAspectCrop
+                smooth: true
+                asynchronous: true
+                cache: false
+            }
+
+            Text {
+                anchors.centerIn: parent
+                visible: root.art.length === 0
+                text: "󰎆"
+                color: Theme.Colors.accent
+                font.pixelSize: 38
+            }
         }
 
-        Text {
-            text: root.artist.length > 0 ? root.title + " — " + root.artist : root.title
-            color: "#bac2de"
-            font.pixelSize: 12
+        ColumnLayout {
             Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-            elide: Text.ElideRight
-        }
+            Layout.fillHeight: true
+            spacing: 7
 
-        RowLayout {
-            Layout.alignment: Qt.AlignHCenter
-            spacing: 12
-
-            Rectangle {
-                width: 42
-                height: 28
-                radius: 10
-                color: "#313244"
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
 
                 Text {
-                    anchors.centerIn: parent
-                    text: "󰒮"
-                    color: "#cdd6f4"
-                    font.pixelSize: 14
+                    text: root.player
+                    color: Theme.Colors.accent
+                    font.family: "Figtree"
+                    font.pixelSize: 11
+                    font.bold: true
+                    Layout.fillWidth: true
+                    elide: Text.ElideRight
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: prevProc.running = true
+                Text {
+                    text: root.status
+                    color: Theme.Colors.muted
+                    font.family: "Figtree"
+                    font.pixelSize: 10
+                    font.bold: true
                 }
             }
 
-            Rectangle {
-                width: 52
-                height: 28
-                radius: 10
-                color: "#45475a"
-
-                Text {
-                    anchors.centerIn: parent
-                    text: root.status === "Playing" ? "󰏤" : "󰐊"
-                    color: "#cdd6f4"
-                    font.pixelSize: 15
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: playProc.running = true
-                }
+            Text {
+                text: root.title
+                color: Theme.Colors.textHover
+                font.family: "Figtree"
+                font.pixelSize: 15
+                font.bold: true
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+                maximumLineCount: 1
             }
 
-            Rectangle {
-                width: 42
-                height: 28
-                radius: 10
-                color: "#313244"
+            Text {
+                text: root.artist.length > 0 ? root.artist : "Unknown Artist"
+                color: Theme.Colors.text
+                font.family: "Figtree"
+                font.pixelSize: 12
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+            }
 
-                Text {
-                    anchors.centerIn: parent
-                    text: "󰒭"
-                    color: "#cdd6f4"
-                    font.pixelSize: 14
+            Text {
+                text: root.album
+                visible: root.album.length > 0
+                color: Theme.Colors.muted
+                font.family: "Figtree"
+                font.pixelSize: 11
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+            }
+
+            Item {
+                Layout.fillHeight: true
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignHCenter
+                spacing: 10
+
+                Rectangle {
+                    width: 42
+                    height: 28
+                    radius: 9
+                    color: Theme.Colors.pillBg
+                    border.color: Theme.Colors.border
+                    border.width: 1
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: ""
+                        color: Theme.Colors.text
+                        font.pixelSize: 12
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: prevProc.running = true
+                    }
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: nextProc.running = true
+                Rectangle {
+                    width: 52
+                    height: 30
+                    radius: 10
+                    color: Theme.Colors.activeBg
+                    border.color: Theme.Colors.accent
+                    border.width: 1
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: root.status === "Playing" ? "" : ""
+                        color: Theme.Colors.textHover
+                        font.pixelSize: 13
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: playPauseProc.running = true
+                    }
+                }
+
+                Rectangle {
+                    width: 42
+                    height: 28
+                    radius: 9
+                    color: Theme.Colors.pillBg
+                    border.color: Theme.Colors.border
+                    border.width: 1
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: ""
+                        color: Theme.Colors.text
+                        font.pixelSize: 12
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: nextProc.running = true
+                    }
                 }
             }
         }
     }
 
     Process {
-        id: metadataProc
-        command: ["sh", "-c", "playerctl metadata --format '{{title}}\t{{artist}}' 2>/dev/null || echo 'No media\t'"]
+        id: infoProc
+        command: ["sh", "-c", "~/.config/quickshell/scripts/media-info.sh"]
         running: true
 
         stdout: SplitParser {
-            onRead: data => {
-                let parts = data.trim().split("\t")
-                root.title = parts[0] || "No media"
-                root.artist = parts[1] || ""
+            onRead: function(data) {
+                try {
+                    let obj = JSON.parse(data.trim())
+
+                    root.player = obj.player || "No Player"
+                    root.status = obj.status || "Stopped"
+                    root.title = obj.title || "Nothing Playing"
+                    root.artist = obj.artist || ""
+                    root.album = obj.album || ""
+                    root.art = obj.art || ""
+                } catch (e) {
+                    root.player = "No Player"
+                    root.status = "Stopped"
+                    root.title = "Nothing Playing"
+                    root.artist = ""
+                    root.album = ""
+                    root.art = ""
+                }
             }
         }
     }
 
     Process {
-        id: statusProc
-        command: ["sh", "-c", "playerctl status 2>/dev/null || echo Stopped"]
-        running: true
-
-        stdout: SplitParser {
-            onRead: data => root.status = data.trim()
-        }
+        id: playPauseProc
+        command: ["playerctl", "play-pause"]
+        onExited: root.refresh()
     }
 
     Process {
         id: prevProc
         command: ["playerctl", "previous"]
-        onExited: {
-            metadataProc.running = true
-            statusProc.running = true
-        }
-    }
-
-    Process {
-        id: playProc
-        command: ["playerctl", "play-pause"]
-        onExited: {
-            metadataProc.running = true
-            statusProc.running = true
-        }
+        onExited: root.refresh()
     }
 
     Process {
         id: nextProc
         command: ["playerctl", "next"]
-        onExited: {
-            metadataProc.running = true
-            statusProc.running = true
-        }
+        onExited: root.refresh()
     }
 
     Timer {
-        interval: 1000
+        interval: 1500
         running: true
         repeat: true
-
-        onTriggered: {
-            root.now = new Date()
-            metadataProc.running = true
-            statusProc.running = true
-        }
+        onTriggered: root.refresh()
     }
 }

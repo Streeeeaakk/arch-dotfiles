@@ -116,6 +116,7 @@ ShellRoot {
         interval: 1000
         running: true
         repeat: true
+
         onTriggered: {
             mediaStatusProc.running = true
             cavaStatusProc.running = true
@@ -208,7 +209,7 @@ ShellRoot {
             property bool cavaMode: !workspaceMode && shell.mediaPlaying && !islandHovered
 
             screen: modelData
-            focusable: shell.launcherOpen && shell.launcherMonitor === panel.screenName
+            focusable: false
 
             anchors {
                 top: true
@@ -228,32 +229,6 @@ ShellRoot {
 
                 width: island.width + 8
                 height: island.height + 8
-
-                Rectangle {
-                    id: neonGlowOuter
-
-                    anchors.centerIn: island
-                    width: island.width + 8
-                    height: island.height + 8
-                    radius: island.radius + 5
-
-                    color: Theme.Colors.accent
-                    opacity: panel.cavaMode ? 0.26 : 0.16
-                }
-
-                Rectangle {
-                    id: neonGlowInner
-
-                    anchors.centerIn: island
-                    width: island.width + 3
-                    height: island.height + 3
-                    radius: island.radius + 2
-
-                    color: "transparent"
-                    border.color: Theme.Colors.accent
-                    border.width: 1
-                    opacity: panel.cavaMode ? 0.85 : 0.55
-                }
 
                 Rectangle {
                     id: island
@@ -352,8 +327,7 @@ ShellRoot {
 
                         ActiveWindow {
                             Layout.alignment: Qt.AlignVCenter
-                            showCava: shell.mediaPlaying
-                            onClicked: shell.openLauncher(panel.screenName)
+                            onClicked: shell.togglePopup("media", panel.screenName)
                         }
 
                         Rectangle {
@@ -380,9 +354,10 @@ ShellRoot {
             PopupWindow {
                 id: launcherWindow
                 visible: shell.launcherOpen && shell.launcherMonitor === panel.screenName
-                width: 830
-                height: 530
+                width: 810
+                height: 510
                 color: "transparent"
+                grabFocus: true
 
                 anchor.window: panel
                 anchor.rect.x: panel.width / 2 - width / 2
@@ -407,27 +382,7 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
 
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: 820
-                        height: 520
-                        radius: 14
-                        color: Theme.Colors.accent
-                        opacity: 0.24
-                    }
-
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: 808
-                        height: 508
-                        radius: 11
-                        color: "transparent"
-                        border.color: Theme.Colors.accent
-                        border.width: 1
-                        opacity: 0.95
-                    }
-
-                    LauncherPopup {
+                    AppLauncher {
                         anchors.centerIn: parent
                         width: 800
                         height: 500
@@ -470,8 +425,8 @@ ShellRoot {
             PopupWindow {
                 id: mediaPopupWindow
                 visible: shell.mediaPopupOpen && shell.popupMonitor === panel.screenName
-                width: 380
-                height: 112
+                width: 430
+                height: 170
                 color: "transparent"
 
                 anchor.window: panel
@@ -512,30 +467,6 @@ ShellRoot {
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
                     NetworkPopup { anchors.fill: parent }
-                }
-            }
-
-            PopupWindow {
-                id: systemPopupWindow
-                visible: shell.systemPopupOpen && shell.popupMonitor === panel.screenName
-                width: 420
-                height: 214
-                color: "transparent"
-
-                anchor.window: panel
-                anchor.rect.x: panel.width / 2 - width / 2
-                anchor.rect.y: islandWrap.y + island.height + 8
-
-                Item {
-                    anchors.fill: parent
-                    opacity: systemPopupWindow.visible ? 1 : 0
-                    scale: systemPopupWindow.visible ? 1 : 0.90
-                    transformOrigin: Item.Top
-
-                    Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
-                    Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
-
-                    SystemPopup { anchors.fill: parent }
                 }
             }
 

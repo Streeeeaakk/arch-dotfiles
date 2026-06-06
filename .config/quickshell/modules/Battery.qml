@@ -12,6 +12,7 @@ Item {
     property string status: "Unknown"
     property bool hasBattery: percent !== "none"
     property bool hovered: mouseArea.containsMouse
+    property int pct: hasBattery ? parseInt(percent) : 0
 
     visible: hasBattery
 
@@ -22,32 +23,63 @@ Item {
 
     height: 24
 
-    Text {
-        anchors.centerIn: parent
+    Canvas {
+        id: ring
 
-        text: {
-            if (!root.hasBattery) return ""
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        width: 18
+        height: 18
+        antialiasing: true
+        renderTarget: Canvas.FramebufferObject
 
-            let icon = "󰁹"
+        onPaint: {
+            let ctx = getContext("2d")
+            let w = width
+            let h = height
+            let cx = w / 2
+            let cy = h / 2
+            let r = 7
+            let start = -Math.PI / 2
+            let end = start + (Math.PI * 2 * Math.max(0, Math.min(100, root.pct)) / 100)
 
-            if (root.status === "charging") {
-                icon = "󰂄"
-            } else if (parseInt(root.percent) <= 15) {
-                icon = "󰂎"
-            } else if (parseInt(root.percent) <= 30) {
-                icon = "󰁻"
-            } else if (parseInt(root.percent) <= 60) {
-                icon = "󰁾"
-            }
+            ctx.clearRect(0, 0, w, h)
 
-            return icon + " " + root.percent + "%"
+            ctx.lineWidth = 2.2
+            ctx.lineCap = "round"
+
+            ctx.beginPath()
+            ctx.strokeStyle = Theme.Colors.border
+            ctx.globalAlpha = 0.9
+            ctx.arc(cx, cy, r, 0, Math.PI * 2)
+            ctx.stroke()
+
+            ctx.beginPath()
+            ctx.strokeStyle = root.pct <= 15 ? Theme.Colors.warning : Theme.Colors.accent
+            ctx.globalAlpha = 1
+            ctx.arc(cx, cy, r, start, end)
+            ctx.stroke()
+
+            ctx.globalAlpha = 1
         }
+    }
 
-        color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
+    Text {
+        anchors.left: ring.right
+        anchors.leftMargin: 5
+        anchors.verticalCenter: parent.verticalCenter
+        text: root.percent + "%"
+        color: root.hovered
+            ? Theme.Colors.textHover
+            : root.pct <= 15
+                ? Theme.Colors.warning
+                : Theme.Colors.text
+
+        font.family: "Figtree"
         font.pixelSize: 12
         font.bold: root.hovered
-        width: parent.width
-        horizontalAlignment: Text.AlignHCenter
+        width: 32
+        horizontalAlignment: Text.AlignLeft
         elide: Text.ElideRight
     }
 
@@ -75,6 +107,7 @@ Item {
                 let parts = data.trim().split(":")
                 root.percent = parts[0] || "none"
                 root.status = parts[1] || "Unknown"
+                ring.requestPaint()
             }
         }
     }
@@ -85,4 +118,7 @@ Item {
         repeat: true
         onTriggered: batteryProc.running = true
     }
+
+    onPctChanged: ring.requestPaint()
+    onHoveredChanged: ring.requestPaint()
 }
