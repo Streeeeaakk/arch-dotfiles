@@ -40,7 +40,6 @@ Rectangle {
     function takeFocus() {
         root.forceActiveFocus()
         searchInput.forceActiveFocus()
-        searchInput.cursorPosition = searchInput.text.length
     }
 
     function switchMode(newMode) {
@@ -306,7 +305,18 @@ Rectangle {
                             font.pixelSize: 16
                             font.bold: true
                             clip: true
+                            persistentSelection: true
                             verticalAlignment: TextInput.AlignVCenter
+
+                            Timer {
+                                id: ctrlASelectTimer
+                                interval: 100
+                                repeat: false
+                                onTriggered: {
+                                    searchInput.forceActiveFocus()
+                                    searchInput.select(0, searchInput.text.length)
+                                }
+                            }
 
                             onTextChanged: {
                                 root.query = text
@@ -332,6 +342,14 @@ Rectangle {
                             }
 
                             Keys.onPressed: function(event) {
+                                if ((event.modifiers & Qt.ControlModifier) && event.key === Qt.Key_A) {
+                                    searchInput.forceActiveFocus()
+                                    searchInput.select(0, searchInput.text.length)
+                                    ctrlASelectTimer.restart()
+                                    event.accepted = true
+                                    return
+                                }
+
                                 if (event.key === Qt.Key_Escape) {
                                     root.closeRequested()
                                     event.accepted = true
