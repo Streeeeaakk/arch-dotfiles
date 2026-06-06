@@ -12,6 +12,8 @@ Rectangle {
     property string artist: ""
     property string album: ""
     property string art: ""
+    property real position: 0
+    property real length: 0
     property bool cavaEnabled: true
 
     signal toggleCavaRequested()
@@ -20,13 +22,34 @@ Rectangle {
     height: 230
     radius: 18
 
-    color: Qt.rgba(Theme.Colors.barBg.r, Theme.Colors.barBg.g, Theme.Colors.barBg.b, 0.88)
+    color: Theme.Colors.barBg
     border.color: Theme.Colors.accent
     border.width: 1
     clip: true
 
     function refresh() {
         infoProc.running = true
+    }
+
+    function formatTime(seconds) {
+        seconds = Math.max(0, Math.floor(seconds))
+        let m = Math.floor(seconds / 60)
+        let s = seconds % 60
+        return m + ":" + (s < 10 ? "0" + s : s)
+    }
+
+    function seekToRatio(ratio) {
+        if (root.length <= 0) return
+
+        let seconds = Math.max(0, Math.min(root.length, root.length * ratio))
+
+        seekProc.command = [
+            "sh",
+            "-c",
+            "playerctl position " + seconds
+        ]
+
+        seekProc.running = true
     }
 
     RowLayout {
@@ -70,6 +93,7 @@ Rectangle {
 
             RowLayout {
                 Layout.fillWidth: true
+                spacing: 8
 
                 Text {
                     text: root.player
@@ -79,6 +103,30 @@ Rectangle {
                     font.bold: true
                     Layout.fillWidth: true
                     elide: Text.ElideRight
+                }
+
+                Rectangle {
+                    width: 76
+                    height: 24
+                    radius: 8
+                    color: root.cavaEnabled ? Theme.Colors.activeBg : Theme.Colors.pillBg
+                    border.color: Theme.Colors.accent
+                    border.width: 1
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: root.cavaEnabled ? "Cava ON" : "Cava OFF"
+                        color: root.cavaEnabled ? Theme.Colors.accent : Theme.Colors.muted
+                        font.family: "Figtree"
+                        font.pixelSize: 10
+                        font.bold: true
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.toggleCavaRequested()
+                    }
                 }
 
                 Text {
@@ -120,37 +168,75 @@ Rectangle {
                 elide: Text.ElideRight
             }
 
-            Item {
-                Layout.fillHeight: true
-            }
-
             RowLayout {
-                Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
                 spacing: 8
 
-                Rectangle {
-                    width: 94
-                    height: 26
-                    radius: 9
-                    color: root.cavaEnabled ? Theme.Colors.activeBg : Theme.Colors.pillBg
-                    border.color: Theme.Colors.accent
-                    border.width: 1
+                Text {
+                    text: root.formatTime(root.position)
+                    color: Theme.Colors.muted
+                    font.family: "Figtree"
+                    font.pixelSize: 10
+                    Layout.preferredWidth: 38
+                    horizontalAlignment: Text.AlignLeft
+                }
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: root.cavaEnabled ? "Cava ON" : "Cava OFF"
-                        color: root.cavaEnabled ? Theme.Colors.accent : Theme.Colors.muted
-                        font.family: "Figtree"
-                        font.pixelSize: 11
-                        font.bold: true
+                Rectangle {
+                    id: sliderTrack
+
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 8
+                    Layout.alignment: Qt.AlignVCenter
+                    radius: 4
+                    color: Theme.Colors.pillBg
+                    border.color: Theme.Colors.border
+                    border.width: 1
+                    clip: true
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        width: root.length > 0 ? parent.width * Math.min(1, root.position / root.length) : 0
+                        radius: 4
+                        color: Theme.Colors.accent
+
+                        Behavior on width {
+                            NumberAnimation {
+                                duration: 120
+                                easing.type: Easing.OutCubic
+                            }
+                        }
                     }
 
                     MouseArea {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: root.toggleCavaRequested()
+
+                        onClicked: {
+                            root.seekToRatio(mouseX / width)
+                        }
+
+                        onPositionChanged: {
+                            if (pressed) {
+                                root.seekToRatio(mouseX / width)
+                            }
+                        }
                     }
                 }
+
+                Text {
+                    text: root.length > 0 ? root.formatTime(root.length) : "--:--"
+                    color: Theme.Colors.muted
+                    font.family: "Figtree"
+                    font.pixelSize: 10
+                    Layout.preferredWidth: 38
+                    horizontalAlignment: Text.AlignRight
+                }
+            }
+
+            Item {
+                Layout.fillHeight: true
             }
 
             RowLayout {
@@ -162,7 +248,7 @@ Rectangle {
                     height: 32
                     radius: 10
                     color: Theme.Colors.pillBg
-                    border.color: Theme.Colors.accent
+                    border.color: Theme.Colors.border
                     border.width: 1
 
                     Text {
@@ -206,7 +292,7 @@ Rectangle {
                     height: 32
                     radius: 10
                     color: Theme.Colors.pillBg
-                    border.color: Theme.Colors.accent
+                    border.color: Theme.Colors.border
                     border.width: 1
 
                     Text {
@@ -241,6 +327,8 @@ Rectangle {
                     root.artist = obj.artist || ""
                     root.album = obj.album || ""
                     root.art = obj.art || ""
+                    root.position = Number(obj.position || 0)
+                    root.length = Number(obj.length || 0)
                 } catch (e) {
                     root.player = "No Player"
                     root.status = "Stopped"
@@ -248,6 +336,8 @@ Rectangle {
                     root.artist = ""
                     root.album = ""
                     root.art = ""
+                    root.position = 0
+                    root.length = 0
                 }
             }
         }
@@ -271,8 +361,13 @@ Rectangle {
         onExited: root.refresh()
     }
 
+    Process {
+        id: seekProc
+        onExited: root.refresh()
+    }
+
     Timer {
-        interval: 1500
+        interval: 1000
         running: true
         repeat: true
         onTriggered: root.refresh()
