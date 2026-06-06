@@ -194,34 +194,8 @@ Rectangle {
                             }
                         }
 
-                        Rectangle {
-                            width: 78
-                            height: 24
-                            radius: 8
-                            color: root.cavaEnabled ? Theme.Colors.activeBg : Theme.Colors.pillBg
-                            border.color: Theme.Colors.accent
-                            border.width: 1
-                            opacity: 0.9
-                            Layout.alignment: Qt.AlignVCenter
+                        
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: root.cavaEnabled ? "Cava ON" : "Cava OFF"
-                                color: root.cavaEnabled ? Theme.Colors.accent : Theme.Colors.muted
-                                font.family: "Figtree"
-                                font.pixelSize: 10
-                                font.bold: true
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    root.toggleCavaRequested()
-                                    focusTimer.restart()
-                                }
-                            }
-                        }
                     }
 
                     Rectangle {

@@ -12,6 +12,9 @@ Rectangle {
     property string artist: ""
     property string album: ""
     property string art: ""
+    property bool cavaEnabled: true
+
+    signal toggleCavaRequested()
 
     width: 540
     height: 230
@@ -119,6 +122,35 @@ Rectangle {
 
             Item {
                 Layout.fillHeight: true
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignHCenter
+                spacing: 8
+
+                Rectangle {
+                    width: 94
+                    height: 26
+                    radius: 9
+                    color: root.cavaEnabled ? Theme.Colors.activeBg : Theme.Colors.pillBg
+                    border.color: Theme.Colors.accent
+                    border.width: 1
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: root.cavaEnabled ? "Cava ON" : "Cava OFF"
+                        color: root.cavaEnabled ? Theme.Colors.accent : Theme.Colors.muted
+                        font.family: "Figtree"
+                        font.pixelSize: 11
+                        font.bold: true
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.toggleCavaRequested()
+                    }
+                }
             }
 
             RowLayout {

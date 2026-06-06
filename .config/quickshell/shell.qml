@@ -434,7 +434,11 @@ ShellRoot {
                     Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
                     Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
 
-                    MediaPopup { anchors.fill: parent }
+                    MediaPopup {
+                        anchors.fill: parent
+                        cavaEnabled: shell.cavaEnabled
+                        onToggleCavaRequested: shell.toggleCava()
+                    }
                 }
             }
 
