@@ -522,7 +522,7 @@ ShellRoot {
             property string screenName: modelData.name
 
             screen: modelData
-            visible: shell.launcherOpen
+            visible: shell.launcherOpen && shell.launcherMonitor === screenName
             focusable: shell.launcherOpen
             color: "transparent"
 
