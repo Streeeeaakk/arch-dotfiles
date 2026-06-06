@@ -461,8 +461,8 @@ ShellRoot {
             PopupWindow {
                 id: networkPopupWindow
                 visible: shell.networkPopupOpen && shell.popupMonitor === panel.screenName
-                width: 360
-                height: 138
+                width: 390
+                height: 300
                 color: "transparent"
 
                 anchor.window: panel

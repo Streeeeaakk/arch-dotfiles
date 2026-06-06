@@ -1,45 +1,90 @@
 #!/usr/bin/env bash
 
-connected_line="$(nmcli -t -f DEVICE,TYPE,STATE,CONNECTION dev status 2>/dev/null | awk -F: '$3=="connected" && $2!="loopback" {print; exit}')"
+python - <<'PY'
+import json
+import subprocess
 
-if [ -z "$connected_line" ]; then
-    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "none" "Disconnected" "-" "-" "-" "-" "No network"
-    exit 0
-fi
+def run(cmd):
+    try:
+        return subprocess.check_output(cmd, text=True, stderr=subprocess.DEVNULL).strip()
+    except Exception:
+        return ""
 
-IFS=':' read -r dev type state name <<< "$connected_line"
+def clean(s):
+    return (s or "").strip()
 
-ipaddr="$(ip -4 -o addr show "$dev" 2>/dev/null | awk '{print $4}' | head -n1)"
-gateway="$(ip route 2>/dev/null | awk '/default/ {print $3; exit}')"
+device = ""
+connection = "Disconnected"
+state = "disconnected"
+ip = "-"
+gateway = "-"
+signal = "0"
 
-signal="-"
-networks="-"
+status = run(["nmcli", "-t", "-f", "DEVICE,TYPE,STATE,CONNECTION", "device", "status"])
+for line in status.splitlines():
+    parts = line.split(":", 3)
+    if len(parts) < 4:
+        continue
 
-if [ "$type" = "wifi" ]; then
-    signal="$(nmcli -t -f IN-USE,SIGNAL dev wifi list 2>/dev/null | awk -F: '$1=="*" {print $2; exit}')"
+    dev, typ, st, conn = parts
 
-    networks="$(nmcli -t -f SSID,SIGNAL dev wifi list --rescan no 2>/dev/null | \
-        awk -F: '
-            $1 != "" {
-                item=$1 " " $2 "%"
-                out=(out=="" ? item : out " | " item)
-                count++
-                if (count==5) {
-                    print out
-                    exit
-                }
-            }
-            END {
-                if (count > 0 && count < 5) print out
-            }
-        ')"
+    if typ == "wifi":
+        device = dev
+        state = st
+        connection = conn if conn and conn != "--" else "Disconnected"
+        break
 
-    [ -z "$networks" ] && networks="No nearby Wi-Fi listed"
-fi
+if device:
+    details = run(["nmcli", "-t", "-f", "IP4.ADDRESS,IP4.GATEWAY", "device", "show", device])
+    for line in details.splitlines():
+        if line.startswith("IP4.ADDRESS"):
+            ip = line.split(":", 1)[1].strip()
+        elif line.startswith("IP4.GATEWAY"):
+            gateway = line.split(":", 1)[1].strip()
 
-[ -z "$name" ] && name="Connected"
-[ -z "$ipaddr" ] && ipaddr="-"
-[ -z "$gateway" ] && gateway="-"
-[ -z "$signal" ] && signal="-"
+    wifi = run(["nmcli", "-t", "-f", "ACTIVE,SSID,SIGNAL,SECURITY", "device", "wifi", "list", "ifname", device, "--rescan", "no"])
+else:
+    wifi = run(["nmcli", "-t", "-f", "ACTIVE,SSID,SIGNAL,SECURITY", "device", "wifi", "list", "--rescan", "no"])
 
-printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$type" "$name" "$dev" "$ipaddr" "$gateway" "$signal" "$networks"
+networks = []
+seen = set()
+
+for line in wifi.splitlines():
+    parts = line.split(":")
+    if len(parts) < 4:
+        continue
+
+    active = clean(parts[0])
+    ssid = clean(parts[1])
+    sig = clean(parts[2])
+    security = clean(":".join(parts[3:]))
+
+    if not ssid or ssid in seen:
+        continue
+
+    seen.add(ssid)
+
+    if active == "yes":
+        connection = ssid
+        signal = sig
+
+    networks.append({
+        "active": active == "yes",
+        "ssid": ssid,
+        "signal": sig or "0",
+        "security": security or "open"
+    })
+
+networks.sort(key=lambda x: (not x["active"], -int(x["signal"]) if x["signal"].isdigit() else 0))
+networks = networks[:6]
+
+print(json.dumps({
+    "device": device or "-",
+    "connection": connection,
+    "state": state,
+    "ip": ip,
+    "gateway": gateway,
+    "signal": signal,
+    "networks": networks
+}))
+PY
