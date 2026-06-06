@@ -8,32 +8,40 @@ Item {
 
     signal clicked()
 
-    property string connectionType: "none"
-    property string connectionName: "disconnected"
+    property string ssid: "wifi"
+    property string signal: ""
+    property bool connected: ssid !== "" && ssid !== "--" && ssid !== "Disconnected"
     property bool hovered: mouseArea.containsMouse
 
-    implicitWidth: 56
-    Layout.preferredWidth: 56
-    Layout.minimumWidth: 56
-    Layout.maximumWidth: 56
+    implicitWidth: Math.max(72, textRow.implicitWidth + 12)
+    Layout.preferredWidth: implicitWidth
+    Layout.minimumWidth: 72
+    Layout.maximumWidth: 150
 
     height: 24
 
-    Text {
+    RowLayout {
+        id: textRow
         anchors.centerIn: parent
+        spacing: 5
 
-        text: {
-            if (root.connectionType === "wifi") return "󰖩 wifi"
-            if (root.connectionType === "ethernet") return "󰈀 lan"
-            return "󰤭 net"
+        Text {
+            text: "󰖩"
+            color: root.hovered ? Theme.Colors.accent : Theme.Colors.text
+            font.pixelSize: 12
+            Layout.alignment: Qt.AlignVCenter
         }
 
-        color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
-        font.pixelSize: 12
-        font.bold: root.hovered
-        width: parent.width
-        horizontalAlignment: Text.AlignHCenter
-        elide: Text.ElideRight
+        Text {
+            text: root.connected ? root.ssid : "wifi"
+            color: root.hovered ? Theme.Colors.textHover : Theme.Colors.text
+            font.family: "Figtree"
+            font.pixelSize: 12
+            font.bold: root.hovered
+            Layout.maximumWidth: 105
+            elide: Text.ElideRight
+            Layout.alignment: Qt.AlignVCenter
+        }
     }
 
     MouseArea {
@@ -46,24 +54,26 @@ Item {
 
     Process {
         id: networkProc
+
         command: [
             "sh",
             "-c",
-            "nmcli -t -f TYPE,STATE,CONNECTION dev 2>/dev/null | awk -F: '$2==\"connected\" && $1!=\"loopback\" {print $1\":\"$3; found=1; exit} END {if (!found) print \"none:disconnected\"}'"
+            "nmcli -t -f ACTIVE,SSID,SIGNAL dev wifi 2>/dev/null | awk -F: '$1==\"yes\" {print $2\":\"$3; exit}'"
         ]
+
         running: true
 
         stdout: SplitParser {
             onRead: data => {
                 let parts = data.trim().split(":")
-                root.connectionType = parts[0] || "none"
-                root.connectionName = parts[1] || "disconnected"
+                root.ssid = parts[0] || "wifi"
+                root.signal = parts[1] || ""
             }
         }
     }
 
     Timer {
-        interval: 3000
+        interval: 5000
         running: true
         repeat: true
         onTriggered: networkProc.running = true
