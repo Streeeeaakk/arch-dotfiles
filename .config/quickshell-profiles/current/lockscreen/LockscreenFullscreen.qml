@@ -2,15 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
+import Quickshell.Services.Pam
 import "theme" as Theme
 
 ShellRoot {
     property string authStatus: ""
     property bool authRunning: false
 
-    function shellQuote(str) {
-        return "'" + String(str).replace(/'/g, "'\\''") + "'"
-    }
     FloatingWindow {
         id: win
         visible: true
@@ -141,13 +139,7 @@ ShellRoot {
 
                             authRunning = true
                             authStatus = "Checking..."
-
-                            authProcess.command = [
-                                "sh",
-                                "-c",
-                                "~/.config/hypr/scripts/qs-unlock-check-arg.sh " + shellQuote(text)
-                            ]
-                            authProcess.running = true
+                            pamAuth.start()
                         }
 
                         Keys.onReturnPressed: submitPassword()
@@ -182,24 +174,37 @@ ShellRoot {
                 command: ["hyprctl", "dispatch", "submap", "reset"]
             }
 
-            Process {
-                id: authProcess
-                running: false
 
-                stdout: SplitParser {
-                    onRead: line => {
-                        authRunning = false
+            PamContext {
+                id: pamAuth
+                config: "login"
+                user: "streak"
 
-                        if (String(line).trim() === "OK") {
-                            authStatus = "Unlocked"
-                            resetSubmapProcess.running = true
-                            Qt.quit()
-                        } else {
-                            authStatus = "Wrong password"
-                            passwordInput.text = ""
-                            passwordInput.forceActiveFocus()
-                        }
+                onPamMessage: {
+                    if (pamAuth.responseRequired) {
+                        pamAuth.respond(passwordInput.text)
                     }
+                }
+
+                onCompleted: result => {
+                    authRunning = false
+
+                    if (result === PamResult.Success) {
+                        authStatus = "Unlocked"
+                        resetSubmapProcess.running = true
+                        Qt.quit()
+                    } else {
+                        authStatus = "Wrong password"
+                        passwordInput.text = ""
+                        passwordInput.forceActiveFocus()
+                    }
+                }
+
+                onError: error => {
+                    authRunning = false
+                    authStatus = "Auth error"
+                    passwordInput.text = ""
+                    passwordInput.forceActiveFocus()
                 }
             }
 
