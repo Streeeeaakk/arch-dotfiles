@@ -177,6 +177,12 @@ ShellRoot {
             }
 
             Process {
+                id: resetSubmapProcess
+                running: false
+                command: ["hyprctl", "dispatch", "submap", "reset"]
+            }
+
+            Process {
                 id: authProcess
                 running: false
 
@@ -186,6 +192,7 @@ ShellRoot {
 
                         if (String(line).trim() === "OK") {
                             authStatus = "Unlocked"
+                            resetSubmapProcess.running = true
                             Qt.quit()
                         } else {
                             authStatus = "Wrong password"

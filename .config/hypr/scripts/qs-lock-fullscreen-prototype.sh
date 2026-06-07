@@ -18,12 +18,11 @@ rm -rf "$RUN_DIR/theme"
 cp -a "$HOME/.config/quickshell-profiles/current/theme" \
   "$RUN_DIR/theme"
 
-quickshell -p "$RUN_DIR" &
-QS_PID=$!
+# Start detached so terminal Ctrl+C cannot kill the lockscreen.
+setsid -f quickshell -p "$RUN_DIR" >/tmp/qs-lockscreen.log 2>&1
 
 sleep 0.7
 
 hyprctl dispatch focuswindow "title:Quickshell Lockscreen Fullscreen Prototype" >/dev/null 2>&1 || true
 hyprctl dispatch fullscreen 0 >/dev/null 2>&1 || true
-
-wait "$QS_PID"
+hyprctl dispatch submap QSLOCK >/dev/null 2>&1 || true
