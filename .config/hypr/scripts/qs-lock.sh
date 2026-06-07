@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RUN_DIR="$HOME/.config/quickshell-lockscreen-fullscreen"
+RUN_DIR="$HOME/.config/quickshell-lockscreen"
 BG="/tmp/qs-lock-bg.png"
 RAW="/tmp/qs-lock-bg-raw.png"
 LOCK_FILE="/tmp/qs-lockscreen.lock"
-TITLE="Quickshell Lockscreen Fullscreen Prototype"
+TITLE="Quickshell LockScreen"
 
 # Prevent duplicate lockscreen instances.
 if [[ -f "$LOCK_FILE" ]]; then
@@ -27,7 +27,7 @@ grim "$RAW"
 magick "$RAW" -resize 25% -blur 0x8 -resize 400% -brightness-contrast -12x-4 "$BG"
 rm -f "$RAW"
 
-cp "$HOME/.config/quickshell-profiles/current/lockscreen/LockscreenFullscreen.qml" \
+cp "$HOME/.config/quickshell-profiles/current/lockscreen/LockScreen.qml" \
   "$RUN_DIR/shell.qml"
 
 rm -rf "$RUN_DIR/theme"

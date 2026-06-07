@@ -15,7 +15,7 @@ ShellRoot {
         implicitWidth: 1920
         implicitHeight: 1080
         color: "transparent"
-        title: "Quickshell Lockscreen Fullscreen Prototype"
+        title: "Quickshell LockScreen"
 
         Rectangle {
             anchors.fill: parent
