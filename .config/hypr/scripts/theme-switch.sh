@@ -65,6 +65,7 @@ cp -f "$KITTY_SRC" "$KITTY_ACTIVE"
 [[ -f "$GTK_SRC" ]] && cp -f "$GTK_SRC" "$GTK4_ACTIVE"
 
 echo "$theme" > "$HOME/.config/hypr/demeter-2.0-theme"
+echo "$theme" > "$HOME/.config/hypr/current-theme"
 
 [[ -x "$QS_THEME_SCRIPT" ]] && "$QS_THEME_SCRIPT" "$theme"
 
