@@ -40,11 +40,7 @@ Item {
 
     Process {
         id: tempProc
-        command: [
-            "sh",
-            "-c",
-            "cpu=$(sensors 2>/dev/null | awk '/Package id 0:/ {gsub(/[+°C]/,\"\",$4); print int($4); exit} /Tctl:/ {gsub(/[+°C]/,\"\",$2); print int($2); exit} /CPU:/ {gsub(/[+°C]/,\"\",$2); print int($2); exit}'); gpu=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1); [ -z \"$cpu\" ] && cpu=\"?\"; [ -z \"$gpu\" ] && gpu=\"?\"; echo \"$cpu:$gpu\""
-        ]
+        command: ["sh", "-c", "~/.config/quickshell/scripts/temps-info.sh"]
         running: true
 
         stdout: SplitParser {

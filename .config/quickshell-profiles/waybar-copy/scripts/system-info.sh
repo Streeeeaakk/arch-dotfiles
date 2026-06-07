@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# CPU temp
-cpu_temp="$(sensors 2>/dev/null | awk '
-/Package id 0:/ {gsub(/[+°C]/,"",$4); print int($4); exit}
-/Tctl:/ {gsub(/[+°C]/,"",$2); print int($2); exit}
-/CPU:/ {gsub(/[+°C]/,"",$2); print int($2); exit}
-')"
+# CPU temp - match Waybar hwmon source
+if [ -r /sys/class/hwmon/hwmon1/temp1_input ]; then
+    cpu_temp="$(($(cat /sys/class/hwmon/hwmon1/temp1_input) / 1000))"
+else
+    cpu_temp="?"
+fi
 
 # CPU usage from /proc/stat
 read -r _ u1 n1 s1 i1 io1 irq1 sirq1 steal1 _ < /proc/stat
