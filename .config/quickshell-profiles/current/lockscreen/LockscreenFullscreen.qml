@@ -135,7 +135,7 @@ ShellRoot {
                             authStatus = ""
                         }
 
-                        Keys.onReturnPressed: {
+                        function submitPassword() {
                             if (text.length === 0 || authRunning)
                                 return
 
@@ -149,6 +149,9 @@ ShellRoot {
                             ]
                             authProcess.running = true
                         }
+
+                        Keys.onReturnPressed: submitPassword()
+                        Keys.onEnterPressed: submitPassword()
                     }
 
                     Text {
