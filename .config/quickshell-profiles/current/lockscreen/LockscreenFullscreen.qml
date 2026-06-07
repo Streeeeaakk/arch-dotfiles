@@ -169,6 +169,12 @@ ShellRoot {
             }
 
             Process {
+                id: cleanupLockFileProcess
+                running: false
+                command: ["rm", "-f", "/tmp/qs-lockscreen.lock"]
+            }
+
+            Process {
                 id: resetSubmapProcess
                 running: false
                 command: ["hyprctl", "dispatch", "submap", "reset"]
@@ -191,6 +197,7 @@ ShellRoot {
 
                     if (result === PamResult.Success) {
                         authStatus = "Unlocked"
+                        cleanupLockFileProcess.running = true
                         resetSubmapProcess.running = true
                         Qt.quit()
                     } else {
