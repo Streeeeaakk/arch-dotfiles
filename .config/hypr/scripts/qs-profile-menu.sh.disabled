@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mon="$(
+  hyprctl activeworkspace -j 2>/dev/null | jq -r '.monitor // empty' 2>/dev/null || true
+)"
+
+printf '%s\t%s\n' "$(date +%s%N)" "$mon" > /tmp/quickshell-profile-menu-trigger

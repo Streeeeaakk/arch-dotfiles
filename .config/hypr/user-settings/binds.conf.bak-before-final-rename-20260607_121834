@@ -1,0 +1,68 @@
+###################
+### KEYBINDINGS ###
+###################
+bind = $mainMod, Q, exec, $terminal
+bind = $mainMod, C, killactive,
+bind = $mainMod, L, exec, hyprlock
+bind = $mainMod SHIFT, L, exit,
+bind = $mainMod, E, exec, $fileManager
+bind = $mainMod SHIFT, E, exec, kitty -e yazi
+bind = $mainMod, F, togglefloating,
+bind = $mainMod, Space, exec, ~/.config/hypr/scripts/qs-launcher.sh
+bind = $mainMod, P, pseudo, # dwindle
+#bind = $mainMod, J, togglesplit, # dwindle
+
+
+# See https://wiki.hypr.land/Configuring/Keywords/
+$mainMod = SUPER # Sets "Windows" key as main modifier
+
+# Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
+
+# SCREENSHOT + NOTIFY (hyprctl notify)
+
+# Region (selected area)
+bind = $mainMod SHIFT, S, exec, bash -c 'file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png; grim -g "$(slurp)" "$file" && wl-copy < "$file" && notify-send -i "$file" "Screenshot Taken" "Region copied to clipboard"'
+
+# Fullscreen
+bind = , Print, exec, bash -c 'file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png; grim "$file" && wl-copy < "$file" && notify-send -i "$file" "Screenshot Taken" "Fullscreen copied to clipboard"'
+
+
+# Active window (correct grim geometry + clipboard)
+bind = ALT, Print, exec, bash -c 'file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png; grim -g "$(hyprctl activewindow -j | jq -r '\''((.at[0]|floor|tostring)+"," + (.at[1]|floor|tostring) + " " + (.size[0]|floor|tostring) + "x" + (.size[1]|floor|tostring))'\'')" "$file" && wl-copy < "$file" && notify-send -i "$file" "Screenshot Taken" "Active window copied to clipboard"'
+
+
+bind = $mainMod, V, exec, ~/.config/hypr/scripts/qs-clipboard.sh
+
+bind = $mainMod, B, exec, zen-browser
+
+#bind = $mainMod, Space, exec, hyprpanel
+
+# Laptop multimedia keys for volume and LCD brightness
+bindel = ,XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+
+bindel = ,XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindel = ,XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindel = ,XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindel = ,XF86MonBrightnessUp, exec, brightnessctl set 5%+
+bindel = ,XF86MonBrightnessDown, exec, brightnessctl set 5%-
+
+# Requires playerctl
+bindl = , XF86AudioNext, exec, playerctl next
+bindl = , XF86AudioPause, exec, playerctl play-pause
+bindl = , XF86AudioPlay, exec, playerctl play-pause
+bindl = , XF86AudioPrev, exec, playerctl previous
+
+# Theme Switcher
+bind = $mainMod SHIFT, T, exec, ~/.config/rofi/theme-menu.sh
+bind = $mainMod, grave, exec, ~/.config/hypr/scripts/qs-fullscreen.sh
+
+
+# Quickshell lockscreen fullscreen prototype only
+bind = $mainMod ALT, L, exec, ~/.config/hypr/scripts/qs-lock-fullscreen-prototype.sh
+
+# Quickshell lockscreen hardening submap
+submap = QSLOCK
+
+# Emergency dev escape only
+bind = $mainMod SHIFT, ESCAPE, exec, hyprctl dispatch submap reset && pkill -f quickshell-lockscreen-fullscreen
+
+submap = reset

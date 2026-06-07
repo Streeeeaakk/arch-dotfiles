@@ -17,6 +17,17 @@ Rectangle {
     property var apps: []
     property var clips: []
     property var calcs: []
+    property var hyprSettings: [
+        {"name": "Monitors", "comment": "resolution, refresh rate, scaling", "icon": "", "path": "monitors.conf"},
+        {"name": "Environment", "comment": "QT, cursor, electron vars", "icon": "", "path": "env.conf"},
+        {"name": "Autostart", "comment": "apps/services on login", "icon": "", "path": "autostart.conf"},
+        {"name": "Input", "comment": "keyboard, mouse, touchpad", "icon": "", "path": "input.conf"},
+        {"name": "Theme", "comment": "gaps, borders, blur, animations", "icon": "", "path": "theme.conf"},
+        {"name": "Window Rules", "comment": "floating, opacity, workspace rules", "icon": "", "path": "windowrules.conf"},
+        {"name": "Keybinds", "comment": "hotkeys and mouse binds", "icon": "", "path": "binds.conf"},
+        {"name": "Keyboard Layout", "comment": "US/Intl toggle + notifications", "icon": "", "path": "kblayout.conf"},
+        {"name": "Game Mode", "comment": "submap + blocked shortcuts", "icon": "", "path": "gamemode.conf"}
+    ]
     property string calcPreview: ""
     property var filteredItems: []
     property string query: ""
@@ -80,7 +91,7 @@ Rectangle {
 
     function refreshFilter() {
         let q = root.query.toLowerCase().trim()
-        let source = root.mode === "apps" ? root.apps : root.mode === "clipboard" ? root.clips : root.calcs
+        let source = root.mode === "apps" ? root.apps : root.mode === "clipboard" ? root.clips : root.mode === "hyprsettings" ? root.hyprSettings : root.calcs
 
         if (root.mode === "calculator") {
             let history = source
@@ -135,6 +146,14 @@ Rectangle {
                 "~/.config/quickshell/scripts/clipboard-copy.sh " + root.shellQuote(item.path)
             ]
             clipCopyProc.running = true
+            root.closeRequested()
+        } else if (root.mode === "hyprsettings") {
+            launchProc.command = [
+                "sh",
+                "-c",
+                "file=~/.config/hypr/user-settings/" + root.shellQuote(item.path) + "; touch \"$file\"; subl \"$file\""
+            ]
+            launchProc.running = true
             root.closeRequested()
         } else {
             let expr = root.query.trim()
@@ -370,7 +389,7 @@ Rectangle {
 
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: root.mode === "apps" ? "Search Apps..." : root.mode === "clipboard" ? "Search Clipboard..." : "Calculate..."
+                                text: root.mode === "apps" ? "Search Apps..." : root.mode === "clipboard" ? "Search Clipboard..." : root.mode === "hyprsettings" ? "Hyprland Settings  Search settings..." : "Calculate..."
                                 visible: searchInput.text.length === 0
                                 color: Theme.Colors.muted
                                 font.family: "Figtree"
@@ -452,7 +471,7 @@ Rectangle {
                                 Text {
                                     anchors.centerIn: parent
                                     visible: itemRow.iconSource.length === 0
-                                    text: root.mode === "clipboard" ? "" : root.mode === "calculator" ? "󰃬" : "󰣆"
+                                    text: root.mode === "clipboard" ? "" : root.mode === "calculator" ? "󰃬" : root.mode === "hyprsettings" ? "⚙" : "󰣆"
                                     color: itemRow.selected ? Theme.Colors.accent : Theme.Colors.text
                                     font.pixelSize: 16
                                 }
@@ -488,7 +507,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: root.mode === "apps" ? "No apps found" : root.mode === "clipboard" ? "No clipboard history" : "No calculation history"
+                        text: root.mode === "apps" ? "No apps found" : root.mode === "clipboard" ? "No clipboard history" : root.mode === "hyprsettings" ? "No settings found" : "No calculation history"
                         visible: root.filteredItems.length === 0
                         color: Theme.Colors.muted
                         font.family: "Figtree"

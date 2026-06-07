@@ -455,6 +455,8 @@ ShellRoot {
                         anchors.centerIn: parent
                         width: 800
                         height: 500
+                        active: launcherWindow.visible
+                        initialMode: shell.launcherMode
                         cavaEnabled: shell.cavaEnabled
 
                         onToggleCavaRequested: shell.toggleCava()

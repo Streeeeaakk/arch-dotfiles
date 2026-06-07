@@ -64,12 +64,12 @@ cp -f "$KITTY_SRC" "$KITTY_ACTIVE"
 [[ -f "$GTK_SRC" ]] && cp -f "$GTK_SRC" "$GTK3_ACTIVE"
 [[ -f "$GTK_SRC" ]] && cp -f "$GTK_SRC" "$GTK4_ACTIVE"
 
-echo "$theme" > "$HOME/.config/hypr/demeter-2.0-theme"
-echo "$theme" > "$HOME/.config/hypr/current-theme"
+echo "$theme" >"$HOME/.config/hypr/demeter-2.0-theme"
+echo "$theme" >"$HOME/.config/hypr/current-theme"
 
 [[ -x "$QS_THEME_SCRIPT" ]] && "$QS_THEME_SCRIPT" "$theme"
 
-echo "normal" > "$WAYBAR_DIR/.mode"
+echo "normal" >"$WAYBAR_DIR/.mode"
 
 hyprctl reload
 
@@ -90,8 +90,3 @@ sleep 0.3
 pkill -f workspace-wallpaper.sh 2>/dev/null || true
 sleep 0.2
 nohup "$HOME/.config/hypr/workspace-wallpaper.sh" >/tmp/workspace-wallpaper.log 2>&1 &
-
-~/.config/hypr/scripts/p10k-theme.sh "$theme" 2>/dev/null || true
-notify-send "Theme Switcher" "Switched to $theme"
-
-source ~/.p10k.zsh

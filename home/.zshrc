@@ -33,6 +33,11 @@ cls() {
   show_banner
 }
 
+surena() {
+  command clear
+  figlet Sure Na!
+}
+
 [[ -r ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:$XDG_DATA_DIRS"
@@ -76,3 +81,33 @@ alias qstheme='~/.config/quickshell/scripts/qs-theme.sh'
 alias qscyan='~/.config/quickshell/scripts/qs-theme.sh cyan'
 alias qsgaming='~/.config/quickshell/scripts/qs-theme.sh gaming'
 alias qstoggle='~/.config/quickshell/scripts/qs-theme.sh toggle'
+
+# Auto-reload Powerlevel10k when desktop theme changes
+_p10k_theme_auto_reload() {
+  local state_file="$HOME/.config/quickshell-profiles/theme-state"
+  local cache_file="$HOME/.cache/p10k-last-theme"
+
+  [[ -f "$state_file" ]] || return
+
+  local current_theme
+  current_theme="$(cat "$state_file" 2>/dev/null)"
+
+  local last_theme
+  last_theme="$(cat "$cache_file" 2>/dev/null)"
+
+  if [[ "$current_theme" != "$last_theme" ]]; then
+    mkdir -p "$HOME/.cache"
+    echo "$current_theme" > "$cache_file"
+
+    if [[ -f "$HOME/.p10k.zsh" ]]; then
+      source "$HOME/.p10k.zsh"
+    fi
+  fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _p10k_theme_auto_reload
+
+alias ksync='source ~/.p10k.zsh'
+
+scget() { scp scerp:"/home/mis/$1" .; }
