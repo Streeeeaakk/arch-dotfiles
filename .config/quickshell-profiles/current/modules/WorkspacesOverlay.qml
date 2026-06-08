@@ -9,7 +9,7 @@ RowLayout {
     property int activeWorkspace: 1
     property string occupiedWorkspaces: ""
     property int groupStart: 1
-    property int groupEnd: 5
+    property int groupEnd: 4
     property int workspaceCount: groupEnd - groupStart + 1
 
     spacing: 4
@@ -105,7 +105,7 @@ RowLayout {
                 root.activeWorkspace = parseInt(parts[0] || "1")
                 root.occupiedWorkspaces = parts[1] || String(root.activeWorkspace)
                 root.groupStart = parseInt(parts[2] || "1")
-                root.groupEnd = parseInt(parts[3] || "5")
+                root.groupEnd = parseInt(parts[3] || "4")
             }
         }
     }

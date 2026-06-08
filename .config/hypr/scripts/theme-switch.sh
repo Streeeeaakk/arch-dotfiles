@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-theme="${1:-cyan}"
+if [[ $# -gt 0 ]]; then
+  theme="$1"
+else
+  theme="$(
+    printf "cyan\\nred\\ngreen\\npurple\\nwhite\\n" |
+      rofi -dmenu -i -p "Theme" -theme "$HOME/.config/rofi/config.rasi"
+  )"
+
+  [[ -z "${theme:-}" ]] && exit 0
+fi
 
 HYPR_DIR="$HOME/.config/hypr"
 WAYBAR_DIR="$HOME/.config/waybar/demeter-cyan"

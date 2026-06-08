@@ -1,1 +1,89 @@
-ModemManagerNetworkManagerNetworkManager-adslNetworkManager-bluetoothNetworkManager-config-connectivity-fedoraNetworkManager-libnm-develNetworkManager-pppNetworkManager-wifiNetworkManager-wwanPackageKit-command-not-foundPackageKit-gstreamer-pluginaajohan-comfortaa-fontsabrt-cliabrt-desktopaclakmod-nvidiaakonadi-serverakonadi-server-mysqlakregatoralsa-sof-firmwarealsa-ucmalsa-utilsamd-gpu-firmwareamd-ucode-firmwareanaconda-install-env-depsanaconda-livearkatat-spi2-atkat-spi2-coreatheros-firmwareattraudiocd-kioauditauroraeauthselectb43-fwcutterb43-openfwwfbashbash-color-promptbash-completionbcbind-utilsbluedevilbluez-cupsbluez-toolsbrave-browserbrcmfmac-firmwarebreeze-icon-themebrlttybtopbtrfs-progsbzip2chronycifs-utilscirrus-audio-firmwarecliphistcmakecmatrixcolordcolord-kdecompsizecoreutilscpiocrontabscryptsetupcupscups-browsedcups-filterscups-pk-helpercurlcyrus-sasl-plaindbusdefault-editordefault-fonts-cjk-monodefault-fonts-cjk-sansdefault-fonts-cjk-serifdefault-fonts-core-emojidefault-fonts-core-mathdefault-fonts-core-monodefault-fonts-core-sansdefault-fonts-core-serifdefault-fonts-other-monodefault-fonts-other-sansdefault-fonts-other-serifdeltarpmdhcp-clientdiscorddnf5dnf5-pluginsdnsmasqdolphindos2unixdosfstoolsdracut-config-rescuedracut-livedracut-networkdragone2fsprogseasyeffectsedefibootmgrelisa-playerethtoolexfatprogsfedora-bookmarksfedora-flathub-remotefedora-release-kde-desktopfedora-workstation-repositoriesffmpegffmpegthumbsfigletfilefilelightfilesystemfirefoxfirewall-configfirewalldflatpak-kcmfpastefprintd-pamfusefwupdgcc-c++ghostscriptgjs-develglibcglibc-all-langpacksgnome-bluetoothgnupg2gnupg2-g13gnupg2-scdaemongnupg2-utilsgnupg2-wksgobject-introspection-develgolanggrimblastgrub2-efi-ia32grub2-efi-ia32-cdbootgrub2-efi-ia32-modulesgrub2-efi-x64grub2-efi-x64-cdbootgrub2-efi-x64-modulesgrub2-pcgrub2-toolsgrub2-tools-efigrub2-tools-extragrubbygstreamer1-plugin-dav1dgstreamer1-plugin-libavgstreamer1-plugin-openh264gstreamer1-plugins-bad-freegstreamer1-plugins-bad-freeworldgstreamer1-plugins-goodgstreamer1-plugins-uglygstreamer1-plugins-ugly-freegtk-layer-shell-develgtk3-develgtk3-immodule-ximgtk4-develgtk4-layer-shell-develgtksourceview3gutenprintgutenprint-cupsgvfsgwenviewhfsplus-toolshostnamehpliphunspellhyperv-daemonshyprlandhyprlockhyprpanelhyprpaperhyprshotibus-anthyibus-chewingibus-gtk3ibus-gtk4ibus-hangulibus-libpinyinibus-m17nibus-table-chinese-cangjieibus-typing-boosterim-chooserimsettingsimsettings-gsettingsimsettings-plasmainitial-setup-guiinitial-setup-gui-wayland-plasmaintel-audio-firmwareintel-gpu-firmwareintel-vsc-firmwareiprouteiptables-nftiptstateiputilsirqbalanceiscsi-initiator-utilsisomd5sumiwlegacy-firmwareiwlwifi-dvm-firmwareiwlwifi-mvm-firmwarekaccounts-integration-qt6kaccounts-providerskaddressbookkamerakamosokbdkbd-legacykcalckcharselectkde-connectkde-gtk-configkde-inotify-surveykde-l10nkde-partitionmanagerkde-settings-pulseaudiokdebugsettingskdegraphics-thumbnailerskdenetwork-filesharingkdeplasma-addonskdialogkdnssdkeditbookmarkskernelkernel-corekernel-moduleskernel-modules-extrakexec-toolskf6-baloo-filekfindkhelpcenterkinfocenterkio-adminkio-gdrivekjournaldkleopatrakmahjonggkmailkmenueditkmineskmod-nvidia-6.18.9-200.fc43.x86_64kmouthkolourpaintkonsolekontactkorganizerkpatkrdckrdpkrfbkscreenkscreenlockerksshaskpasskunifiedpushkwalletmanager5kwinkwritelesslibadwaita-devellibappindicator-gtk3libdbusmenu-gtk3-devellibertas-firmwarelibglvnd-gleslibgtop2libheif-freeworldlibreoffice-calclibreoffice-drawlibreoffice-emailmergelibreoffice-graphicfilterlibreoffice-impresslibreoffice-mathlibreoffice-writerlibsoup3-devellibva-intel-media-driverlibvala-devellivesys-scriptslogrotatelolcatlrzszlsoflvm2mactel-bootmailcapman-dbman-pagesmcelogmdadmmediawritermesa-dri-driversmesa-vulkan-driversmesonmicrocode_ctlminicommpagemt7xxx-firmwaremtrncursesneochatnet-toolsnfs-utilsninja-buildnmap-ncatnodejs-npmnss-mdnsntfs-3gntfsprogsnvidia-gpu-firmwarenvme-clinwg-looknxpwireless-firmwareokularopen-vm-tools-desktopopenscopenssh-clientsopenssh-serverorcapam-kwalletpapspartedpasswdqcpavucontrolpciutilsphonon-qt6-backend-vlcpinentry-qtpinfopipewire-alsapipewire-config-raoppipewire-gstreamerpipewire-pulseaudiopipewire-utilsplasma-breezeplasma-desktopplasma-desktop-docplasma-discoverplasma-discover-notifierplasma-disksplasma-drkonqiplasma-nmplasma-nm-l2tpplasma-nm-openconnectplasma-nm-openswanplasma-nm-openvpnplasma-nm-pptpplasma-nm-vpncplasma-paplasma-print-managerplasma-systemmonitorplasma-thunderboltplasma-vaultplasma-welcomeplasma-welcome-fedoraplasma-workspaceplasma-workspace-wallpapersplayerctlplocateplymouthplymouth-system-themepolicycoreutilspolkit-kdepower-profiles-daemonpppprefixdevnamepreloadprocps-ngpsacctpulseaudio-libs-develpython3-pipqcom-wwan-firmwareqemu-guest-agentqrcaqt6ctquotarealmdrealtek-firmwarerofirofi-calcrootfilesrpmrpmfusion-free-releaserpmfusion-nonfree-releasersyncrsyslogsamba-clientsamba-usersharessddmsddm-breezesddm-kcmsddm-wayland-plasmaselinux-policy-targetedsetroubleshootsetupshadow-utilsshim-ia32shim-x64signon-kwallet-extensionskanpagesmartmontoolssosspectaclespeech-dispatcherspice-vdagentspice-webdavdsssd-commonsssd-kcmsssd-proxysteamsublime-textsudoswwwsymlinkssystem-config-printer-udevsystemdsystemd-oomd-defaultssystemd-resolvedsystemd-udevtartcpdumpteamdthermaldtimetiwilink-firmwaretoolboxtraceroutetreetypescriptudisks2udisks2-btrfsunzipupower-develusb_modeswitchusbutilsutil-linuxvalavaladocvaladoc-develvim-minimalvirtualbox-guest-additionsvlc-plugin-gstreamervlc-plugins-freeworldwayland-protocols-develwget2-wgetwhichwhoiswireplumberwordswpa_supplicantxfsprogsxorg-x11-drv-nvidia-cudaxwaylandvideobridgezipzram-generator-defaults
+About Xfce|xfce4-about|/usr/share/applications/xfce4-about.desktop
+Avahi SSH Server Browser|/usr/bin/bssh|/usr/share/applications/bssh.desktop
+Avahi VNC Server Browser|/usr/bin/bvnc|/usr/share/applications/bvnc.desktop
+Avahi Zeroconf Browser|/usr/bin/avahi-discover|/usr/share/applications/avahi-discover.desktop
+BLOODSTRIKE|steam steam://rungameid/3199170|/home/mis/.local/share/applications/BLOODSTRIKE.desktop
+Brave|/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=brave --file-forwarding com.brave.Browser @@u @@|/home/mis/.local/share/applications/com.brave.Browser.desktop
+Bulk Rename|thunar --bulk-rename|/usr/share/applications/thunar-bulk-rename.desktop
+CMake|cmake-gui|/usr/share/applications/cmake-gui.desktop
+Calculator|gnome-calculator|/usr/share/applications/org.gnome.Calculator.desktop
+Caprine|caprine|/usr/share/applications/caprine.desktop
+ChatGPT|chromium https://chat.openai.com|/home/mis/.local/share/applications/chatgpt.desktop
+Chromium|/usr/bin/chromium|/usr/share/applications/chromium.desktop
+Crashed Processes Viewer|drkonqi-coredump-gui|/usr/share/applications/org.kde.drkonqi.coredump.gui.desktop
+Discover|plasma-discover|/usr/share/applications/org.kde.discover.desktop
+Electron 36|electron36|/usr/share/applications/electron36.desktop
+Emoji Selector|plasma-emojier|/usr/share/applications/org.kde.plasma.emojier.desktop
+Firefox|/usr/lib/firefox/firefox|/usr/share/applications/firefox.desktop
+Fishing Planet|steam steam://rungameid/380600|/home/mis/.local/share/applications/Fishing Planet.desktop
+Foot Client|footclient|/usr/share/applications/footclient.desktop
+Foot Server|foot --server|/usr/share/applications/foot-server.desktop
+Foot|foot|/usr/share/applications/foot.desktop
+Gmail|/home/mis/.local/share/Gmail-linux-x64/Gmail|/home/mis/.local/share/applications/gmail.desktop
+Google Chrome|/usr/bin/google-chrome-stable|/usr/share/applications/google-chrome.desktop
+Gwenview|gwenview|/usr/share/applications/org.kde.gwenview.desktop
+Hardware Locality lstopo|lstopo|/usr/share/applications/lstopo.desktop
+Helium Browser|helium-browser|/usr/share/applications/helium.desktop
+Hyprland Settings|/home/mis/.local/bin/hypr-edit|/home/mis/.local/share/applications/hyprland-settings.desktop
+Icon Explorer|iconexplorer|/usr/share/applications/org.kde.iconexplorer.desktop
+Info Center|kinfocenter|/usr/share/applications/org.kde.kinfocenter.desktop
+Joplin|/usr/bin/joplin-desktop|/usr/share/applications/joplin-desktop.desktop
+KDE System Settings|systemsettings|/usr/share/applications/kdesystemsettings.desktop
+KolourPaint|kolourpaint|/usr/share/applications/org.kde.kolourpaint.desktop
+LocalSend|localsend|/usr/share/applications/localsend.desktop
+MIR4|steam steam://rungameid/1623660|/home/mis/.local/share/applications/MIR4.desktop
+Mailspring|mailspring|/usr/share/applications/Mailspring.desktop
+Manage Printing|xdg-open http://localhost:631/|/usr/share/applications/cups.desktop
+Menu Editor|kmenuedit|/usr/share/applications/org.kde.kmenuedit.desktop
+Messenger|flatpak run com.brave.Browser --app=https://www.messenger.com/|/home/mis/.local/share/applications/messenger.desktop
+NVIDIA X Server Settings|/usr/bin/nvidia-settings|/usr/share/applications/nvidia-settings.desktop
+Neovim|nvim|/usr/share/applications/nvim.desktop
+OBS Studio|obs|/usr/share/applications/com.obsproject.Studio.desktop
+Open Cyan Wallpapers|thunar /home/mis/.config/hypr/wallpapers/cyan|/home/mis/.local/share/applications/cyan-wallpapers.desktop
+Open Red Wallpapers|thunar /home/mis/.config/hypr/wallpapers/red|/home/mis/.local/share/applications/red-wallpapers.desktop
+OpenJDK Java 11 Console|/usr/lib/jvm/java-11-openjdk/bin/jconsole|/usr/share/applications/jconsole-java11-openjdk.desktop
+OpenJDK Java 11 Shell|/usr/lib/jvm/java-11-openjdk/bin/jshell|/usr/share/applications/jshell-java11-openjdk.desktop
+Plasma Engine Explorer|plasmaengineexplorer|/usr/share/applications/org.kde.plasmaengineexplorer.desktop
+Plasma Global Theme Explorer|lookandfeelexplorer|/usr/share/applications/org.kde.plasma.lookandfeelexplorer.desktop
+Plasma Theme Explorer|plasmathemeexplorer|/usr/share/applications/org.kde.plasma.themeexplorer.desktop
+Prism Launcher|prismlauncher|/usr/share/applications/org.prismlauncher.PrismLauncher.desktop
+Proton VPN|protonvpn-app|/usr/share/applications/proton.vpn.app.gtk.desktop
+Qt Assistant|assistant6|/usr/share/applications/assistant.desktop
+Qt D-Bus Viewer|qdbusviewer6|/usr/share/applications/qdbusviewer.desktop
+Qt Linguist|linguist6|/usr/share/applications/linguist.desktop
+Qt V4L2 test Utility|qv4l2|/usr/share/applications/qv4l2.desktop
+Qt V4L2 video capture utility|qvidcap|/usr/share/applications/qvidcap.desktop
+Qt Widgets Designer|designer6|/usr/share/applications/designer.desktop
+Rofi Theme Selector|rofi-theme-selector|/usr/share/applications/rofi-theme-selector.desktop
+Rofi|rofi -show|/usr/share/applications/rofi.desktop
+Spectacle|/usr/bin/spectacle|/usr/share/applications/org.kde.spectacle.desktop
+Spotify|spotify --uri=%u|/usr/share/applications/spotify.desktop
+Steam|/usr/bin/steam|/usr/share/applications/steam.desktop
+Sublime Text|/opt/sublime_text/sublime_text|/usr/share/applications/sublime_text.desktop
+System Monitor|plasma-systemmonitor|/usr/share/applications/org.kde.plasma-systemmonitor.desktop
+System Settings|systemsettings|/usr/share/applications/systemsettings.desktop
+TLauncher|tlauncher|/usr/share/applications/tlauncher.desktop
+Theme Switcher|kitty --class theme-switcher-menu -e /home/mis/.config/hypr/scripts/theme-switch.sh|/home/mis/.local/share/applications/theme-switcher.desktop
+Thunar File Manager|thunar|/usr/share/applications/thunar.desktop
+Thunar Preferences|thunar-settings|/usr/share/applications/thunar-settings.desktop
+Timeshift|timeshift-launcher|/usr/share/applications/timeshift-gtk.desktop
+VLC media player|/usr/bin/vlc --started-from-file|/usr/share/applications/vlc.desktop
+Vesktop|/usr/bin/vesktop|/usr/share/applications/vesktop.desktop
+Viewnior|viewnior|/usr/share/applications/viewnior.desktop
+Vim|vim|/usr/share/applications/vim.desktop
+Volume Control|pavucontrol|/usr/share/applications/org.pulseaudio.pavucontrol.desktop
+Wallpaper Switcher|/home/mis/.config/rofi/wallpaper-menu.sh|/home/mis/.local/share/applications/wallpaper-switcher.desktop
+Waybar Settings|/home/mis/.local/bin/waybar-settings|/home/mis/.local/share/applications/waybar-settings.desktop
+Welcome Center|plasma-welcome|/usr/share/applications/org.kde.plasma-welcome.desktop
+Xpad|xpad|/usr/share/applications/xpad.desktop
+Yazi File Manager|yazi|/usr/share/applications/yazi.desktop
+YouTube Music for Desktop|youtube-music-for-desktop|/usr/share/applications/youtube-music-for-desktop.desktop
+Youtube|brave-browser --app=https://www.youtube.com/|/home/mis/.local/share/applications/youtube.desktop
+Zen Browser|/opt/zen-browser-bin/zen-bin|/usr/share/applications/zen.desktop
+Zen Browser|env MOZ_ENABLE_WAYLAND=0 /opt/zen-browser-bin/zen-bin|/home/mis/.local/share/applications/zen.desktop
+balenaEtcher|balena-etcher|/usr/share/applications/balena-etcher.desktop
+btop++|btop|/usr/share/applications/btop.desktop
+kitty|kitty|/usr/share/applications/kitty.desktop
+pacseek|pacseek|/usr/share/applications/org.moson.pacseek.desktop
+xgpsspeed|xgpsspeed|/usr/share/applications/xgpsspeed.desktop
+xgps|xgps|/usr/share/applications/xgps.desktop

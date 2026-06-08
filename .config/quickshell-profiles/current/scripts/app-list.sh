@@ -24,6 +24,12 @@ apps = []
 seen = set()
 
 def resolve_icon(icon):
+    if icon and icon.startswith("/"):
+        ip = Path(icon)
+        if ip.exists():
+            return str(ip)
+        return ""
+
     if not icon:
         return ""
 

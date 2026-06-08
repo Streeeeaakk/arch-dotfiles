@@ -1,0 +1,70 @@
+# ===============================
+# 🎮 GAME MODE
+# ===============================
+
+# --- ENTER Game Mode ---
+bind = $mainMod, G, exec, ~/.config/hypr/scripts/gamemode-enter.sh
+bind = $mainMod, G, submap, GAMING
+
+
+# ===============================
+# 🎮 GAMING SUBMAP
+# ===============================
+submap = GAMING
+
+# ---- Block Dangerous Shortcuts ----
+bind = $mainMod, Q, exec, hyprctl notify 1 2000 "rgb(ff0000)" "❌ DISABLED: Press Super+G to exit Game Mode!"
+bind = $mainMod, B, exec, hyprctl notify 1 2000 "rgb(ff0000)" "❌ DISABLED: Press Super+G to exit Game Mode!"
+bind = $mainMod, E, exec, hyprctl notify 1 2000 "rgb(ff0000)" "❌ DISABLED: Press Super+G to exit Game Mode!"
+
+bind = $mainMod, C, exec, hyprctl notify 1 2000 "rgb(ff0000)" "❌ DISABLED: Press Super+G to exit Game Mode!"
+bind = $mainMod, F, exec, hyprctl notify 1 2000 "rgb(ff0000)" "❌ DISABLED: Press Super+G to exit Game Mode!"
+
+# ---- Allow Screenshot ----
+
+# Region
+bind = $mainMod SHIFT, S, exec, bash -c 'file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png; grim -g "$(slurp)" "$file" && wl-copy < "$file" && notify-send -i "$file" "Screenshot Taken" "Region copied to clipboard"'
+
+# Fullscreen
+bind = , Print, exec, bash -c 'file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png; grim "$file" && wl-copy < "$file" && notify-send -i "$file" "Screenshot Taken" "Fullscreen copied to clipboard"'
+
+# Active window
+bind = ALT, Print, exec, bash -c 'file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png; grim -g "$(hyprctl activewindow -j | jq -r '\''((.at[0]|floor|tostring)+"," + (.at[1]|floor|tostring) + " " + (.size[0]|floor|tostring) + "x" + (.size[1]|floor|tostring))'\'')" "$file" && wl-copy < "$file" && notify-send -i "$file" "Screenshot Taken" "Active window copied to clipboard"'
+
+# ---- Allow Rofi ----
+bind = $mainMod, Space, exec, ~/.config/hypr/scripts/qs-launcher.sh
+bind = $mainMod, S, exec, hyprctl dispatch focusmonitor HDMI-A-1 && hyprctl dispatch togglespecialworkspace
+
+# Switch workspaces
+bind = $mainMod, 1, workspace, 1
+bind = $mainMod, 2, workspace, 2
+bind = $mainMod, 3, workspace, 3
+bind = $mainMod, 4, workspace, 4
+bind = $mainMod, 5, workspace, 5
+bind = $mainMod, F1, workspace, 6
+bind = $mainMod, F2, workspace, 7
+bind = $mainMod, F3, workspace, 8
+bind = $mainMod, F4, workspace, 9
+bind = $mainMod, F5, workspace, 10
+
+# Move active window to workspace
+bind = $mainMod SHIFT, 1, movetoworkspace, 1
+bind = $mainMod SHIFT, 2, movetoworkspace, 2
+bind = $mainMod SHIFT, 3, movetoworkspace, 3
+bind = $mainMod SHIFT, 4, movetoworkspace, 4
+bind = $mainMod SHIFT, 5, movetoworkspace, 5
+bind = $mainMod SHIFT, F1, movetoworkspace, 6
+bind = $mainMod SHIFT, F2, movetoworkspace, 7
+bind = $mainMod SHIFT, F3, movetoworkspace, 8
+bind = $mainMod SHIFT, F4, movetoworkspace, 9
+bind = $mainMod SHIFT, F5, movetoworkspace, 10
+
+# ---- Allow Volume Keys ----
+bindel = ,XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+
+bindel = ,XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+
+# --- EXIT Game Mode ---
+bind = $mainMod, G, exec, ~/.config/hypr/scripts/gamemode-exit.sh
+bind = $mainMod, G, submap, reset
+
+submap = reset

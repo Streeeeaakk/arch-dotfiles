@@ -1,0 +1,14 @@
+ipc = on
+splash = false
+
+wallpaper {
+  monitor = HDMI-A-3
+  path = /home/mis/.config/hypr/wallpapers/1.jpg
+  fit_mode = cover
+}
+
+wallpaper {
+  monitor = HDMI-A-1
+  path = /home/mis/.config/hypr/wallpapers/6.jpg
+  fit_mode = cover
+}

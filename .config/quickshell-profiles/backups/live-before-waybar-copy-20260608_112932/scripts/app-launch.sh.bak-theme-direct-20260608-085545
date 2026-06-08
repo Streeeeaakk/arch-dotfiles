@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+desktop_file="$1"
+
+if [ -z "$desktop_file" ]; then
+  exit 1
+fi
+
+if [ -f "$desktop_file" ]; then
+  desktop_id="$(basename "$desktop_file")"
+  gtk-launch "$desktop_id" >/tmp/quickshell-app-launch.log 2>&1 &
+  exit 0
+fi
+
+sh -c "$desktop_file" >/tmp/quickshell-app-launch.log 2>&1 &

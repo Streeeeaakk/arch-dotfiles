@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+WALLDIR="$HOME/.config/hypr/wallpapers"
+SOCK="/run/user/$UID/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+
+# Your monitors
+MON_A="HDMI-A-3"
+MON_B="HDMI-A-1"
+
+set_wall_for() {
+  local mon="$1"
+  local ws="$2"
+
+  # Map workspace -> file (expects 1.jpg ... 10.jpg)
+  local img="$WALLDIR/$ws.jpg"
+  [ "$ws" = "10" ] && img="$WALLDIR/10.jpg"
+
+  [ -f "$img" ] || return 0
+
+  hyprctl hyprpaper preload "$img" >/dev/null 2>&1
+  hyprctl hyprpaper wallpaper "$mon,$img" >/dev/null 2>&1
+}
+
+update_all() {
+  # Get each monitor's currently active workspace id
+  local ws_a ws_b
+  ws_a="$(hyprctl monitors -j | jq -r ".[] | select(.name==\"$MON_A\") | .activeWorkspace.id")"
+  ws_b="$(hyprctl monitors -j | jq -r ".[] | select(.name==\"$MON_B\") | .activeWorkspace.id")"
+
+  [[ "$ws_a" =~ ^[0-9]+$ ]] && set_wall_for "$MON_A" "$ws_a"
+  [[ "$ws_b" =~ ^[0-9]+$ ]] && set_wall_for "$MON_B" "$ws_b"
+}
+
+# Initial apply
+update_all
+
+# Follow events (update both monitors whenever workspace/focus changes)
+[ -S "$SOCK" ] || exit 0
+socat -u "UNIX-CONNECT:$SOCK" - | while IFS= read -r line; do
+  case "$line" in
+    workspace\>\>*|focusedmon\>\>*)
+      update_all
+      ;;
+  esac
+done

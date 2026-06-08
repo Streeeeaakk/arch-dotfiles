@@ -1,0 +1,226 @@
+import QtQuick
+import QtQuick.Controls
+import Quickshell
+import Quickshell.Io
+import Quickshell.Services.Pam
+import "theme" as Theme
+
+ShellRoot {
+    property string authStatus: ""
+    property bool authRunning: false
+
+    FloatingWindow {
+        id: win
+        visible: true
+        implicitWidth: 1920
+        implicitHeight: 1080
+        color: "transparent"
+        title: "Quickshell LockScreen"
+
+        Rectangle {
+            anchors.fill: parent
+            color: "#000000"
+
+            Image {
+                anchors.fill: parent
+                source: "file:///tmp/qs-lock-bg.png"
+                fillMode: Image.PreserveAspectCrop
+                cache: false
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#000000"
+                opacity: 0.35
+            }
+
+            Rectangle {
+                width: 680
+                height: 360
+                radius: 22
+                color: Qt.rgba(0, 0, 0, 0.68)
+                border.width: 1
+                border.color: Qt.rgba(1, 1, 1, 0.22)
+                anchors.centerIn: parent
+
+                Column {
+                    anchors.centerIn: parent
+                    spacing: 14
+                    width: parent.width
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: Qt.formatDateTime(new Date(), "dddd")
+                        color: Theme.Colors.text
+                        opacity: 0.88
+                        font.family: "Ubuntu Nerd Font"
+                        font.bold: true
+                        font.pixelSize: 78
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: Qt.formatDateTime(new Date(), "dd MMMM")
+                        color: Theme.Colors.text
+                        opacity: 0.80
+                        font.family: "Ubuntu Nerd Font"
+                        font.pixelSize: 34
+                    }
+
+                    Text {
+                        id: timeText
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: "— " + Qt.formatDateTime(new Date(), "hh:mm") + " —"
+                        color: Theme.Colors.text
+                        opacity: 0.70
+                        font.family: "Ubuntu Nerd Font"
+                        font.pixelSize: 18
+                    }
+
+                    Rectangle {
+                        width: 124
+                        height: 124
+                        radius: 62
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color: "transparent"
+                        border.width: 2
+                        border.color: Theme.Colors.accent
+                        clip: true
+
+                        Image {
+                            anchors.fill: parent
+                            anchors.margins: 2
+                            source: "file:///home/streak/.config/hypr/user.jpg"
+                            fillMode: Image.PreserveAspectCrop
+                        }
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: "  streak@demeter"
+                        color: Theme.Colors.text
+                        opacity: 0.62
+                        font.family: "Ubuntu Nerd Font"
+                        font.pixelSize: 14
+                    }
+
+                    TextField {
+                        id: passwordInput
+                        width: 300
+                        height: 52
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        echoMode: TextInput.Password
+                        placeholderText: "󰌾 Password..."
+                        horizontalAlignment: TextInput.AlignHCenter
+                        font.family: "Ubuntu Nerd Font"
+                        font.pixelSize: 16
+                        color: Theme.Colors.text
+                        placeholderTextColor: Qt.rgba(1, 1, 1, 0.38)
+
+                        background: Rectangle {
+                            radius: 18
+                            color: Qt.rgba(1, 1, 1, 0.12)
+                            border.width: 1
+                            border.color: Qt.rgba(1, 1, 1, 0.08)
+                        }
+
+                        Keys.onEscapePressed: {
+                            text = ""
+                            authStatus = ""
+                        }
+
+                        function submitPassword() {
+                            if (text.length === 0 || authRunning)
+                                return
+
+                            authRunning = true
+                            authStatus = "Checking..."
+                            pamAuth.start()
+                        }
+
+                        Keys.onReturnPressed: submitPassword()
+                        Keys.onEnterPressed: submitPassword()
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: "Enter password to unlock"
+                        color: Theme.Colors.text
+                        opacity: 0.35
+                        font.family: "Ubuntu Nerd Font"
+                        font.pixelSize: 12
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: authStatus
+                        color: authStatus === "Wrong password" ? Theme.Colors.warning : Theme.Colors.text
+                        opacity: authStatus.length > 0 ? 0.80 : 0
+                        font.family: "Ubuntu Nerd Font"
+                        font.pixelSize: 13
+                    }
+                }
+            }
+
+            Process {
+                id: cleanupLockFileProcess
+                running: false
+                command: ["rm", "-f", "/tmp/qs-lockscreen.lock"]
+            }
+
+            Process {
+                id: resetSubmapProcess
+                running: false
+                command: ["hyprctl", "dispatch", "submap", "reset"]
+            }
+
+
+            PamContext {
+                id: pamAuth
+                config: "login"
+                user: "streak"
+
+                onPamMessage: {
+                    if (pamAuth.responseRequired) {
+                        pamAuth.respond(passwordInput.text)
+                    }
+                }
+
+                onCompleted: result => {
+                    authRunning = false
+
+                    if (result === PamResult.Success) {
+                        authStatus = "Unlocked"
+                        cleanupLockFileProcess.running = true
+                        resetSubmapProcess.running = true
+                        Qt.quit()
+                    } else {
+                        authStatus = "Wrong password"
+                        passwordInput.text = ""
+                        passwordInput.forceActiveFocus()
+                    }
+                }
+
+                onError: error => {
+                    authRunning = false
+                    authStatus = "Auth error"
+                    passwordInput.text = ""
+                    passwordInput.forceActiveFocus()
+                }
+            }
+
+            Timer {
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: timeText.text = "— " + Qt.formatDateTime(new Date(), "hh:mm") + " —"
+            }
+        }
+    }
+}

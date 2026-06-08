@@ -1,0 +1,91 @@
+bind = SUPER SHIFT, mouse:275, focusmonitor, -1
+bind = SUPER SHIFT, mouse:276, focusmonitor, +1
+
+# =========================================================
+# Office 3-monitor workspace layout
+# HDMI-A-3 center/main: 1 2 3 4
+# HDMI-A-2 right/vertical: 5 6 7 8
+# HDMI-A-1 left: 9 10 11 12
+# =========================================================
+
+# Center/main monitor
+workspace = 1, monitor:HDMI-A-3
+workspace = 2, monitor:HDMI-A-3
+workspace = 3, monitor:HDMI-A-3
+workspace = 4, monitor:HDMI-A-3
+
+# Right vertical monitor
+workspace = 5, monitor:HDMI-A-2
+workspace = 6, monitor:HDMI-A-2
+workspace = 7, monitor:HDMI-A-2
+workspace = 8, monitor:HDMI-A-2
+
+# Left monitor
+workspace = 9, monitor:HDMI-A-1
+workspace = 10, monitor:HDMI-A-1
+workspace = 11, monitor:HDMI-A-1
+workspace = 12, monitor:HDMI-A-1
+
+# Move focus with mainMod + arrow keys
+bind = $mainMod, left, movefocus, l
+bind = $mainMod, right, movefocus, r
+bind = $mainMod, up, movefocus, u
+bind = $mainMod, down, movefocus, d
+
+# Center/main monitor: HDMI-A-3
+bind = $mainMod, 1, workspace, 1
+bind = $mainMod, 2, workspace, 2
+bind = $mainMod, 3, workspace, 3
+bind = $mainMod, 4, workspace, 4
+
+bind = $mainMod SHIFT, 1, movetoworkspace, 1
+bind = $mainMod SHIFT, 2, movetoworkspace, 2
+bind = $mainMod SHIFT, 3, movetoworkspace, 3
+bind = $mainMod SHIFT, 4, movetoworkspace, 4
+
+# Right/vertical monitor: HDMI-A-2
+bind = $mainMod, 6, workspace, 5
+bind = $mainMod, 7, workspace, 6
+bind = $mainMod, 8, workspace, 7
+bind = $mainMod, 9, workspace, 8
+
+bind = $mainMod SHIFT, 6, movetoworkspace, 5
+bind = $mainMod SHIFT, 7, movetoworkspace, 6
+bind = $mainMod SHIFT, 8, movetoworkspace, 7
+bind = $mainMod SHIFT, 9, movetoworkspace, 8
+
+# Left monitor: HDMI-A-1
+bind = $mainMod, F1, workspace, 9
+bind = $mainMod, F2, workspace, 10
+bind = $mainMod, F3, workspace, 11
+bind = $mainMod, F4, workspace, 12
+
+bind = $mainMod SHIFT, F1, movetoworkspace, 9
+bind = $mainMod SHIFT, F2, movetoworkspace, 10
+bind = $mainMod SHIFT, F3, movetoworkspace, 11
+bind = $mainMod SHIFT, F4, movetoworkspace, 12
+
+# Example special workspace/scratchpad
+bind = $mainMod, S, exec, hyprctl dispatch togglespecialworkspace
+bind = $mainMod, M, togglespecialworkspace, music
+
+bindn = $mainMod, mouse_up, layoutmsg, move +col
+bindn = $mainMod, mouse_down, layoutmsg, move -col
+
+# Shift + tab = move through scrolling layout tape
+bind = $mainMod, tab, layoutmsg, move +col
+bind = $mainMod SHIFT, tab, layoutmsg, move -col
+
+# Move/resize windows with mainMod + LMB/RMB and dragging
+bindm = $mainMod SHIFT, mouse:272, movewindow
+bindm = $mainMod, mouse:273, resizewindow
+
+# Spotify scratchpad
+windowrule = workspace special:music, match:class ^(spotify)$
+
+bind = $mainMod, W, exec, ~/.config/hypr/scripts/toggle-layout.sh
+
+# Kitty floating terminal
+windowrule = match:class kitty, float on
+windowrule = match:class kitty, size 900 560
+windowrule = match:class kitty, center on

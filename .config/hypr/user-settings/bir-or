@@ -1,0 +1,179 @@
+<style>
+/* FORCE FULL BLEED */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* REMOVE ERP PRINT PADDING */
+.print-format {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* REMOVE INTERNAL WRAPPERS */
+.print-format .row,
+.print-format .col,
+.print-format div {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+/* FORCE YOUR CONTAINER TO START AT EDGE */
+.or-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+@page {
+    size: 108mm 165mm;
+    margin: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.or-container {
+    position: relative;
+    width: 165mm;
+    height: 108mm;
+    font-size: 11px;
+    line-height: 1;
+    color: #000;
+}
+
+.txt {
+    position: absolute;
+    white-space: nowrap;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+/* TOP RIGHT */
+.or-no {
+    top: 22mm;
+    left: 100mm;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.or-date {
+    top: 31mm;
+    left: 100mm;
+    font-size: 18px;
+    font-weight: bold;
+}
+.or-date1 {
+    top: 25mm;
+    left: 80mm;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* MAIN LINES */
+.received-from {
+    top: 43mm;
+    left: 33mm;
+    width: 74mm;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.amount-words {
+    top: 48mm;
+    left: 33mm;
+    width: 82mm;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* RIGHT SIDE DESCRIPTION AREA */
+.payment-desc {
+    top: 68mm;
+    left: 88mm;
+    width: 26mm;
+    font-size: 13px;
+}
+
+
+.total-amount {
+    top: 77.8mm;
+    left: 49mm;
+    width: 20mm;
+    text-align: right;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* CASHIER / BY */
+.cashier {
+    top: 84mm;
+    left: 94mm;
+    width: 28mm;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.by-name {
+    top: 98mm;
+    left: 82mm;
+    width: 42mm;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+
+.total-label {
+    position: absolute;
+    top: 77.8mm;   /* SAME as total-amount */
+    left: 0mm;     /* SAME column as tuition-label */
+    width: 26mm;
+    font-size: 13px;
+}
+
+
+</style>
+
+{% set student_name = doc.party_name or doc.party or "" %}
+{% set student_doc = frappe.db.get_value("Customer", {"name": doc.party}, "customer_name") %}
+{% set customer_student = frappe.db.get_value("Customer", {"name": doc.party}, "student") %}
+{% set student_id = frappe.db.get_value("Student", customer_student, "sc_student_id") or "" %}
+{% set display_name = "(" ~ student_id ~ ") " ~ student_name if student_id else student_name %}
+{% set amount = doc.paid_amount or doc.received_amount or 0 %}
+{% set amount_words = frappe.utils.money_in_words(amount) %}
+{% set cashier_name = frappe.db.get_value("User", doc.owner, "full_name") or doc.owner or "Administrator" %}
+{% set or_no = doc.custom_or_number %}
+{% set paid_date = frappe.utils.formatdate(doc.posting_date, "MM/dd/yy") %}
+
+<div class="or-container">
+    
+    <!-- date -->
+    <div class="txt or-date1">{{ or_no }}</div>
+    <!-- date -->
+    <div class="txt or-date">{{ paid_date }}</div>
+
+    <!-- received from -->
+    <div class="txt received-from">{{ display_name }}</div>
+
+    <!-- amount in words -->
+    <div class="txt amount-words">{{ amount_words }}</div>
+
+    <div class="txt misc-amount"></div>
+    <div class="txt other-amount"></div>
+
+    <div class="txt total-label">Total Amount Paid: </div>
+    <div class="txt total-amount">{{ frappe.format(amount, {"fieldtype":"Currency"}) }}</div>
+
+    <!-- cashier / by -->
+    <div class="txt cashier">{{ cashier_name }}</div>
+    <div class="txt by-name"></div>
+
+</div>

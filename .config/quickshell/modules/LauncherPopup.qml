@@ -521,7 +521,7 @@ Rectangle {
 
     Process {
         id: appsProc
-        command: ["sh", "-c", "~/.config/quickshell/scripts/app-list.sh"]
+        command: ["sh", "-c", "~/.config/quickshell/scripts/app-list.sh 2>/dev/null"]
         running: true
 
         stdout: SplitParser {

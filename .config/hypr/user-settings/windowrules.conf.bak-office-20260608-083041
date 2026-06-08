@@ -1,0 +1,93 @@
+bind = SUPER SHIFT, mouse:275, focusmonitor, -1
+bind = SUPER SHIFT, mouse:276, focusmonitor, +1
+
+
+
+# HDMI monitor workspaces
+workspace = 6, monitor:HDMI-A-1
+workspace = 7, monitor:HDMI-A-1
+workspace = 8, monitor:HDMI-A-1
+workspace = 9, monitor:HDMI-A-1
+workspace = 10, monitor:HDMI-A-1
+
+# Laptop monitor workspaces
+workspace = 1, monitor:eDP-1
+workspace = 2, monitor:eDP-1
+workspace = 3, monitor:eDP-1
+workspace = 4, monitor:eDP-1
+workspace = 5, monitor:eDP-1
+
+# Move focus with mainMod + arrow keys
+bind = $mainMod, left, movefocus, l
+bind = $mainMod, right, movefocus, r
+bind = $mainMod, up, movefocus, u
+bind = $mainMod, down, movefocus, d
+
+# Switch workspaces with mainMod + [0-9]
+bind = $mainMod, 1, workspace, 1
+bind = $mainMod, 2, workspace, 2
+bind = $mainMod, 3, workspace, 3
+bind = $mainMod, 4, workspace, 4
+bind = $mainMod, 5, workspace, 5
+bind = $mainMod, F1, workspace, 6
+bind = $mainMod, F2, workspace, 7
+bind = $mainMod, F3, workspace, 8
+bind = $mainMod, F4, workspace, 9
+bind = $mainMod, F5, workspace, 10
+
+# Move active window to a workspace with mainMod + SHIFT + [0-9]
+bind = $mainMod SHIFT, 1, movetoworkspace, 1
+bind = $mainMod SHIFT, 2, movetoworkspace, 2
+bind = $mainMod SHIFT, 3, movetoworkspace, 3
+bind = $mainMod SHIFT, 4, movetoworkspace, 4
+bind = $mainMod SHIFT, 5, movetoworkspace, 5
+bind = $mainMod SHIFT, F1, movetoworkspace, 6
+bind = $mainMod SHIFT, F2, movetoworkspace, 7
+bind = $mainMod SHIFT, F3, movetoworkspace, 8
+bind = $mainMod SHIFT, F4, movetoworkspace, 9
+bind = $mainMod SHIFT, F5, movetoworkspace, 10
+
+
+
+
+# Example special workspace (scratchpad)
+bind = $mainMod, S, exec, hyprctl dispatch togglespecialworkspace
+bind = $mainMod, M, togglespecialworkspace, music
+#bind = $mainMod SHIFT, S, movetoworkspace, special:magic
+
+
+
+bindn = $mainMod, mouse_up, layoutmsg, move +col
+bindn = $mainMod, mouse_down, layoutmsg, move -col
+
+# Shift + scroll = move through scrolling layout tape
+bind = $mainMod, tab, layoutmsg, move +col
+bind = $mainMod SHIFT, tab, layoutmsg, move -col
+
+# Move/resize windows with mainMod + LMB/RMB and dragging
+bindm = $mainMod SHIFT, mouse:272, movewindow
+bindm = $mainMod, mouse:273, resizewindow
+
+#windowrulev2 = opacity 0.95 0.95, class:^(sublime_text)$
+
+#windowrulev2 = opacity 0.95 0.95, class:^(steam)$
+
+
+#windowrulev2 = opacity 0.99 0.97, class:^(brave-.*)$
+#windowrulev2 = opacity 0.90 0.85,class:^(thunar)$
+
+
+# --- Waybar click apps: always float (NEW SYNTAX) ---
+
+
+
+# Spotify scratchpad
+windowrule = workspace special:music, match:class ^(spotify)$
+
+
+bind = $mainMod, W, exec, ~/.config/hypr/scripts/toggle-layout.sh
+
+# Kitty floating terminal
+windowrule = match:class kitty, float on
+windowrule = match:class kitty, size 900 560
+windowrule = match:class kitty, center on
