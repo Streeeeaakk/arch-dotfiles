@@ -78,6 +78,18 @@ echo "$theme" >"$HOME/.config/hypr/current-theme"
 
 [[ -x "$QS_THEME_SCRIPT" ]] && "$QS_THEME_SCRIPT" "$theme"
 
+# Update Quickshell launcher image based on theme
+QS_LAUNCHER_IMG="$HOME/.config/quickshell/assets/launcher.jpg"
+QS_PROFILE_LAUNCHER_IMG="$HOME/.config/quickshell-profiles/current/assets/launcher.jpg"
+THEME_WALLPAPER="$HOME/.config/hypr/wallpapers/$theme/1.jpg"
+
+if [[ -f "$THEME_WALLPAPER" ]]; then
+  mkdir -p "$(dirname "$QS_LAUNCHER_IMG")" "$(dirname "$QS_PROFILE_LAUNCHER_IMG")"
+  cp -f "$THEME_WALLPAPER" "$QS_LAUNCHER_IMG"
+  cp -f "$THEME_WALLPAPER" "$QS_PROFILE_LAUNCHER_IMG"
+fi
+
+
 echo "normal" >"$WAYBAR_DIR/.mode"
 
 hyprctl reload
@@ -92,10 +104,11 @@ rm -f /tmp/quickshell-launcher-trigger /tmp/quickshell-workspace-trigger 2>/dev/
 pkill -x quickshell 2>/dev/null || true
 sleep 0.5
 
-nohup quickshell >/tmp/quickshell.log 2>&1 &
+nohup quickshell -p "$HOME/.config/quickshell" >/tmp/quickshell.log 2>&1 &
 disown || true
 sleep 0.3
 
 pkill -f workspace-wallpaper.sh 2>/dev/null || true
-sleep 0.2
-nohup "$HOME/.config/hypr/workspace-wallpaper.sh" >/tmp/workspace-wallpaper.log 2>&1 &
+pkill -x hyprpaper 2>/dev/null || true
+sleep 0.3
+"$HOME/.config/hypr/workspace-wallpaper.sh" >/tmp/workspace-wallpaper.log 2>&1 || true

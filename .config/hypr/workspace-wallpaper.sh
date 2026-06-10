@@ -1,89 +1,40 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASE_WALLDIR="$HOME/.config/hypr/wallpapers"
-THEME_FILE="$HOME/.config/hypr/current-theme"
+HYPR_DIR="$HOME/.config/hypr"
+THEME="$(cat "$HYPR_DIR/current-theme" 2>/dev/null || echo purple)"
+WALL_DIR="$HYPR_DIR/wallpapers/$THEME"
 
-: "${HYPRLAND_INSTANCE_SIGNATURE:?Not running inside Hyprland}"
+[ -d "$WALL_DIR" ] || WALL_DIR="$HYPR_DIR/wallpapers/purple"
 
-SOCK="/run/user/$UID/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+W1="$WALL_DIR/1.jpg"
+W5="$WALL_DIR/5.jpg"
+W9="$WALL_DIR/9.jpg"
 
-# Ensure awww daemon is running
-if ! pgrep -x awww-daemon >/dev/null; then
-    awww-daemon >/dev/null 2>&1 &
-fi
+[ -f "$W1" ] || W1="$(find "$WALL_DIR" -type f | sort | head -1)"
+[ -f "$W5" ] || W5="$W1"
+[ -f "$W9" ] || W9="$W1"
 
-# Wait for awww socket to be ready
-for i in {1..20}; do
-    if awww query >/dev/null 2>&1; then
-        break
-    fi
-    sleep 0.2
-done
+cat > "$HYPR_DIR/hyprpaper.conf" <<EOC
+preload = $W1
+preload = $W5
+preload = $W9
 
+wallpaper = HDMI-A-3,$W1
+wallpaper = HDMI-A-2,$W5
+wallpaper = HDMI-A-1,$W9
 
-get_theme() {
-    if [[ -f "$THEME_FILE" ]]; then
-        cat "$THEME_FILE"
-    else
-        echo "cyan"
-    fi
-}
+splash = false
+EOC
 
-get_output_for_ws() {
-    local ws="$1"
-
-    if (( ws >= 1 && ws <= 5 )); then
-        echo "eDP-1"
-    elif (( ws >= 6 && ws <= 10 )); then
-        echo "HDMI-A-1"
-    else
-        echo "eDP-1"
-    fi
-}
-
-apply_ws() {
-    local ws="$1"
-    local theme output img fallback default
-
-    theme="$(get_theme)"
-    output="$(get_output_for_ws "$ws")"
-
-    img="$BASE_WALLDIR/$theme/$ws.jpg"
-    fallback="$BASE_WALLDIR/cyan/$ws.jpg"
-    default="$BASE_WALLDIR/cyan/1.jpg"
-
-    if [[ -f "$img" ]]; then
-        awww img "$img" --outputs "$output" --transition-type fade --transition-fps 60 --transition-duration 0.15
-    elif [[ -f "$fallback" ]]; then
-        awww img "$fallback" --outputs "$output" --transition-type fade --transition-fps 60 --transition-duration 0.15
-    elif [[ -f "$default" ]]; then
-        awww img "$default" --outputs "$output" --transition-type fade --transition-fps 60 --transition-duration 0.15
-    fi
-}
-
+hyprpaper >/tmp/hyprpaper.log 2>&1 &
 sleep 0.5
 
-# Apply wallpaper to active workspace on every monitor
-if command -v jq >/dev/null 2>&1; then
-    hyprctl monitors -j | jq -r '.[].activeWorkspace.id' | while read -r ws; do
-        [[ -n "$ws" && "$ws" != "null" ]] && apply_ws "$ws"
-    done
-else
-    ws="$(hyprctl activeworkspace -j | grep -o '"id":[[:space:]]*[0-9]\+' | grep -o '[0-9]\+' | head -n1)"
-    apply_ws "$ws"
-fi
+hyprctl hyprpaper unload all >/dev/null 2>&1 || true
+hyprctl hyprpaper preload "$W1" >/dev/null 2>&1 || true
+hyprctl hyprpaper preload "$W5" >/dev/null 2>&1 || true
+hyprctl hyprpaper preload "$W9" >/dev/null 2>&1 || true
 
-socat -u "UNIX-CONNECT:$SOCK" - | while IFS= read -r line; do
-    case "$line" in
-        workspace\>\>*)
-            ws="${line#workspace>>}"
-            apply_ws "$ws"
-            ;;
-        workspacev2\>\>*)
-            ws="${line#workspacev2>>}"
-            ws="${ws%%,*}"
-            apply_ws "$ws"
-            ;;
-    esac
-done
+hyprctl hyprpaper wallpaper "HDMI-A-3,$W1" >/dev/null 2>&1 || true
+hyprctl hyprpaper wallpaper "HDMI-A-2,$W5" >/dev/null 2>&1 || true
+hyprctl hyprpaper wallpaper "HDMI-A-1,$W9" >/dev/null 2>&1 || true
