@@ -1,0 +1,17 @@
+brave-bin
+brave-origin-bin
+caprine
+joplin-desktop
+localsend-bin
+neofetch
+onlyoffice-bin
+pacseek
+qimgv
+spicetify-cli
+spotify
+sublime-text-4
+ventoy-bin
+walker-bin
+yay
+zen-browser-bin
+zoom

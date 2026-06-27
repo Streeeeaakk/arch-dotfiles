@@ -1,0 +1,2 @@
+org.qbittorrent.qBittorrent
+org.vinegarhq.Sober
